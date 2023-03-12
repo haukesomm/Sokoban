@@ -1,4 +1,4 @@
-package de.haukesomm.sokoban;
+package de.haukesomm.sokoban.gui;
 
 import javax.swing.JFrame;
 

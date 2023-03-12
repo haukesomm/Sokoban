@@ -13,7 +13,6 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 
 import de.haukesomm.sokoban.LevelManager;
-import de.haukesomm.sokoban.ErrorWindow;
 
 public class LevelInfoBar extends JPanel {
     

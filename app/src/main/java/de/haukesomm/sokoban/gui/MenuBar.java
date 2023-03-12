@@ -1,13 +1,10 @@
 package de.haukesomm.sokoban.gui;
 
 import java.io.FileNotFoundException;
-import de.haukesomm.sokoban.ErrorWindow;
 import javax.swing.JFileChooser;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-
-import de.haukesomm.sokoban.Sokoban;
 
 public class MenuBar extends JMenuBar {
 
@@ -38,12 +35,13 @@ public class MenuBar extends JMenuBar {
         @Override
         public void addEntries() {
             JMenuItem about = new JMenuItem("About");
-            about.addActionListener(l -> {
-                new InfoWindow(game, "About",
-                        "Sokoban Java Clone Version " + Sokoban.VERSION
-                        + "<br><br>\u00A9 2016, Hauke Sommerfeld and Daniel Lukic"
-                        + "<br>\nLicensed under the Apache 2.0 license.");
-            });
+            about.addActionListener(l -> new InfoWindow(
+                    game,
+                    "About",
+                    "<p>Sokoban</p>" +
+                            "<p>\u00A9 2016, Hauke Sommerfeld and Daniel Lukic</p>" +
+                            "<p>Licensed under the Apache 2.0 license.</p>"
+            ));
             add(about);
             
             addSeparator();

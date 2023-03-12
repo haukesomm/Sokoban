@@ -8,10 +8,7 @@ import javax.swing.KeyStroke;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-import de.haukesomm.sokoban.Sokoban;
 import de.haukesomm.sokoban.LevelManager;
-import de.haukesomm.sokoban.SettingsManager;
-import de.haukesomm.sokoban.ErrorWindow;
 import de.haukesomm.sokoban.gui.gamefield.MoveAction;
 
 public class Game extends JFrame {
@@ -22,7 +19,6 @@ public class Game extends JFrame {
         setKeyBindings();
     }
 
-    private final SettingsManager settings = new SettingsManager();
     private final GridBagConstraints constraints = new GridBagConstraints();
 
     private MenuBar menu;
@@ -47,10 +43,10 @@ public class Game extends JFrame {
 
     private void initializeFrame() {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setResizable(Boolean.valueOf(settings.getValue("resizable")));
+        setResizable(false);
         setFocusable(true);
         setOSLookAndFeel();
-        setTitle("Sokoban Java (Version " + Sokoban.VERSION + ")");
+        setTitle("Sokoban");
         setIconImage(new ImageIcon(getClass().getResource("/de/haukesomm/sokoban/resources/textures/box.png")).getImage());
         setLayout(new GridBagLayout());
 
@@ -80,7 +76,7 @@ public class Game extends JFrame {
     private void initializeDefaultLevel() {
         try {
             levelinfo.setLevelNames(new LevelManager().getFileList());
-            field.initialize(settings.getValue("default") + LevelManager.BUILTIN_EXTENSION);
+            field.initialize("00" + LevelManager.BUILTIN_EXTENSION);
         } catch (Exception e) {
             new ErrorWindow(this, e).printMessage();
             field.initializeFallback();
