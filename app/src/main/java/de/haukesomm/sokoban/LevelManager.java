@@ -79,8 +79,10 @@ public class LevelManager {
 
             levelString = new Scanner(is).useDelimiter("\\Z").next();
 
-            if (!levelString.equals("") && levelString.contains("\r\n")) {
-                levelString = levelString.replaceAll("\r\n", "");
+            if (!levelString.equals("")) {
+                levelString = levelString
+                        .replaceAll("\n", "")
+                        .replaceAll("\r\n", "");
             }
 
             return levelString;
