@@ -20,6 +20,12 @@ java {
     targetCompatibility = JavaVersion.VERSION_17
 }
 
+sourceSets {
+    main {
+        output.setResourcesDir("build/classes/java/main")
+    }
+}
+
 tasks.withType<Jar> {
     manifest {
         attributes["Manifest-Version"] = "0.1-SNAPSHOT"

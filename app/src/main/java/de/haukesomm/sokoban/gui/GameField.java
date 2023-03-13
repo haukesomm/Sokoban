@@ -3,15 +3,14 @@ package de.haukesomm.sokoban.gui;
 import javax.swing.JPanel;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
-import java.io.FileNotFoundException;
 import javax.swing.JLabel;
 
-import de.haukesomm.sokoban.LevelManager;
 import de.haukesomm.sokoban.gui.gamefield.Box;
 import de.haukesomm.sokoban.gui.gamefield.Ground;
 import de.haukesomm.sokoban.gui.gamefield.Player;
 import de.haukesomm.sokoban.gui.gamefield.Target;
 import de.haukesomm.sokoban.gui.gamefield.Wall;
+import de.haukesomm.sokoban.level.Level;
 
 public class GameField extends JPanel {
     
@@ -20,12 +19,13 @@ public class GameField extends JPanel {
         setLayout(new GridBagLayout());
     }
 
-    public static final int SIZE_X = 16;
-    public static final int SIZE_Y = 20;
-    
+    // TODO: Dynamische Spielfeldgröße erlauben
+    public static final int SIZE_X = 20;
+    public static final int SIZE_Y = 16;
+
     private final GridBagConstraints constraints = new GridBagConstraints();
     private final Game game;
-    private final JLabel[][] grid = new JLabel[SIZE_X][SIZE_Y];
+    private final JLabel[][] grid = new JLabel[SIZE_Y][SIZE_X];
     
     private Player player;
     private Box[] boxes;
@@ -66,21 +66,32 @@ public class GameField extends JPanel {
         return true;
     }
 
-    public void initialize(String level) throws FileNotFoundException {
+    public void initialize(Level level) {
+        if (level.width() != SIZE_X || level.height() != SIZE_Y) {
+            System.err.println(
+                    String.format(
+                            "Could not load level: GameField size is {}x{} but level size was {}x{}!",
+                            SIZE_X, SIZE_Y, level.width(), level.height()
+                    )
+            );
+            return;
+        }
+
         removeAll();
 
-        String levelString = new LevelManager().getLevelData(level); // FNF Exception
+        String levelString = level.layoutString();
 
         player = new Player(this);
         boxes = new Box[100];
         counter_boxes = 0;
 
-        for (int row = 0; row < SIZE_X; row++) {
-            for (int position = 0; position < SIZE_Y; position++) {
+        // TODO: Symbole aus enum benutzen
+        for (int row = 0; row < SIZE_Y; row++) {
+            for (int position = 0; position < SIZE_X; position++) {
                 constraints.gridy = row;
                 constraints.gridx = position;
 
-                switch (levelString.charAt(row * SIZE_Y + position)) {
+                switch (levelString.charAt(row * SIZE_X + position)) {
                     case '#':
                         grid[row][position] = new Wall();
                         add(grid[row][position], constraints);
@@ -116,14 +127,12 @@ public class GameField extends JPanel {
 
         revalidate();
         repaint();
-        
-        System.out.println("Sucessfully initialized level '" + level + "'.");
     }
     
     // Fallback to fill the background if initialization failed
     public void initializeFallback() {
-        for (int row = 0; row < SIZE_X; row++) {
-            for (int position = 0; position < SIZE_Y; position++) {
+        for (int row = 0; row < SIZE_Y; row++) {
+            for (int position = 0; position < SIZE_X; position++) {
                 constraints.gridy = row;
                 constraints.gridx = position;
                 

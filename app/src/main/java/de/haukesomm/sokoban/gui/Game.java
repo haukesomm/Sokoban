@@ -8,22 +8,27 @@ import javax.swing.KeyStroke;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-import de.haukesomm.sokoban.LevelManager;
 import de.haukesomm.sokoban.gui.gamefield.MoveAction;
+import de.haukesomm.sokoban.level.BuiltinLevelRepository;
+import de.haukesomm.sokoban.level.LevelRepository;
 
 public class Game extends JFrame {
-    
+
+    private final GridBagConstraints constraints = new GridBagConstraints();
+
+    private final LevelRepository levelRepository = new BuiltinLevelRepository();
+
+    private MenuBar menu;
+    private GameField field;
+    private LevelInfoBar levelinfo;
+
+
     public Game() {
         initializeFrame();
         setOSLookAndFeel();
         setKeyBindings();
     }
 
-    private final GridBagConstraints constraints = new GridBagConstraints();
-
-    private MenuBar menu;
-    private GameField field;
-    private LevelInfoBar levelinfo;
     
     public GameField getGameField() {
         return field;
@@ -74,13 +79,9 @@ public class Game extends JFrame {
     }
     
     private void initializeDefaultLevel() {
-        try {
-            levelinfo.setLevelNames(new LevelManager().getFileList());
-            field.initialize("00" + LevelManager.BUILTIN_EXTENSION);
-        } catch (Exception e) {
-            new ErrorWindow(this, e).printMessage();
-            field.initializeFallback();
-        }
+        var levels = levelRepository.getAvailableLevels();
+        levelinfo.setLevelNames(levels);
+        field.initialize(levelRepository.getLevelOrNull(levels.get(0).id()));
     }
 
     private void setKeyBindings() {
@@ -94,5 +95,4 @@ public class Game extends JFrame {
         getRootPane().getActionMap().put("RIGHT", new MoveAction(field, 2));
         getRootPane().getActionMap().put("DOWN", new MoveAction(field, 3));
     }
-
 }

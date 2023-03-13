@@ -71,24 +71,23 @@ public class MenuBar extends JMenuBar {
 
                 try {
                     if (fileChooser.getSelectedFile() != null) {
-                        game.getGameField().initialize(fileChooser.getSelectedFile().getName());
+                        // TODO: Laden von custom levels implementieren
+                        // game.getGameField().initialize(fileChooser.getSelectedFile().getName());
                         game.getRootPane().requestFocus();
                     } else {
                         throw new UnsupportedOperationException("No file selected!");
                     }
-                } catch (UnsupportedOperationException | FileNotFoundException e) {
+                } catch (UnsupportedOperationException e) {
                     new ErrorWindow(game, e).show();
                     game.getGameField().initializeFallback();
                 }
             });
             add(loadFile);
         }
-        
     }
 
     private void addAll() {
         add(new SokobanMenu());
-        add(new LevelMenu());
+        // add(new LevelMenu());
     }
-
 }

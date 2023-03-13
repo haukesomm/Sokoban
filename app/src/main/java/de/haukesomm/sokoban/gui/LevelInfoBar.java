@@ -6,13 +6,16 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.text.DecimalFormat;
+import java.util.List;
 import javax.swing.JPanel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
-import de.haukesomm.sokoban.LevelManager;
+import de.haukesomm.sokoban.level.BuiltinLevelRepository;
+import de.haukesomm.sokoban.level.LevelDescription;
+import de.haukesomm.sokoban.level.LevelRepository;
 
 public class LevelInfoBar extends JPanel {
     
@@ -21,6 +24,8 @@ public class LevelInfoBar extends JPanel {
         initialize();
     }
 
+    private final LevelRepository levelRepository = new BuiltinLevelRepository();
+
     private final GridBagConstraints constraints = new GridBagConstraints();
 
     private final Game frame;
@@ -28,7 +33,7 @@ public class LevelInfoBar extends JPanel {
     private JLabel label_pushes;
     private JTextField counter_moves;
     private JTextField counter_pushes;
-    private JComboBox<Object> chooser;
+    private JComboBox<LevelDescription> chooser;
     public JButton load;
     
     public void addMove() {
@@ -39,18 +44,9 @@ public class LevelInfoBar extends JPanel {
         counter_pushes.setText(new DecimalFormat("0000").format(
                 Integer.parseInt(counter_pushes.getText()) + 1));
     }
-    
-    public int getTotalMoves() {
-        return Integer.parseInt(counter_moves.getText());
-    }
-    public int getTotalPushes() {
-        return Integer.parseInt(counter_pushes.getText());
-    }
 
-    public void setLevelNames(String[] levelNames) {
-        for (String s : levelNames) {
-            chooser.addItem(s);
-        }
+    public void setLevelNames(List<LevelDescription> levels) {
+        levels.forEach(chooser::addItem);
     }
 
     private void initialize() {
@@ -69,15 +65,11 @@ public class LevelInfoBar extends JPanel {
         chooser.setEditable(false);
         chooser.setMaximumSize(new Dimension(20, Integer.MAX_VALUE));
         load = new JButton("Load Level");
-        load.addActionListener((ActionEvent l) -> {
-            try {
-                frame.getGameField().initialize(chooser.getSelectedItem().toString()
-                        + LevelManager.BUILTIN_EXTENSION);
-                frame.getRootPane().requestFocus();
-            } catch (Exception e) {
-                new ErrorWindow(frame, e).show();
-                frame.getGameField().initializeFallback();
-            }
+        load.addActionListener(l -> {
+            var selectedLevelDescription = (LevelDescription) chooser.getSelectedItem();
+            var selectedLevel = levelRepository.getLevelOrNull(selectedLevelDescription.id());
+            frame.getGameField().initialize(selectedLevel);
+            frame.getRootPane().requestFocus();
         });
 
         constraints.weightx = 1.0;
@@ -98,5 +90,4 @@ public class LevelInfoBar extends JPanel {
         constraints.ipadx = 0;
         add(load, constraints);
     }
-
 }
