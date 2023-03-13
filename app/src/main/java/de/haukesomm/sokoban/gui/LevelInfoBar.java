@@ -4,7 +4,6 @@ import java.awt.Dimension;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
 import java.text.DecimalFormat;
 import java.util.List;
 import javax.swing.JPanel;
@@ -19,8 +18,8 @@ import de.haukesomm.sokoban.level.LevelRepository;
 
 public class LevelInfoBar extends JPanel {
     
-    public LevelInfoBar(Game frame) {
-        this.frame = frame;
+    public LevelInfoBar(GameFrame gameFrame) {
+        this.gameFrame = gameFrame;
         initialize();
     }
 
@@ -28,9 +27,7 @@ public class LevelInfoBar extends JPanel {
 
     private final GridBagConstraints constraints = new GridBagConstraints();
 
-    private final Game frame;
-    private JLabel label_moves;
-    private JLabel label_pushes;
+    private final GameFrame gameFrame;
     private JTextField counter_moves;
     private JTextField counter_pushes;
     private JComboBox<LevelDescription> chooser;
@@ -52,8 +49,8 @@ public class LevelInfoBar extends JPanel {
     private void initialize() {
         setLayout(new GridBagLayout());
 
-        label_moves = new JLabel("Moves: ");
-        label_pushes = new JLabel("Pushes: ");
+        var movesLabel = new JLabel("Moves: ");
+        var pushesLabel = new JLabel("Pushes: ");
         
         counter_moves = new JTextField("0000");
         counter_moves.setEditable(false);
@@ -68,19 +65,19 @@ public class LevelInfoBar extends JPanel {
         load.addActionListener(l -> {
             var selectedLevelDescription = (LevelDescription) chooser.getSelectedItem();
             var selectedLevel = levelRepository.getLevelOrNull(selectedLevelDescription.id());
-            frame.getGameField().initialize(selectedLevel);
-            frame.getRootPane().requestFocus();
+            gameFrame.getGameField().initialize(selectedLevel);
+            gameFrame.getRootPane().requestFocus();
         });
 
         constraints.weightx = 1.0;
         constraints.insets = new Insets(3, 3, 3, 3);
 
         constraints.gridx = 0;
-        add(label_moves, constraints);
+        add(movesLabel, constraints);
         constraints.gridx = 1;
         add(counter_moves, constraints);
         constraints.gridx = 2;
-        add(label_pushes, constraints);
+        add(pushesLabel, constraints);
         constraints.gridx = 3;
         add(counter_pushes, constraints);
         constraints.gridx = 4;

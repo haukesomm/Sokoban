@@ -1,6 +1,5 @@
 package de.haukesomm.sokoban.gui;
 
-import java.io.FileNotFoundException;
 import javax.swing.JFileChooser;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -8,12 +7,12 @@ import javax.swing.JMenuItem;
 
 public class MenuBar extends JMenuBar {
 
-    public MenuBar(Game game) {
-        this.game = game;
+    public MenuBar(GameFrame gameFrame) {
+        this.gameFrame = gameFrame;
         addAll();
     }
     
-    private final Game game;
+    private final GameFrame gameFrame;
     
     private abstract class AbstractMenu extends JMenu {
         
@@ -36,7 +35,7 @@ public class MenuBar extends JMenuBar {
         public void addEntries() {
             JMenuItem about = new JMenuItem("About");
             about.addActionListener(l -> new InfoWindow(
-                    game,
+                    gameFrame,
                     "About",
                     "<p>Sokoban</p>" +
                             "<p>\u00A9 2016, Hauke Sommerfeld and Daniel Lukic</p>" +
@@ -67,19 +66,19 @@ public class MenuBar extends JMenuBar {
             loadFile.addActionListener(l -> {
                 JFileChooser fileChooser = new JFileChooser();
                 fileChooser.setDialogTitle("Open custom level file");
-                fileChooser.showOpenDialog(game);
+                fileChooser.showOpenDialog(gameFrame);
 
                 try {
                     if (fileChooser.getSelectedFile() != null) {
                         // TODO: Laden von custom levels implementieren
                         // game.getGameField().initialize(fileChooser.getSelectedFile().getName());
-                        game.getRootPane().requestFocus();
+                        gameFrame.getRootPane().requestFocus();
                     } else {
                         throw new UnsupportedOperationException("No file selected!");
                     }
                 } catch (UnsupportedOperationException e) {
-                    new ErrorWindow(game, e).show();
-                    game.getGameField().initializeFallback();
+                    new ErrorWindow(gameFrame, e).show();
+                    gameFrame.getGameField().initializeFallback();
                 }
             });
             add(loadFile);

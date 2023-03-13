@@ -14,8 +14,8 @@ import de.haukesomm.sokoban.level.Level;
 
 public class GameField extends JPanel {
     
-    public GameField(Game game) {
-        this.game = game;
+    public GameField(GameFrame gameFrame) {
+        this.gameFrame = gameFrame;
         setLayout(new GridBagLayout());
     }
 
@@ -24,7 +24,7 @@ public class GameField extends JPanel {
     public static final int SIZE_Y = 16;
 
     private final GridBagConstraints constraints = new GridBagConstraints();
-    private final Game game;
+    private final GameFrame gameFrame;
     private final JLabel[][] grid = new JLabel[SIZE_Y][SIZE_X];
     
     private Player player;
@@ -34,8 +34,8 @@ public class GameField extends JPanel {
     private int counter_moves;
     private int counter_pushes;
 
-    public Game getGame() {
-        return game;
+    public GameFrame getGame() {
+        return gameFrame;
     }
     public JLabel[][] getGrid() {
         return grid;
