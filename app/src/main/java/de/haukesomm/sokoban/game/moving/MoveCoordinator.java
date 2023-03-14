@@ -1,8 +1,8 @@
-package de.haukesomm.sokoban.core.moving;
+package de.haukesomm.sokoban.game.moving;
 
-import de.haukesomm.sokoban.core.Direction;
-import de.haukesomm.sokoban.core.Entity;
-import de.haukesomm.sokoban.core.GameState;
+import de.haukesomm.sokoban.game.Direction;
+import de.haukesomm.sokoban.game.Entity;
+import de.haukesomm.sokoban.game.GameState;
 
 import java.util.*;
 

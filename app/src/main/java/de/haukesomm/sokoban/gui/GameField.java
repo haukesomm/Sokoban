@@ -10,7 +10,7 @@ import de.haukesomm.sokoban.gui.gamefield.Ground;
 import de.haukesomm.sokoban.gui.gamefield.Player;
 import de.haukesomm.sokoban.gui.gamefield.Target;
 import de.haukesomm.sokoban.gui.gamefield.Wall;
-import de.haukesomm.sokoban.core.level.Level;
+import de.haukesomm.sokoban.game.level.Level;
 
 public class GameField extends JPanel {
     

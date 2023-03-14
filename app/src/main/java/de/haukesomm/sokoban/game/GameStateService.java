@@ -1,7 +1,7 @@
-package de.haukesomm.sokoban.core;
+package de.haukesomm.sokoban.game;
 
-import de.haukesomm.sokoban.core.moving.MoveCoordinator;
-import de.haukesomm.sokoban.core.moving.MoveCoordinatorFactory;
+import de.haukesomm.sokoban.game.moving.MoveCoordinator;
+import de.haukesomm.sokoban.game.moving.MoveCoordinatorFactory;
 
 import java.util.HashSet;
 import java.util.Set;

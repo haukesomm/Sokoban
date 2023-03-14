@@ -1,11 +1,11 @@
-package de.haukesomm.sokoban.core.moving.checkers;
+package de.haukesomm.sokoban.game.moving.checkers;
 
-import de.haukesomm.sokoban.core.moving.MoveChecker;
-import de.haukesomm.sokoban.core.Direction;
-import de.haukesomm.sokoban.core.Entity;
-import de.haukesomm.sokoban.core.EntityType;
-import de.haukesomm.sokoban.core.GameState;
-import de.haukesomm.sokoban.core.moving.MoveCheckerResult;
+import de.haukesomm.sokoban.game.moving.MoveChecker;
+import de.haukesomm.sokoban.game.Direction;
+import de.haukesomm.sokoban.game.Entity;
+import de.haukesomm.sokoban.game.EntityType;
+import de.haukesomm.sokoban.game.GameState;
+import de.haukesomm.sokoban.game.moving.MoveCheckerResult;
 
 public class BoxDetectingMoveChecker implements MoveChecker {
 

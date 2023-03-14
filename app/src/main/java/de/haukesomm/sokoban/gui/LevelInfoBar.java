@@ -12,9 +12,9 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
-import de.haukesomm.sokoban.core.level.BuiltinLevelRepository;
-import de.haukesomm.sokoban.core.level.LevelDescription;
-import de.haukesomm.sokoban.core.level.LevelRepository;
+import de.haukesomm.sokoban.game.level.BuiltinLevelRepository;
+import de.haukesomm.sokoban.game.level.LevelDescription;
+import de.haukesomm.sokoban.game.level.LevelRepository;
 
 public class LevelInfoBar extends JPanel {
     

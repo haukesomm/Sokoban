@@ -1,4 +1,4 @@
-package de.haukesomm.sokoban.core.moving;
+package de.haukesomm.sokoban.game.moving;
 
 public enum MoveCheckerResult {
     POSSIBLE,

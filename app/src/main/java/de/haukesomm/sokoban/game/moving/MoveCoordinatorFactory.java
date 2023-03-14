@@ -1,8 +1,8 @@
-package de.haukesomm.sokoban.core.moving;
+package de.haukesomm.sokoban.game.moving;
 
-import de.haukesomm.sokoban.core.moving.checkers.BoxDetectingMoveChecker;
-import de.haukesomm.sokoban.core.moving.checkers.MultipleBoxesPreventingMoveChecker;
-import de.haukesomm.sokoban.core.moving.checkers.WallCollisionMoveChecker;
+import de.haukesomm.sokoban.game.moving.checkers.BoxDetectingMoveChecker;
+import de.haukesomm.sokoban.game.moving.checkers.MultipleBoxesPreventingMoveChecker;
+import de.haukesomm.sokoban.game.moving.checkers.WallCollisionMoveChecker;
 
 public class MoveCoordinatorFactory {
 

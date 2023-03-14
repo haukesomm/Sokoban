@@ -1,4 +1,4 @@
-package de.haukesomm.sokoban.core;
+package de.haukesomm.sokoban.game;
 
 import java.util.Collection;
 

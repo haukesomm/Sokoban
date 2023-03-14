@@ -9,8 +9,8 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import de.haukesomm.sokoban.gui.gamefield.MoveAction;
-import de.haukesomm.sokoban.core.level.BuiltinLevelRepository;
-import de.haukesomm.sokoban.core.level.LevelRepository;
+import de.haukesomm.sokoban.game.level.BuiltinLevelRepository;
+import de.haukesomm.sokoban.game.level.LevelRepository;
 
 public class GameFrame extends JFrame {
 

@@ -1,8 +1,6 @@
 package de.haukesomm.sokoban.game.moving;
 
-import de.haukesomm.sokoban.core.*;
-import de.haukesomm.sokoban.core.moving.MoveCoordinator;
-import de.haukesomm.sokoban.core.moving.MoveCoordinatorFactory;
+import de.haukesomm.sokoban.game.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
