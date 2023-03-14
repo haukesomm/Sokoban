@@ -1,4 +1,4 @@
-package de.haukesomm.sokoban.level;
+package de.haukesomm.sokoban.core.level;
 
 public record Level(
         String id,

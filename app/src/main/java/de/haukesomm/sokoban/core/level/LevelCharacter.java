@@ -1,4 +1,4 @@
-package de.haukesomm.sokoban.level;
+package de.haukesomm.sokoban.core.level;
 
 public enum LevelCharacter {
     NOTHING('_'),

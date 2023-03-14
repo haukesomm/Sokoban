@@ -1,4 +1,4 @@
-package de.haukesomm.sokoban.level;
+package de.haukesomm.sokoban.core.level;
 
 import java.io.BufferedReader;
 import java.io.IOException;
