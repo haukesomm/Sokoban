@@ -54,7 +54,7 @@ public class MenuBar extends JMenuBar {
         
     }
     
-    private class LevelMenu extends AbstractMenu {
+    /*private class LevelMenu extends AbstractMenu {
         
         public LevelMenu() {
             super("Level");
@@ -83,7 +83,7 @@ public class MenuBar extends JMenuBar {
             });
             add(loadFile);
         }
-    }
+    }*/
 
     private void addAll() {
         add(new SokobanMenu());

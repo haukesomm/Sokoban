@@ -2,6 +2,12 @@ package de.haukesomm.sokoban.game;
 
 public record Position(int x, int y) {
 
+    public static Position fromIndex(int index, int width) {
+        int x = index % width;
+        int y = (int) Math.floor(((double) index) / width);
+        return new Position(x, y);
+    }
+
     public Position nextInDirection(Direction direction) {
         int nextX = x;
         int nextY = y;

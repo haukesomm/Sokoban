@@ -1,8 +1,17 @@
 package de.haukesomm.sokoban.game;
 
 import java.util.Collection;
+import java.util.Optional;
 
 public record GameState(Tile[][] tiles, Collection<Entity> entities) {
+
+    public int getMapWidth() {
+        return tiles[0].length;
+    }
+
+    public int getMapHeight() {
+        return tiles.length;
+    }
 
     public Tile getNextTileInDirectionOrNull(Position position, Direction direction) {
         var nextPosition = position.nextInDirection(direction);
@@ -14,21 +23,24 @@ public record GameState(Tile[][] tiles, Collection<Entity> entities) {
         return tiles[nextPosition.y()][nextPosition.x()];
     }
 
-    public Entity getEntityAtNextPositionOrNull(Position position, Direction direction) {
+    public Entity getEntityAtPositionOrNull(Position position) {
         for (var entity : entities) {
-            if (entity.position().equals(position.nextInDirection(direction))) {
+            if (entity.position().equals(position)) {
                 return entity;
             }
         }
         return null;
     }
 
-    public Entity getPlayer() {
+    public Entity getEntityAtNextPositionOrNull(Position position, Direction direction) {
+        return getEntityAtPositionOrNull(position.nextInDirection(direction));
+    }
+
+    public Optional<Entity> getPlayer() {
         return entities
                 .stream()
                 .filter(e -> e.type() == EntityType.PLAYER)
-                .findFirst()
-                .orElseThrow();
+                .findFirst();
     }
 
     public Entity getEntityById(String id) {

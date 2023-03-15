@@ -5,7 +5,10 @@ import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javax.swing.JPanel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -17,34 +20,39 @@ import de.haukesomm.sokoban.game.level.LevelDescription;
 import de.haukesomm.sokoban.game.level.LevelRepository;
 
 public class LevelInfoBar extends JPanel {
-    
-    public LevelInfoBar(GameFrame gameFrame) {
-        this.gameFrame = gameFrame;
-        initialize();
+
+    public interface LevelSelectedListener {
+        void onLevelSelected(LevelDescription levelDescription);
     }
 
-    private final LevelRepository levelRepository = new BuiltinLevelRepository();
+
+    private final Set<LevelSelectedListener> levelSelectedListeners = new HashSet<>();
+
+    private final List<LevelDescription> availableLevels;
+
 
     private final GridBagConstraints constraints = new GridBagConstraints();
 
-    private final GameFrame gameFrame;
     private JTextField counter_moves;
     private JTextField counter_pushes;
     private JComboBox<LevelDescription> chooser;
     public JButton load;
-    
-    public void addMove() {
-        counter_moves.setText(new DecimalFormat("0000").format(
-                Integer.parseInt(counter_moves.getText()) + 1));
-    }
-    public void addPush() {
-        counter_pushes.setText(new DecimalFormat("0000").format(
-                Integer.parseInt(counter_pushes.getText()) + 1));
+
+
+    public LevelInfoBar(List<LevelDescription> availableLevels) {
+        this.availableLevels = availableLevels;
+        initialize();
     }
 
-    public void setLevelNames(List<LevelDescription> levels) {
-        levels.forEach(chooser::addItem);
+
+    private void notifyLevelSelectedListeners(LevelDescription selected) {
+        levelSelectedListeners.forEach(l -> l.onLevelSelected(selected));
     }
+
+    public void addLevelSelectedListener(LevelSelectedListener listener) {
+        levelSelectedListeners.add(listener);
+    }
+
 
     private void initialize() {
         setLayout(new GridBagLayout());
@@ -61,13 +69,9 @@ public class LevelInfoBar extends JPanel {
         chooser = new JComboBox<>();
         chooser.setEditable(false);
         chooser.setMaximumSize(new Dimension(20, Integer.MAX_VALUE));
+        availableLevels.forEach(chooser::addItem);
         load = new JButton("Load Level");
-        load.addActionListener(l -> {
-            var selectedLevelDescription = (LevelDescription) chooser.getSelectedItem();
-            var selectedLevel = levelRepository.getLevelOrNull(selectedLevelDescription.id());
-            gameFrame.getGameField().initialize(selectedLevel);
-            gameFrame.getRootPane().requestFocus();
-        });
+        load.addActionListener(l -> notifyLevelSelectedListeners((LevelDescription) chooser.getSelectedItem()));
 
         constraints.weightx = 1.0;
         constraints.insets = new Insets(3, 3, 3, 3);

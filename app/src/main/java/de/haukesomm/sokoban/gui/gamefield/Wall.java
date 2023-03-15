@@ -8,5 +8,4 @@ public class Wall extends JLabel {
     public Wall() {
         setIcon(new ImageIcon(getClass().getResource("/de/haukesomm/sokoban/resources/textures/wall.png")));
     }
-
 }

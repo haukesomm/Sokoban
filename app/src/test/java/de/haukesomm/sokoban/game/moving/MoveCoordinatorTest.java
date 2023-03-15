@@ -39,9 +39,9 @@ public class MoveCoordinatorTest {
         var gameState = newTestGameState();
         var sut = new MoveCoordinator();
 
-        var result = sut.moveEntityIfPossible(gameState, gameState.getPlayer(), Direction.BOTTOM);
+        var result = sut.moveEntityIfPossible(gameState, gameState.getPlayer().orElseThrow(), Direction.BOTTOM);
 
-        Assertions.assertEquals(new Position(1, 3), result.getPlayer().position());
+        Assertions.assertEquals(new Position(1, 3), result.getPlayer().orElseThrow().position());
     }
 
     @Test
@@ -50,9 +50,9 @@ public class MoveCoordinatorTest {
         var gameState = newTestGameState();
         var sut = MoveCoordinatorFactory.newWithDefaultValidators();
 
-        var result = sut.moveEntityIfPossible(gameState, gameState.getPlayer(), Direction.LEFT);
+        var result = sut.moveEntityIfPossible(gameState, gameState.getPlayer().orElseThrow(), Direction.LEFT);
 
-        Assertions.assertEquals(new Position(1, 2), result.getPlayer().position());
+        Assertions.assertEquals(new Position(1, 2), result.getPlayer().orElseThrow().position());
     }
 
     @Test
@@ -61,9 +61,9 @@ public class MoveCoordinatorTest {
         var gameState = newTestGameState();
         var sut = MoveCoordinatorFactory.newWithDefaultValidators();
 
-        var result = sut.moveEntityIfPossible(gameState, gameState.getPlayer(), Direction.RIGHT);
+        var result = sut.moveEntityIfPossible(gameState, gameState.getPlayer().orElseThrow(), Direction.RIGHT);
 
-        Assertions.assertEquals(new Position(2, 2), result.getPlayer().position());
+        Assertions.assertEquals(new Position(2, 2), result.getPlayer().orElseThrow().position());
         Assertions.assertEquals(new Position(3, 2), result.getEntityById("box-0").position());
     }
 
@@ -73,10 +73,10 @@ public class MoveCoordinatorTest {
         var gameState = newTestGameState();
         var sut = MoveCoordinatorFactory.newWithDefaultValidators();
 
-        var result = sut.moveEntityIfPossible(gameState, gameState.getPlayer(), Direction.BOTTOM);
-        result = sut.moveEntityIfPossible(result, gameState.getPlayer(), Direction.RIGHT);
+        var result = sut.moveEntityIfPossible(gameState, gameState.getPlayer().orElseThrow(), Direction.BOTTOM);
+        result = sut.moveEntityIfPossible(result, gameState.getPlayer().orElseThrow(), Direction.RIGHT);
 
-        Assertions.assertEquals(new Position(1, 3), result.getPlayer().position());
+        Assertions.assertEquals(new Position(1, 3), result.getPlayer().orElseThrow().position());
         Assertions.assertEquals(new Position(2, 3), result.getEntityById("box-1").position());
         Assertions.assertEquals(new Position(3, 3), result.getEntityById("box-2").position());
     }

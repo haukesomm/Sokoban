@@ -1,47 +1,58 @@
 package de.haukesomm.sokoban.gui;
 
-import javax.swing.JFrame;
+import javax.swing.*;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
-import javax.swing.ImageIcon;
-import javax.swing.KeyStroke;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
+import java.awt.event.ActionEvent;
+import java.util.Optional;
 
-import de.haukesomm.sokoban.gui.gamefield.MoveAction;
-import de.haukesomm.sokoban.game.level.BuiltinLevelRepository;
-import de.haukesomm.sokoban.game.level.LevelRepository;
+import de.haukesomm.sokoban.game.Direction;
+import de.haukesomm.sokoban.game.Entity;
+import de.haukesomm.sokoban.game.GameStateService;
 
 public class GameFrame extends JFrame {
 
-    private final LevelRepository levelRepository = new BuiltinLevelRepository();
+    private class MovePlayerAction extends AbstractAction {
 
-    private GameField gameField;
-    private LevelInfoBar levelinfo;
+        private Direction direction;
+
+        public MovePlayerAction(Direction direction) {
+            this.direction = direction;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            Optional<Entity> player = gameStateService.getPlayer();
+            player.ifPresent(entity -> gameStateService.moveEntityIfPossible(entity, direction));
+        }
+    }
+
+
+    private final GameStateService gameStateService = new GameStateService();
+
+    private final GameField gameField = new GameField();
+    private final LevelInfoBar levelInfoBar = new LevelInfoBar(gameStateService.getAvailableLevels());;
+
 
     public GameFrame() {
         initializeFrame();
+        initListeners();
+        loadDefaultLevel();
+        showFrame();
     }
 
-    public GameField getGameField() {
-        return gameField;
-    }
-    
-    public LevelInfoBar getLevelInfoBar() {
-        return levelinfo;
-    }
 
     private void initializeFrame() {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setResizable(false);
+        setResizable(true);
         setFocusable(true);
 
-        setLookAndFeel();
+        // FIXME: LAF crashes on macOS
+        //setLookAndFeel();
         setKeyBindings();
 
         setTitle("Sokoban");
-        setIconImage(new ImageIcon(
-                getClass().getResource("/de/haukesomm/sokoban/resources/textures/box.png")).getImage());
+        setIconImage(new ImageIcon(getClass().getResource("/de/haukesomm/sokoban/resources/textures/box.png")).getImage());
         setLayout(new GridBagLayout());
 
         var menu = new MenuBar(this);
@@ -53,27 +64,13 @@ public class GameFrame extends JFrame {
         constraints.weightx = 1.0;
         constraints.fill = GridBagConstraints.BOTH;
 
-        gameField = new GameField(this);
         constraints.gridy = 1;
         constraints.weighty = 0.7;
         add(gameField, constraints);
 
-        levelinfo = new LevelInfoBar(this);
         constraints.gridy = 2;
         constraints.weighty = 0.2;
-        add(levelinfo, constraints);
-
-        initializeDefaultLevel();
-
-
-        pack();
-        setVisible(true);
-    }
-    
-    private void initializeDefaultLevel() {
-        var levels = levelRepository.getAvailableLevels();
-        levelinfo.setLevelNames(levels);
-        gameField.initialize(levelRepository.getLevelOrNull(levels.get(0).id()));
+        add(levelInfoBar, constraints);
     }
 
     private void setLookAndFeel() {
@@ -90,14 +87,42 @@ public class GameFrame extends JFrame {
     }
 
     private void setKeyBindings() {
-        getRootPane().getInputMap().put(KeyStroke.getKeyStroke("LEFT"), "LEFT");
-        getRootPane().getInputMap().put(KeyStroke.getKeyStroke("UP"), "UP");
-        getRootPane().getInputMap().put(KeyStroke.getKeyStroke("RIGHT"), "RIGHT");
-        getRootPane().getInputMap().put(KeyStroke.getKeyStroke("DOWN"), "DOWN");
-        
-        getRootPane().getActionMap().put("LEFT", new MoveAction(gameField, 0));
-        getRootPane().getActionMap().put("UP", new MoveAction(gameField, 1));
-        getRootPane().getActionMap().put("RIGHT", new MoveAction(gameField, 2));
-        getRootPane().getActionMap().put("DOWN", new MoveAction(gameField, 3));
+        InputMap inputMap = getRootPane().getInputMap();
+        inputMap.put(KeyStroke.getKeyStroke("LEFT"), "LEFT");
+        inputMap.put(KeyStroke.getKeyStroke("UP"), "UP");
+        inputMap.put(KeyStroke.getKeyStroke("RIGHT"), "RIGHT");
+        inputMap.put(KeyStroke.getKeyStroke("DOWN"), "DOWN");
+
+        ActionMap actionMap = getRootPane().getActionMap();
+        actionMap.put("LEFT", new MovePlayerAction(Direction.LEFT));
+        actionMap.put("UP", new MovePlayerAction(Direction.TOP));
+        actionMap.put("RIGHT", new MovePlayerAction(Direction.RIGHT));
+        actionMap.put("DOWN", new MovePlayerAction(Direction.BOTTOM));
+    }
+
+    private void initListeners() {
+        gameStateService.addGameStateChangedListener(state -> {
+            gameField.drawState(state);
+            revalidate();
+            repaint();
+            getRootPane().requestFocus();
+        });
+        levelInfoBar.addLevelSelectedListener(levelDescription -> gameStateService.loadLevel(levelDescription.id()));
+    }
+
+    private void loadDefaultLevel() {
+        var firstLevelId = gameStateService
+                .getAvailableLevels()
+                .stream()
+                .findFirst()
+                .orElseThrow()
+                .id();
+
+        gameStateService.loadLevel(firstLevelId);
+    }
+
+    private void showFrame() {
+        pack();
+        setVisible(true);
     }
 }
