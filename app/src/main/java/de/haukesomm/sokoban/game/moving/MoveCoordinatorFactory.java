@@ -1,8 +1,8 @@
 package de.haukesomm.sokoban.game.moving;
 
-import de.haukesomm.sokoban.game.moving.checkers.BoxDetectingMoveChecker;
-import de.haukesomm.sokoban.game.moving.checkers.MultipleBoxesPreventingMoveChecker;
-import de.haukesomm.sokoban.game.moving.checkers.WallCollisionMoveChecker;
+import de.haukesomm.sokoban.game.moving.validation.*;
+
+import java.util.Set;
 
 public class MoveCoordinatorFactory {
 
@@ -10,9 +10,14 @@ public class MoveCoordinatorFactory {
 
     public static MoveCoordinator newWithDefaultValidators() {
         return new MoveCoordinator(
-                new WallCollisionMoveChecker(),
-                new BoxDetectingMoveChecker(),
-                new MultipleBoxesPreventingMoveChecker()
+                new PreconditionMoveValidator(
+                        new OutOfBoundsPreventingMoveValidator(),
+                        Set.of(
+                                new WallCollisionPreventingMoveValidator(),
+                                new BoxDetectingMoveValidator(),
+                                new MultipleBoxesPreventingMoveValidator()
+                        )
+                )
         );
     }
 }

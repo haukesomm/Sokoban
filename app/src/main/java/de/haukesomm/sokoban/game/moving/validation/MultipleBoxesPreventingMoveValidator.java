@@ -1,23 +1,24 @@
-package de.haukesomm.sokoban.game.moving.checkers;
+package de.haukesomm.sokoban.game.moving.validation;
 
-import de.haukesomm.sokoban.game.moving.MoveChecker;
 import de.haukesomm.sokoban.game.Direction;
 import de.haukesomm.sokoban.game.Entity;
 import de.haukesomm.sokoban.game.EntityType;
 import de.haukesomm.sokoban.game.GameState;
-import de.haukesomm.sokoban.game.moving.MoveCheckerResult;
+import de.haukesomm.sokoban.game.moving.MoveValidatorStatus;
 
-public class MultipleBoxesPreventingMoveChecker implements MoveChecker {
+import java.util.Collection;
+
+public class MultipleBoxesPreventingMoveValidator extends AbstractMoveValidator {
 
     @Override
-    public MoveCheckerResult check(GameState state, Entity entity, Direction direction) {
+    public Collection<MoveValidatorStatus> check(GameState state, Entity entity, Direction direction) {
         var entityAhead = state.getEntityAtNextPositionOrNull(entity.position(), direction);
         if (entityAhead != null && entityAhead.type() == EntityType.BOX) {
             var secondEntity = state.getEntityAtNextPositionOrNull(entityAhead.position(), direction);
             if (secondEntity != null && secondEntity.type() == EntityType.BOX) {
-                return MoveCheckerResult.IMPOSSIBLE;
+                return singleResult(MoveValidatorStatus.IMPOSSIBLE);
             }
         }
-        return MoveCheckerResult.POSSIBLE;
+        return singleResult(MoveValidatorStatus.POSSIBLE);
     }
 }

@@ -3,15 +3,16 @@ package de.haukesomm.sokoban.game.moving;
 import de.haukesomm.sokoban.game.Direction;
 import de.haukesomm.sokoban.game.Entity;
 import de.haukesomm.sokoban.game.GameState;
+import de.haukesomm.sokoban.game.moving.validation.MoveValidator;
 
 import java.util.*;
 
 public class MoveCoordinator {
 
-    private final Collection<MoveChecker> moveCheckers;
+    private final Collection<MoveValidator> moveValidators;
 
-    public MoveCoordinator(MoveChecker... moveCheckers) {
-        this.moveCheckers = Set.of(moveCheckers);
+    public MoveCoordinator(MoveValidator... moveValidators) {
+        this.moveValidators = Set.of(moveValidators);
     }
 
     private static class Result {
@@ -40,12 +41,12 @@ public class MoveCoordinator {
     }
 
     private Result determineMoveActions(GameState state, Entity entity, Direction direction) {
-        var moveCheckerResults = new HashSet<MoveCheckerResult>();
-        moveCheckers.forEach(checker -> moveCheckerResults.add(checker.check(state, entity, direction)));
+        var moveValidatorResults = new HashSet<MoveValidatorStatus>();
+        moveValidators.forEach(checker -> moveValidatorResults.addAll(checker.check(state, entity, direction)));
 
-        if (moveCheckerResults.contains(MoveCheckerResult.IMPOSSIBLE)) {
+        if (moveValidatorResults.contains(MoveValidatorStatus.IMPOSSIBLE)) {
             return Result.failure();
-        } else if (moveCheckerResults.contains(MoveCheckerResult.ENTITY_AHEAD_NEEDS_TO_MOVE)) {
+        } else if (moveValidatorResults.contains(MoveValidatorStatus.ENTITY_AHEAD_NEEDS_TO_MOVE)) {
             var entityAhead = state.getEntityAtNextPositionOrNull(entity.position(), direction);
             var result = determineMoveActions(state, entityAhead, direction);
             if (result.success) {
