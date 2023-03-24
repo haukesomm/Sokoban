@@ -52,7 +52,6 @@ public class GameFrame extends JFrame {
         setKeyBindings();
 
         setTitle("Sokoban");
-        setIconImage(new ImageIcon(getClass().getResource("/de/haukesomm/sokoban/resources/textures/box.png")).getImage());
         setLayout(new GridBagLayout());
 
         var menu = new MenuBar(this);

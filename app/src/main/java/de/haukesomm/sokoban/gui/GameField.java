@@ -1,22 +1,21 @@
 package de.haukesomm.sokoban.gui;
 
-import javax.swing.JPanel;
+import javax.swing.*;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 
 import de.haukesomm.sokoban.game.GameState;
 import de.haukesomm.sokoban.game.Position;
-import de.haukesomm.sokoban.gui.gamefield.Box;
-import de.haukesomm.sokoban.gui.gamefield.Ground;
-import de.haukesomm.sokoban.gui.gamefield.Player;
-import de.haukesomm.sokoban.gui.gamefield.Target;
-import de.haukesomm.sokoban.gui.gamefield.Wall;
+import de.haukesomm.sokoban.gui.textures.BundledTextureRepository;
+import de.haukesomm.sokoban.gui.textures.TextureRepository;
 
 public class GameField extends JPanel {
 
     // TODO: Dynamische Spielfeldgröße erlauben
     private static final int SIZE_X = 20;
     private static final int SIZE_Y = 16;
+
+    private final TextureRepository textureRepository = new BundledTextureRepository();
 
     public GameField() {
         setLayout(new GridBagLayout());
@@ -37,25 +36,24 @@ public class GameField extends JPanel {
 
         for (int row = 0; row < SIZE_Y; row++) {
             for (int column = 0; column < SIZE_X; column++) {
+                ImageIcon texture;
+
+                var entity = state.getEntityAtPositionOrNull(new Position(column, row));
+                if (entity != null) {
+                    texture = textureRepository.getForEntityType(entity.type());
+                } else {
+                    var tile = tiles[row][column];
+                    texture = textureRepository.getForTileType(tile.type());
+                }
+
+                var jLabel = new JLabel();
+                jLabel.setIcon(texture);
+
                 var gridBagConstraints = new GridBagConstraints();
                 gridBagConstraints.gridy = row;
                 gridBagConstraints.gridx = column;
 
-                var entity = state.getEntityAtPositionOrNull(new Position(column, row));
-                if (entity != null) {
-                    switch (entity.type()) {
-                        case PLAYER -> add(new Player(), gridBagConstraints);
-                        case BOX -> add(new Box(), gridBagConstraints);
-                    }
-                    continue;
-                }
-
-                var tile = tiles[row][column];
-                switch (tile.type()) {
-                    case WALL -> add(new Wall(), gridBagConstraints);
-                    case TARGET -> add(new Target(), gridBagConstraints);
-                    case NOTHING -> add(new Ground(), gridBagConstraints);
-                }
+                add(jLabel, gridBagConstraints);
             }
         }
 
