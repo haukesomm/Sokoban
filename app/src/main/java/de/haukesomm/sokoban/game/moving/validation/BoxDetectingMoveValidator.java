@@ -14,7 +14,7 @@ public class BoxDetectingMoveValidator extends AbstractMoveValidator {
     public Collection<MoveValidatorStatus> check(GameState state, Entity entity, Direction direction) {
         var entityAhead = state.getEntityAtNextPositionOrNull(entity.position(), direction);
         if (entityAhead != null && entityAhead.type() == EntityType.BOX) {
-            return singleResult(MoveValidatorStatus.ENTITY_AHEAD_NEEDS_TO_MOVE);
+            return singleResult(MoveValidatorStatus.BOX_AHEAD_NEEDS_TO_MOVE);
         }
         return singleResult(MoveValidatorStatus.POSSIBLE);
     }

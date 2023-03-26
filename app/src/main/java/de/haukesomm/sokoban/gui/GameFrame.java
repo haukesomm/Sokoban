@@ -100,7 +100,10 @@ public class GameFrame extends JFrame {
     }
 
     private void initListeners() {
-        gameStateService.addGameStateChangedListener(state -> {
+        gameStateService.addGameStateChangedListener((state, moves, pushes) -> {
+            levelInfoBar.setMoveCount(moves);
+            levelInfoBar.setPushCount(pushes);
+
             gameField.drawState(state);
             revalidate();
             repaint();

@@ -3,6 +3,8 @@ package de.haukesomm.sokoban.game;
 import de.haukesomm.sokoban.game.level.*;
 import de.haukesomm.sokoban.game.moving.MoveCoordinator;
 import de.haukesomm.sokoban.game.moving.MoveCoordinatorFactory;
+import de.haukesomm.sokoban.game.moving.MoveCoordinatorResult;
+import de.haukesomm.sokoban.game.moving.MoveValidatorStatus;
 
 import java.util.HashSet;
 import java.util.List;
@@ -12,7 +14,7 @@ import java.util.Set;
 public class GameStateService {
 
     public interface StateChangeListener {
-        void onGameStateChanged(GameState state);
+        void onGameStateChanged(GameState state, int moves, int pushes);
     }
 
 
@@ -28,9 +30,13 @@ public class GameStateService {
 
     private GameState state;
 
+    private int moves = 0;
+
+    private int pushes = 0;
+
 
     private void notifyGameStateChangedListeners() {
-        stateChangeListeners.forEach(l -> l.onGameStateChanged(state));
+        stateChangeListeners.forEach(l -> l.onGameStateChanged(state, moves, pushes));
     }
 
     public void addGameStateChangedListener(StateChangeListener listener) {
@@ -44,7 +50,7 @@ public class GameStateService {
     public void loadLevel(String levelId) {
         var level = levelRepository.getLevelOrNull(levelId);
         if (level == null) {
-            throw new IllegalArgumentException("Level with id '" + levelId +"' does not exist!");
+            throw new IllegalArgumentException("Level with id '" + levelId + "' does not exist!");
         }
         state = levelToGameStateConverter.convert(level);
         notifyGameStateChangedListeners();
@@ -58,7 +64,19 @@ public class GameStateService {
         if (state == null) {
             throw new IllegalStateException("Cannot move entity: Game state has not been initialized!");
         }
-        state = moveCoordinator.moveEntityIfPossible(state, entity, direction);
+
+        MoveCoordinatorResult coordinatorResult = moveCoordinator.moveEntityIfPossible(state, entity, direction);
+        if (coordinatorResult.success()) {
+            moves++;
+            if (coordinatorResult.moveValidatorStatuses().contains(MoveValidatorStatus.BOX_AHEAD_NEEDS_TO_MOVE)) {
+                pushes++;
+            }
+        }
+
+        if (coordinatorResult.gameState().isPresent()) {
+            state = coordinatorResult.gameState().get();
+        }
+
         notifyGameStateChangedListeners();
     }
 }

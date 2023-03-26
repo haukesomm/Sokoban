@@ -4,8 +4,6 @@ import java.awt.Dimension;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -15,9 +13,7 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
-import de.haukesomm.sokoban.game.level.BuiltinLevelRepository;
 import de.haukesomm.sokoban.game.level.LevelDescription;
-import de.haukesomm.sokoban.game.level.LevelRepository;
 
 public class LevelInfoBar extends JPanel {
 
@@ -33,10 +29,9 @@ public class LevelInfoBar extends JPanel {
 
     private final GridBagConstraints constraints = new GridBagConstraints();
 
-    private JTextField counter_moves;
-    private JTextField counter_pushes;
-    private JComboBox<LevelDescription> chooser;
-    public JButton load;
+    private JTextField moveCounterTextField;
+
+    private JTextField pushCounterTextField;
 
 
     public LevelInfoBar(List<LevelDescription> availableLevels) {
@@ -60,35 +55,50 @@ public class LevelInfoBar extends JPanel {
         var movesLabel = new JLabel("Moves: ");
         var pushesLabel = new JLabel("Pushes: ");
         
-        counter_moves = new JTextField("0000");
-        counter_moves.setEditable(false);
+        moveCounterTextField = new JTextField("0000");
+        moveCounterTextField.setEditable(false);
         
-        counter_pushes = new JTextField("0000");
-        counter_pushes.setEditable(false);
-        
-        chooser = new JComboBox<>();
-        chooser.setEditable(false);
-        chooser.setMaximumSize(new Dimension(20, Integer.MAX_VALUE));
-        availableLevels.forEach(chooser::addItem);
-        load = new JButton("Load Level");
-        load.addActionListener(l -> notifyLevelSelectedListeners((LevelDescription) chooser.getSelectedItem()));
+        pushCounterTextField = new JTextField("0000");
+        pushCounterTextField.setEditable(false);
+
+        var levelComboBox = new JComboBox<LevelDescription>();
+        levelComboBox.setEditable(false);
+        levelComboBox.setMaximumSize(new Dimension(20, Integer.MAX_VALUE));
+        availableLevels.forEach(levelComboBox::addItem);
+
+        var loadButton = new JButton("Load Level");
+        loadButton.addActionListener(l ->
+                notifyLevelSelectedListeners((LevelDescription) levelComboBox.getSelectedItem()));
 
         constraints.weightx = 1.0;
         constraints.insets = new Insets(3, 3, 3, 3);
 
         constraints.gridx = 0;
         add(movesLabel, constraints);
+
         constraints.gridx = 1;
-        add(counter_moves, constraints);
+        add(moveCounterTextField, constraints);
+
         constraints.gridx = 2;
         add(pushesLabel, constraints);
+
         constraints.gridx = 3;
-        add(counter_pushes, constraints);
+        add(pushCounterTextField, constraints);
+
         constraints.gridx = 4;
         constraints.ipadx = 150;
-        add(chooser, constraints);
+        add(levelComboBox, constraints);
+
         constraints.gridx = 5;
         constraints.ipadx = 0;
-        add(load, constraints);
+        add(loadButton, constraints);
+    }
+
+    public void setMoveCount(int count) {
+        moveCounterTextField.setText(String.format("%04d", count));
+    }
+
+    public void setPushCount(int count) {
+        pushCounterTextField.setText(String.format("%04d", count));
     }
 }

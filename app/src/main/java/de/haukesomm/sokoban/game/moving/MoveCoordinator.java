@@ -15,48 +15,55 @@ public class MoveCoordinator {
         this.moveValidators = Set.of(moveValidators);
     }
 
-    private static class Result {
-        public final boolean success;
-        public final List<MoveAction> moveActions;
-
-        public Result(boolean success, List<MoveAction> moveActions) {
-            this.success = success;
-            this.moveActions = moveActions;
-        }
-
-        public static Result failure() {
-            return new Result(false, new ArrayList<>());
+    private record Result(
+            boolean success,
+            List<MoveAction> moveActions,
+            Set<MoveValidatorStatus> moveValidatorStatuses
+    ) {
+        public static Result failure(Set<MoveValidatorStatus> moveValidatorStatuses) {
+            return new Result(false, new ArrayList<>(), moveValidatorStatuses);
         }
     }
 
-    public GameState moveEntityIfPossible(GameState state, Entity entity, Direction direction) {
+    public MoveCoordinatorResult moveEntityIfPossible(GameState state, Entity entity, Direction direction) {
         var moveActionsResult = determineMoveActions(state, entity, direction);
-        var resultingGameState = state;
+
+        Optional<GameState> resultingGameStateOptional;
         if (moveActionsResult.success) {
+            var tmpState = state;
             for (var action : moveActionsResult.moveActions) {
-                resultingGameState = action.performMove(resultingGameState);
+                tmpState = action.performMove(tmpState);
             }
+            resultingGameStateOptional = Optional.of(tmpState);
+        } else {
+            resultingGameStateOptional = Optional.empty();
         }
-        return resultingGameState;
+
+        return new MoveCoordinatorResult(
+                moveActionsResult.success,
+                moveActionsResult.moveValidatorStatuses,
+                resultingGameStateOptional
+        );
     }
 
     private Result determineMoveActions(GameState state, Entity entity, Direction direction) {
-        var moveValidatorResults = new HashSet<MoveValidatorStatus>();
-        moveValidators.forEach(checker -> moveValidatorResults.addAll(checker.check(state, entity, direction)));
+        var moveValidatorStatuses = new HashSet<MoveValidatorStatus>();
+        moveValidators.forEach(checker -> moveValidatorStatuses.addAll(checker.check(state, entity, direction)));
 
-        if (moveValidatorResults.contains(MoveValidatorStatus.IMPOSSIBLE)) {
-            return Result.failure();
-        } else if (moveValidatorResults.contains(MoveValidatorStatus.ENTITY_AHEAD_NEEDS_TO_MOVE)) {
+        if (moveValidatorStatuses.contains(MoveValidatorStatus.IMPOSSIBLE)) {
+            return Result.failure(moveValidatorStatuses);
+        } else if (moveValidatorStatuses.contains(MoveValidatorStatus.BOX_AHEAD_NEEDS_TO_MOVE)) {
             var entityAhead = state.getEntityAtNextPositionOrNull(entity.position(), direction);
             var result = determineMoveActions(state, entityAhead, direction);
             if (result.success) {
+                result.moveValidatorStatuses.addAll(moveValidatorStatuses);
                 result.moveActions.add(new SimpleMoveAction(entity, direction));
             }
             return result;
         } else {
             var moveActions = new ArrayList<MoveAction>();
             moveActions.add(new SimpleMoveAction(entity, direction));
-            return new Result(true, moveActions);
+            return new Result(true, moveActions, moveValidatorStatuses);
         }
     }
 }
