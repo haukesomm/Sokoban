@@ -4,100 +4,101 @@ import java.awt.Dimension;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.text.DecimalFormat;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import javax.swing.JPanel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
-import de.haukesomm.sokoban.LevelManager;
-import de.haukesomm.sokoban.ErrorWindow;
+import de.haukesomm.sokoban.game.level.LevelDescription;
 
 public class LevelInfoBar extends JPanel {
-    
-    public LevelInfoBar(Game frame) {
-        this.frame = frame;
-        initialize();
+
+    public interface LevelSelectedListener {
+        void onLevelSelected(LevelDescription levelDescription);
     }
+
+
+    private final Set<LevelSelectedListener> levelSelectedListeners = new HashSet<>();
+
+    private final List<LevelDescription> availableLevels;
+
 
     private final GridBagConstraints constraints = new GridBagConstraints();
 
-    private final Game frame;
-    private JLabel label_moves;
-    private JLabel label_pushes;
-    private JTextField counter_moves;
-    private JTextField counter_pushes;
-    private JComboBox<Object> chooser;
-    public JButton load;
-    
-    public void addMove() {
-        counter_moves.setText(new DecimalFormat("0000").format(
-                Integer.parseInt(counter_moves.getText()) + 1));
-    }
-    public void addPush() {
-        counter_pushes.setText(new DecimalFormat("0000").format(
-                Integer.parseInt(counter_pushes.getText()) + 1));
-    }
-    
-    public int getTotalMoves() {
-        return Integer.parseInt(counter_moves.getText());
-    }
-    public int getTotalPushes() {
-        return Integer.parseInt(counter_pushes.getText());
+    private JTextField moveCounterTextField;
+
+    private JTextField pushCounterTextField;
+
+
+    public LevelInfoBar(List<LevelDescription> availableLevels) {
+        this.availableLevels = availableLevels;
+        initialize();
     }
 
-    public void setLevelNames(String[] levelNames) {
-        for (String s : levelNames) {
-            chooser.addItem(s);
-        }
+
+    private void notifyLevelSelectedListeners(LevelDescription selected) {
+        levelSelectedListeners.forEach(l -> l.onLevelSelected(selected));
     }
+
+    public void addLevelSelectedListener(LevelSelectedListener listener) {
+        levelSelectedListeners.add(listener);
+    }
+
 
     private void initialize() {
         setLayout(new GridBagLayout());
 
-        label_moves = new JLabel("Moves: ");
-        label_pushes = new JLabel("Pushes: ");
+        var movesLabel = new JLabel("Moves: ");
+        var pushesLabel = new JLabel("Pushes: ");
         
-        counter_moves = new JTextField("0000");
-        counter_moves.setEditable(false);
+        moveCounterTextField = new JTextField("0000");
+        moveCounterTextField.setEditable(false);
         
-        counter_pushes = new JTextField("0000");
-        counter_pushes.setEditable(false);
-        
-        chooser = new JComboBox<>();
-        chooser.setEditable(false);
-        chooser.setMaximumSize(new Dimension(20, Integer.MAX_VALUE));
-        load = new JButton("Load Level");
-        load.addActionListener((ActionEvent l) -> {
-            try {
-                frame.getGameField().initialize(chooser.getSelectedItem().toString()
-                        + LevelManager.BUILTIN_EXTENSION);
-                frame.getRootPane().requestFocus();
-            } catch (Exception e) {
-                new ErrorWindow(frame, e).show();
-                frame.getGameField().initializeFallback();
-            }
-        });
+        pushCounterTextField = new JTextField("0000");
+        pushCounterTextField.setEditable(false);
+
+        var levelComboBox = new JComboBox<LevelDescription>();
+        levelComboBox.setEditable(false);
+        levelComboBox.setMaximumSize(new Dimension(20, Integer.MAX_VALUE));
+        availableLevels.forEach(levelComboBox::addItem);
+
+        var loadButton = new JButton("Load Level");
+        loadButton.addActionListener(l ->
+                notifyLevelSelectedListeners((LevelDescription) levelComboBox.getSelectedItem()));
 
         constraints.weightx = 1.0;
         constraints.insets = new Insets(3, 3, 3, 3);
 
         constraints.gridx = 0;
-        add(label_moves, constraints);
+        add(movesLabel, constraints);
+
         constraints.gridx = 1;
-        add(counter_moves, constraints);
+        add(moveCounterTextField, constraints);
+
         constraints.gridx = 2;
-        add(label_pushes, constraints);
+        add(pushesLabel, constraints);
+
         constraints.gridx = 3;
-        add(counter_pushes, constraints);
+        add(pushCounterTextField, constraints);
+
         constraints.gridx = 4;
         constraints.ipadx = 150;
-        add(chooser, constraints);
+        add(levelComboBox, constraints);
+
         constraints.gridx = 5;
         constraints.ipadx = 0;
-        add(load, constraints);
+        add(loadButton, constraints);
     }
 
+    public void setMoveCount(int count) {
+        moveCounterTextField.setText(String.format("%04d", count));
+    }
+
+    public void setPushCount(int count) {
+        pushCounterTextField.setText(String.format("%04d", count));
+    }
 }

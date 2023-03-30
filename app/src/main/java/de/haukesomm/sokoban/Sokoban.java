@@ -1,13 +1,12 @@
 package de.haukesomm.sokoban;
 
-import de.haukesomm.sokoban.gui.Game;
+import de.haukesomm.sokoban.gui.GameFrame;
 
 public class Sokoban {
     
-    public static final String VERSION = "BETA-1";
-    
-    public static final void main(String[] args) {
-        Game frame = new Game();
+    public static void main(String[] args) {
+        new GameFrame();
     }
-    
+
+    private Sokoban() {}
 }

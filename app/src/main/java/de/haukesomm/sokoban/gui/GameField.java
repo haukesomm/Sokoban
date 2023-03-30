@@ -1,145 +1,63 @@
 package de.haukesomm.sokoban.gui;
 
-import javax.swing.JPanel;
+import javax.swing.*;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
-import java.io.FileNotFoundException;
-import javax.swing.JLabel;
 
-import de.haukesomm.sokoban.LevelManager;
-import de.haukesomm.sokoban.gui.gamefield.Box;
-import de.haukesomm.sokoban.gui.gamefield.Ground;
-import de.haukesomm.sokoban.gui.gamefield.Player;
-import de.haukesomm.sokoban.gui.gamefield.Target;
-import de.haukesomm.sokoban.gui.gamefield.Wall;
+import de.haukesomm.sokoban.game.GameState;
+import de.haukesomm.sokoban.game.Position;
+import de.haukesomm.sokoban.gui.textures.BundledTextureRepository;
+import de.haukesomm.sokoban.gui.textures.TextureRepository;
 
 public class GameField extends JPanel {
-    
-    public GameField(Game game) {
-        this.game = game;
+
+    // TODO: Dynamische Spielfeldgröße erlauben
+    private static final int SIZE_X = 20;
+    private static final int SIZE_Y = 16;
+
+    private final TextureRepository textureRepository = new BundledTextureRepository();
+
+    public GameField() {
         setLayout(new GridBagLayout());
     }
 
-    public static final int SIZE_X = 16;
-    public static final int SIZE_Y = 20;
-    
-    private final GridBagConstraints constraints = new GridBagConstraints();
-    private final Game game;
-    private final JLabel[][] grid = new JLabel[SIZE_X][SIZE_Y];
-    
-    private Player player;
-    private Box[] boxes;
-
-    private int counter_boxes;
-    private int counter_moves;
-    private int counter_pushes;
-
-    public Game getGame() {
-        return game;
-    }
-    public JLabel[][] getGrid() {
-        return grid;
-    }
-    public Player getPlayer() {
-        return player;
-    }
-    
-    public int getMoves() {
-        return counter_moves;
-    }
-    public int getPushes() {
-        return counter_pushes;
-    }
-    public void counterMovesUp() {
-        counter_moves++;
-    }
-    public void counterPushesUp() {
-        counter_pushes++;
-    }
-
-    public boolean allBoxesAtTarget() {
-        for (int i = 0; i < counter_boxes; i++) {
-            if (!boxes[i].getPositionTarget()) {
-                return false;
-            }
+    public void drawState(GameState state) {
+        if (state.getMapWidth() != SIZE_X || state.getMapHeight() != SIZE_Y) {
+            System.err.printf(
+                    "Could not load level: GameField size is (%dx%d) but level size was (%dx%d)!%n",
+                    SIZE_X, SIZE_Y, state.getMapWidth(), state.getMapWidth()
+            );
+            return;
         }
-        return true;
-    }
 
-    public void initialize(String level) throws FileNotFoundException {
         removeAll();
 
-        String levelString = new LevelManager().getLevelData(level); // FNF Exception
+        var tiles = state.tiles();
 
-        player = new Player(this);
-        boxes = new Box[100];
-        counter_boxes = 0;
+        for (int row = 0; row < SIZE_Y; row++) {
+            for (int column = 0; column < SIZE_X; column++) {
+                ImageIcon texture;
 
-        for (int row = 0; row < SIZE_X; row++) {
-            for (int position = 0; position < SIZE_Y; position++) {
-                constraints.gridy = row;
-                constraints.gridx = position;
-
-                switch (levelString.charAt(row * SIZE_Y + position)) {
-                    case '#':
-                        grid[row][position] = new Wall();
-                        add(grid[row][position], constraints);
-                        break;
-                    case '$':
-                        boxes[counter_boxes] = new Box(this);
-                        boxes[counter_boxes].setPosY(row);
-                        boxes[counter_boxes].setPosX(position);
-
-                        grid[row][position] = boxes[counter_boxes];
-                        add(grid[row][position], constraints);
-
-                        counter_boxes++;
-                        break;
-                    case '.':
-                        grid[row][position] = new Target();
-                        add(grid[row][position], constraints);
-                        break;
-                    case '@':
-                        player.setPosY(row);
-                        player.setPosX(position);
-
-                        grid[row][position] = player;
-                        add(grid[row][position], constraints);
-                        break;
-                    default:
-                        grid[row][position] = new Ground();
-                        add(grid[row][position], constraints);
-                        break;
+                var entity = state.getEntityAtPositionOrNull(new Position(column, row));
+                if (entity != null) {
+                    texture = textureRepository.getForEntityType(entity.type());
+                } else {
+                    var tile = tiles[row][column];
+                    texture = textureRepository.getForTileType(tile.type());
                 }
+
+                var jLabel = new JLabel();
+                jLabel.setIcon(texture);
+
+                var gridBagConstraints = new GridBagConstraints();
+                gridBagConstraints.gridy = row;
+                gridBagConstraints.gridx = column;
+
+                add(jLabel, gridBagConstraints);
             }
         }
 
         revalidate();
         repaint();
-        
-        System.out.println("Sucessfully initialized level '" + level + "'.");
     }
-    
-    // Fallback to fill the background if initialization failed
-    public void initializeFallback() {
-        for (int row = 0; row < SIZE_X; row++) {
-            for (int position = 0; position < SIZE_Y; position++) {
-                constraints.gridy = row;
-                constraints.gridx = position;
-                
-                player = new Player(this);
-                boxes = new Box[100];
-                counter_boxes = 0;
-                
-                grid[row][position] = new Ground();
-                add(grid[row][position], constraints);
-            }
-        }
-        
-        revalidate();
-        repaint();
-        
-        System.out.println("Successfully initialized fallback level.");
-    }
-
 }

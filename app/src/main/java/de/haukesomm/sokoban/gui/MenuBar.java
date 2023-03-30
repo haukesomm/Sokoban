@@ -1,22 +1,18 @@
 package de.haukesomm.sokoban.gui;
 
-import java.io.FileNotFoundException;
-import de.haukesomm.sokoban.ErrorWindow;
 import javax.swing.JFileChooser;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
-import de.haukesomm.sokoban.Sokoban;
-
 public class MenuBar extends JMenuBar {
 
-    public MenuBar(Game game) {
-        this.game = game;
+    public MenuBar(GameFrame gameFrame) {
+        this.gameFrame = gameFrame;
         addAll();
     }
     
-    private final Game game;
+    private final GameFrame gameFrame;
     
     private abstract class AbstractMenu extends JMenu {
         
@@ -39,10 +35,18 @@ public class MenuBar extends JMenuBar {
         public void addEntries() {
             JMenuItem about = new JMenuItem("About");
             about.addActionListener(l -> {
-                new InfoWindow(game, "About",
-                        "Sokoban Java Clone Version " + Sokoban.VERSION
-                        + "<br><br>\u00A9 2016, Hauke Sommerfeld and Daniel Lukic"
-                        + "<br>\nLicensed under the Apache 2.0 license.");
+                var infoWindow = new InfoWindow(
+                        gameFrame,
+                        "About",
+                        """
+                                <html>
+                                    <p>Sokoban</p>
+                                    <br>
+                                    <p>© 2016-2023 Hauke Sommerfeld<br>
+                                    Licensed under the MIT license.</p>
+                                </html>"""
+                );
+                infoWindow.display();
             });
             add(about);
             
@@ -57,7 +61,7 @@ public class MenuBar extends JMenuBar {
         
     }
     
-    private class LevelMenu extends AbstractMenu {
+    /*private class LevelMenu extends AbstractMenu {
         
         public LevelMenu() {
             super("Level");
@@ -69,28 +73,27 @@ public class MenuBar extends JMenuBar {
             loadFile.addActionListener(l -> {
                 JFileChooser fileChooser = new JFileChooser();
                 fileChooser.setDialogTitle("Open custom level file");
-                fileChooser.showOpenDialog(game);
+                fileChooser.showOpenDialog(gameFrame);
 
                 try {
                     if (fileChooser.getSelectedFile() != null) {
-                        game.getGameField().initialize(fileChooser.getSelectedFile().getName());
-                        game.getRootPane().requestFocus();
+                        // TODO: Laden von custom levels implementieren
+                        // game.getGameField().initialize(fileChooser.getSelectedFile().getName());
+                        gameFrame.getRootPane().requestFocus();
                     } else {
                         throw new UnsupportedOperationException("No file selected!");
                     }
-                } catch (UnsupportedOperationException | FileNotFoundException e) {
-                    new ErrorWindow(game, e).show();
-                    game.getGameField().initializeFallback();
+                } catch (UnsupportedOperationException e) {
+                    new ErrorWindow(gameFrame, e).show();
+                    gameFrame.getGameField().initializeFallback();
                 }
             });
             add(loadFile);
         }
-        
-    }
+    }*/
 
     private void addAll() {
         add(new SokobanMenu());
-        add(new LevelMenu());
+        // add(new LevelMenu());
     }
-
 }
