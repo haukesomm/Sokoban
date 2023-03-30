@@ -28,7 +28,8 @@ public class BuiltinLevelRepository implements LevelRepository {
             String fileName;
             while ((fileName = fileNameReader.readLine()) != null) {
                 if (fileName.endsWith(BUILTIN_LEVEL_FILE_EXTENSION)) {
-                    levelDescriptions.add(new LevelDescription(fileName, fileName));
+                    var displayName = fileName.replaceAll(BUILTIN_LEVEL_FILE_EXTENSION + "$", "");
+                    levelDescriptions.add(new LevelDescription(fileName, displayName));
                 }
             }
         } catch (IOException ex) {
