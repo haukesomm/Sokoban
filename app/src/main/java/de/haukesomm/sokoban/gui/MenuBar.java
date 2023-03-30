@@ -34,13 +34,20 @@ public class MenuBar extends JMenuBar {
         @Override
         public void addEntries() {
             JMenuItem about = new JMenuItem("About");
-            about.addActionListener(l -> new InfoWindow(
-                    gameFrame,
-                    "About",
-                    "<p>Sokoban</p>" +
-                            "<p>\u00A9 2016, Hauke Sommerfeld and Daniel Lukic</p>" +
-                            "<p>Licensed under the Apache 2.0 license.</p>"
-            ));
+            about.addActionListener(l -> {
+                var infoWindow = new InfoWindow(
+                        gameFrame,
+                        "About",
+                        """
+                                <html>
+                                    <p>Sokoban</p>
+                                    <br>
+                                    <p>© 2016-2023 Hauke Sommerfeld<br>
+                                    Licensed under the MIT license.</p>
+                                </html>"""
+                );
+                infoWindow.display();
+            });
             add(about);
             
             addSeparator();

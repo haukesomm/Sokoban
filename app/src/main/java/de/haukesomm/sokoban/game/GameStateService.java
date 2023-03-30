@@ -14,7 +14,7 @@ import java.util.Set;
 public class GameStateService {
 
     public interface StateChangeListener {
-        void onGameStateChanged(GameState state, int moves, int pushes);
+        void onGameStateChanged(GameState state, int moves, int pushes, boolean levelCleared);
     }
 
 
@@ -34,9 +34,11 @@ public class GameStateService {
 
     private int pushes = 0;
 
+    private boolean levelCleared = false;
+
 
     private void notifyGameStateChangedListeners() {
-        stateChangeListeners.forEach(l -> l.onGameStateChanged(state, moves, pushes));
+        stateChangeListeners.forEach(l -> l.onGameStateChanged(state, moves, pushes, levelCleared));
     }
 
     public void addGameStateChangedListener(StateChangeListener listener) {
@@ -52,6 +54,11 @@ public class GameStateService {
         if (level == null) {
             throw new IllegalArgumentException("Level with id '" + levelId + "' does not exist!");
         }
+
+        moves = 0;
+        pushes = 0;
+        levelCleared = false;
+
         state = levelToGameStateConverter.convert(level);
         notifyGameStateChangedListeners();
     }
@@ -74,9 +81,29 @@ public class GameStateService {
         }
 
         if (coordinatorResult.gameState().isPresent()) {
-            state = coordinatorResult.gameState().get();
+            var newGameState = coordinatorResult.gameState().get();
+            levelCleared = checkLevelCleared(newGameState);
+            state = newGameState;
         }
 
         notifyGameStateChangedListeners();
+    }
+
+    private boolean checkLevelCleared(GameState gameState) {
+        for (int y = 0; y < gameState.getMapHeight(); y++) {
+            for (int x = 0; x < gameState.getMapWidth(); x++) {
+                var tile = gameState.tiles()[y][x];
+
+                if (tile.type() != TileType.TARGET) {
+                    continue;
+                }
+
+                var entityAtTarget = gameState.getEntityAtPositionOrNull(new Position(x, y));
+                if (entityAtTarget == null || entityAtTarget.type() != EntityType.BOX) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }

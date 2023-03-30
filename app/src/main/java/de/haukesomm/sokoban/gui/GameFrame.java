@@ -14,7 +14,7 @@ public class GameFrame extends JFrame {
 
     private class MovePlayerAction extends AbstractAction {
 
-        private Direction direction;
+        private final Direction direction;
 
         public MovePlayerAction(Direction direction) {
             this.direction = direction;
@@ -39,6 +39,7 @@ public class GameFrame extends JFrame {
         initListeners();
         loadDefaultLevel();
         showFrame();
+        getRootPane().requestFocus();
     }
 
 
@@ -49,7 +50,6 @@ public class GameFrame extends JFrame {
 
         // FIXME: LAF crashes on macOS
         //setLookAndFeel();
-        setKeyBindings();
 
         setTitle("Sokoban");
         setLayout(new GridBagLayout());
@@ -85,8 +85,9 @@ public class GameFrame extends JFrame {
         }
     }
 
-    private void setKeyBindings() {
-        InputMap inputMap = getRootPane().getInputMap();
+    private void activateKeyBindings() {
+        InputMap inputMap = new ComponentInputMap(getRootPane());
+
         inputMap.put(KeyStroke.getKeyStroke("LEFT"), "LEFT");
         inputMap.put(KeyStroke.getKeyStroke("UP"), "UP");
         inputMap.put(KeyStroke.getKeyStroke("RIGHT"), "RIGHT");
@@ -97,19 +98,38 @@ public class GameFrame extends JFrame {
         actionMap.put("UP", new MovePlayerAction(Direction.TOP));
         actionMap.put("RIGHT", new MovePlayerAction(Direction.RIGHT));
         actionMap.put("DOWN", new MovePlayerAction(Direction.BOTTOM));
+
+        getRootPane().setInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW, inputMap);
+    }
+
+    private void disableKeyBindings() {
+        getRootPane().setInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW, null);
     }
 
     private void initListeners() {
-        gameStateService.addGameStateChangedListener((state, moves, pushes) -> {
+        gameStateService.addGameStateChangedListener((state, moves, pushes, levelCleared) -> {
             levelInfoBar.setMoveCount(moves);
             levelInfoBar.setPushCount(pushes);
 
             gameField.drawState(state);
             revalidate();
             repaint();
-            getRootPane().requestFocus();
+
+            if (levelCleared) {
+                disableKeyBindings();
+                showLevelClearedDialog(moves, pushes);
+            }
         });
-        levelInfoBar.addLevelSelectedListener(levelDescription -> gameStateService.loadLevel(levelDescription.id()));
+        levelInfoBar.addLevelSelectedListener(levelDescription -> loadLevel(levelDescription.id()));
+    }
+
+    private void loadLevel(String id) {
+        levelInfoBar.setMoveCount(0);
+        levelInfoBar.setPushCount(0);
+
+        gameStateService.loadLevel(id);
+
+        activateKeyBindings();
     }
 
     private void loadDefaultLevel() {
@@ -120,11 +140,28 @@ public class GameFrame extends JFrame {
                 .orElseThrow()
                 .id();
 
-        gameStateService.loadLevel(firstLevelId);
+        loadLevel(firstLevelId);
     }
 
     private void showFrame() {
         pack();
         setVisible(true);
+    }
+
+    private void showLevelClearedDialog(int moves, int pushes) {
+        var infoWindow = new InfoWindow(
+                this,
+                "Level cleared",
+                String.format(
+                    """
+                        <html>
+                            <p>Congratulations, you successfully finished this level!</p>
+                            <p>You needed %s moves and %s pushes.</p>
+                        </html>""",
+                    moves,
+                    pushes
+                )
+        );
+        infoWindow.display();
     }
 }
