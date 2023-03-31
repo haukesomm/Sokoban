@@ -40,19 +40,20 @@ public class MoveCoordinatorTest {
         var sut = new MoveCoordinator();
 
         var result = sut.moveEntityIfPossible(gameState, gameState.getPlayer().orElseThrow(), Direction.BOTTOM);
+        var player = result.gameState().orElseThrow().getPlayer().orElseThrow();
 
-        Assertions.assertEquals(new Position(1, 3), result.getPlayer().orElseThrow().position());
+        Assertions.assertEquals(new Position(1, 3), player.position());
     }
 
     @Test
-    @DisplayName("Given a coordinator with default checkers, when blocked by a wall Tile, then nothing is moved")
+    @DisplayName("Given a coordinator with default checkers, when blocked by a wall Tile, then no follow up state is generated")
     public void defaultCheckersWhenBlockedByWallNothingIsMoved() {
         var gameState = newTestGameState();
         var sut = MoveCoordinatorFactory.newWithDefaultValidators();
 
         var result = sut.moveEntityIfPossible(gameState, gameState.getPlayer().orElseThrow(), Direction.LEFT);
 
-        Assertions.assertEquals(new Position(1, 2), result.getPlayer().orElseThrow().position());
+        Assertions.assertTrue(result.gameState().isEmpty());
     }
 
     @Test
@@ -62,9 +63,10 @@ public class MoveCoordinatorTest {
         var sut = MoveCoordinatorFactory.newWithDefaultValidators();
 
         var result = sut.moveEntityIfPossible(gameState, gameState.getPlayer().orElseThrow(), Direction.RIGHT);
+        var state = result.gameState().orElseThrow();
 
-        Assertions.assertEquals(new Position(2, 2), result.getPlayer().orElseThrow().position());
-        Assertions.assertEquals(new Position(3, 2), result.getEntityById("box-0").position());
+        Assertions.assertEquals(new Position(2, 2), state.getPlayer().orElseThrow().position());
+        Assertions.assertEquals(new Position(3, 2), state.getEntityById("box-0").position());
     }
 
     @Test
@@ -73,8 +75,14 @@ public class MoveCoordinatorTest {
         var gameState = newTestGameState();
         var sut = MoveCoordinatorFactory.newWithDefaultValidators();
 
-        var result = sut.moveEntityIfPossible(gameState, gameState.getPlayer().orElseThrow(), Direction.BOTTOM);
-        result = sut.moveEntityIfPossible(result, gameState.getPlayer().orElseThrow(), Direction.RIGHT);
+        var result = sut
+                .moveEntityIfPossible(gameState, gameState.getPlayer().orElseThrow(), Direction.BOTTOM)
+                .gameState()
+                .orElseThrow();
+        result = sut
+                .moveEntityIfPossible(result, gameState.getPlayer().orElseThrow(), Direction.RIGHT)
+                .gameState()
+                .orElseThrow();
 
         Assertions.assertEquals(new Position(1, 3), result.getPlayer().orElseThrow().position());
         Assertions.assertEquals(new Position(2, 3), result.getEntityById("box-1").position());
