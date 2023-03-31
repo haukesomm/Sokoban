@@ -8,6 +8,7 @@ repositories {
 }
 
 dependencies {
+    implementation(project(":core"))
     testImplementation("org.junit.jupiter:junit-jupiter:5.9.1")
 }
 
@@ -28,7 +29,7 @@ sourceSets {
 
 tasks.withType<Jar> {
     manifest {
-        attributes["Manifest-Version"] = "0.1-SNAPSHOT"
+        attributes["Manifest-Version"] = project.version
         attributes["Main-Class"] = "de.haukesomm.sokoban.Sokoban"
     }
 }
