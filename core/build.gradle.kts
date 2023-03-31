@@ -3,7 +3,9 @@ plugins {
 }
 
 kotlin {
-    jvm()
+    jvm {
+        withJava()
+    }
     js(BOTH)
 
     sourceSets {
