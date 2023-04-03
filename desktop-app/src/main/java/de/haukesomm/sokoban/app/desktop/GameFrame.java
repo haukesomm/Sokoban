@@ -137,8 +137,7 @@ public class GameFrame extends JFrame {
                 .getAvailableLevels()
                 .stream()
                 .findFirst()
-                .orElseThrow()
-                .id();
+                .orElseThrow().id();
 
         loadLevel(firstLevelId);
     }
