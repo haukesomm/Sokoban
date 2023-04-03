@@ -16,11 +16,6 @@ application {
     mainClass.set("de.haukesomm.sokoban.app.desktop.SokobanDesktopApp")
 }
 
-java {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
-}
-
 sourceSets {
     main {
         output.setResourcesDir("build/classes/java/main")
