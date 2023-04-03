@@ -86,8 +86,8 @@ public class GameStateService {
             }
         }
 
-        if (coordinatorResult.gameState().isPresent()) {
-            var newGameState = coordinatorResult.gameState().get();
+        if (coordinatorResult.gameState() != null) {
+            var newGameState = coordinatorResult.gameState();
             levelCleared = checkLevelCleared(newGameState);
             state = newGameState;
         }
