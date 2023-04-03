@@ -4,12 +4,11 @@ import de.haukesomm.sokoban.core.level.*;
 import de.haukesomm.sokoban.core.moving.MoveCoordinator;
 import de.haukesomm.sokoban.core.moving.MoveCoordinatorFactory;
 import de.haukesomm.sokoban.core.moving.MoveCoordinatorResult;
-import de.haukesomm.sokoban.core.moving.MoveValidatorStatus;
+import de.haukesomm.sokoban.core.moving.validation.MoveValidatorStatus;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 public class GameStateService {

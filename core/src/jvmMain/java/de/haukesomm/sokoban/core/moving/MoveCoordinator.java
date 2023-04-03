@@ -4,6 +4,7 @@ import de.haukesomm.sokoban.core.Direction;
 import de.haukesomm.sokoban.core.Entity;
 import de.haukesomm.sokoban.core.GameState;
 import de.haukesomm.sokoban.core.moving.validation.MoveValidator;
+import de.haukesomm.sokoban.core.moving.validation.MoveValidatorStatus;
 
 import java.util.*;
 
