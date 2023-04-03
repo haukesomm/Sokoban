@@ -1,4 +1,8 @@
-package de.haukesomm.sokoban.core.level;
+package de.haukesomm.sokoban.app.desktop.level;
+
+import de.haukesomm.sokoban.core.level.Level;
+import de.haukesomm.sokoban.core.level.LevelDescription;
+import de.haukesomm.sokoban.core.level.LevelRepository;
 
 import java.io.BufferedReader;
 import java.io.IOException;

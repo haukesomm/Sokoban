@@ -18,7 +18,7 @@ public class GameStateService {
     }
 
 
-    private final LevelRepository levelRepository = new BuiltinLevelRepository();
+    private final LevelRepository levelRepository;
 
     private final LevelToGameStateConverter levelToGameStateConverter =
             new LevelToGameStateConverter(new SokobanLevelCharacterMap());
@@ -26,6 +26,11 @@ public class GameStateService {
     private final MoveCoordinator moveCoordinator = MoveCoordinatorFactory.newWithDefaultValidators();
 
     private final Set<StateChangeListener> stateChangeListeners = new HashSet<>();
+
+
+    public GameStateService(LevelRepository levelRepository) {
+        this.levelRepository = levelRepository;
+    }
 
 
     private GameState state;
