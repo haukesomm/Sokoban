@@ -5,6 +5,7 @@ import de.haukesomm.sokoban.core.moving.MoveCoordinator;
 import de.haukesomm.sokoban.core.moving.MoveCoordinatorFactory;
 import de.haukesomm.sokoban.core.moving.MoveCoordinatorResult;
 import de.haukesomm.sokoban.core.moving.MoveValidatorStatus;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashSet;
 import java.util.List;
@@ -68,7 +69,8 @@ public class GameStateService {
         notifyGameStateChangedListeners();
     }
 
-    public Optional<Entity> getPlayer() {
+    @Nullable
+    public Entity getPlayer() {
         return state.getPlayer();
     }
 

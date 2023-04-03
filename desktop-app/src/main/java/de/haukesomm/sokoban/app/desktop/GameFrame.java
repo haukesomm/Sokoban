@@ -23,8 +23,10 @@ public class GameFrame extends JFrame {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            Optional<Entity> player = gameStateService.getPlayer();
-            player.ifPresent(entity -> gameStateService.moveEntityIfPossible(entity, direction));
+            Entity player = gameStateService.getPlayer();
+            if (player != null) {
+                gameStateService.moveEntityIfPossible(player, direction);
+            }
         }
     }
 
