@@ -15,7 +15,10 @@ data class Position(val x: Int, val y: Int) {
             Direction.LEFT -> copy(x = this.x -1)
         }
 
+    fun toIndex(width: Int): Int = x + (width * y)
+
     companion object {
+
         @JvmStatic
         fun fromIndex(index: Int, width: Int): Position {
             val x = index % width

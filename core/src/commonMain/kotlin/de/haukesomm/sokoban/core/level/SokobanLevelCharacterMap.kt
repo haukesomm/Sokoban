@@ -5,7 +5,7 @@ import de.haukesomm.sokoban.core.TileType
 
 class SokobanLevelCharacterMap : LevelCharacterMap {
 
-    override fun getTileType(character: Char): TileType? {
+    override fun getTileType(character: Char): TileType {
         return when (character) {
             '#' -> TileType.WALL
             '.' -> TileType.TARGET
