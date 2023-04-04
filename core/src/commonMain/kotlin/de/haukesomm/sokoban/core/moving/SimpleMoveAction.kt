@@ -21,6 +21,6 @@ class SimpleMoveAction(
         )
         entities.add(movedEntity)
 
-        return GameState(state.tiles, entities)
+        return state.copy(entities = entities, moves = state.moves + 1)
     }
 }

@@ -1,12 +1,19 @@
 package de.haukesomm.sokoban.core
 
 data class GameState(
+    val levelId: String,
     val tiles: Array<Array<Tile>>,
-    val entities: Collection<Entity>
+    val entities: Collection<Entity>,
+    val moves: Int = 0,
+    val pushes: Int = 0,
+    val levelCleared: Boolean = false
 ) {
-    fun getMapWidth(): Int = tiles[0].size
+    val width: Int = tiles[0].size
 
-    fun getMapHeight(): Int = tiles.size
+    val height: Int = tiles.size
+
+
+    fun tileAt(x: Int, y: Int): Tile = tiles[y][x]
 
     fun getNextTileInDirectionOrNull(position: Position, direction: Direction?): Tile? {
         val (x, y) = position.nextInDirection(direction!!)
@@ -15,19 +22,21 @@ data class GameState(
         } else tiles[y][x]
     }
 
-    fun getEntityAtPositionOrNull(position: Position): Entity? {
-        for (entity in entities) {
-            if (entity.position == position) {
-                return entity
-            }
-        }
-        return null
+
+    fun entityAt(x: Int, y: Int): Entity? {
+        val position = Position(x, y)
+        return entities.find { it.position == position }
     }
 
+    fun entityAt(position: Position): Entity? = entityAt(position.x, position.y)
+
     fun getEntityAtNextPositionOrNull(position: Position, direction: Direction): Entity? =
-        getEntityAtPositionOrNull(position.nextInDirection(direction))
+        entityAt(position.nextInDirection(direction))
+
 
     fun getPlayer(): Entity? = entities.find { it.type == EntityType.PLAYER }
 
     fun getEntityById(id: String): Entity? = entities.find { it.id == id }
+
+    companion object
 }

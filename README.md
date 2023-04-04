@@ -5,8 +5,8 @@ It consists of a `core` library written in Kotlin and different UI implementatio
 
 ## Modules
 
-| Module                  | Description                                                                                                                                      |
-|-------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------|
-| `core`                  | Core library written in Kotlin containing the actual game logic                                                                                  |
-| `web-app` (coming soon) | Modern web-based app written in [fritz2](https://fritz2.dev).                                                                                    |
-| `desktop-app`           | Legacy Java App using Swing. The original version of this was my first-ever programming project. Has been migrated to use the new `core` module. |
+| Module   | Description                                                                                                                                                 |
+|----------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `core`   | Core library written in Kotlin containing the actual game logic                                                                                             |
+| `web`    | Modern web-based app written in Kotlin using the [fritz2](https://fritz2.dev) framework                                                                     |
+| `legacy` | Legacy Java app using Swing. The original version of this was my first-ever project when I learned to code. Has been migrated to use the new `core` module. |

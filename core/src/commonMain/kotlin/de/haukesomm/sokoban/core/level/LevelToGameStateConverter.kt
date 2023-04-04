@@ -21,6 +21,6 @@ class LevelToGameStateConverter(private val levelCharacterMap: LevelCharacterMap
                 tile
             }
         }
-        return GameState(tiles, entities)
+        return GameState(level.id, tiles, entities)
     }
 }

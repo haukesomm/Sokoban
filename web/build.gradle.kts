@@ -6,18 +6,39 @@ plugins {
 val fritz2version = rootProject.ext["fritz2version"]
 
 kotlin {
-    jvm()
     js(IR) {
         browser()
+        binaries.executable()
     }
 
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation("dev.fritz2:core:$fritz2version")
+                implementation("dev.fritz2:headless:$fritz2version")
+                implementation(project(":core"))
+            }
+        }
+        val jsMain by getting {
+            dependencies {
+                // tailwind
+                implementation(npm("tailwindcss", "3.0.19"))
+                implementation(npm("@tailwindcss/forms", "0.4.0"))
+
+                // webpack
+                implementation(devNpm("postcss", "8.4.6"))
+                implementation(devNpm("postcss-loader", "6.2.1"))
+                implementation(devNpm("autoprefixer", "10.4.2"))
+                implementation(devNpm("css-loader", "6.6.0"))
+                implementation(devNpm("style-loader", "3.3.1"))
+                implementation(devNpm("cssnano", "5.0.17"))
             }
         }
     }
+}
+
+// FIXME: Entfernen, sobald nicht mehr explizit benötigt
+tasks.named("jsBrowserDevelopmentRun") {
+    dependsOn("jsDevelopmentExecutableCompileSync")
 }
 
 /**

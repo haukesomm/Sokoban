@@ -49,12 +49,12 @@ class MoveCoordinator(private vararg val moveValidators: MoveValidator) {
 
         } else if (MoveValidatorStatus.BOX_AHEAD_NEEDS_TO_MOVE in moveValidatorStatuses) {
             val entityAhead = state.getEntityAtNextPositionOrNull(entity.position, direction)
-                ?: throw IllegalStateException("Received BOX_AHEAD_NEEDS_TO_MOVE) but there is no entity!")
+                ?: throw IllegalStateException("Received BOX_AHEAD_NEEDS_TO_MOVE but there is no entity!")
 
             return determineMoveActions(state, entityAhead, direction).also {
                 if (it.success) {
                     it.moveValidatorStatuses += moveValidatorStatuses
-                    it.moveActions += SimpleMoveAction(entity, direction)
+                    it.moveActions += SimpleMoveAction(entity, direction).decorateIncrementPushes()
                 }
             }
         } else {

@@ -1,20 +1,20 @@
 package de.haukesomm.sokoban.core
 
-import de.haukesomm.sokoban.core.level.LevelDescription
-import de.haukesomm.sokoban.core.level.LevelRepository
-import de.haukesomm.sokoban.core.level.LevelToGameStateConverter
-import de.haukesomm.sokoban.core.level.SokobanLevelCharacterMap
+import de.haukesomm.sokoban.core.level.*
 import de.haukesomm.sokoban.core.moving.MoveCoordinatorFactory
 import de.haukesomm.sokoban.core.moving.validation.MoveValidatorStatus
 
-class GameStateService(private val levelRepository: LevelRepository) {
+class GameStateService(
+    private val levelRepository: LevelRepository,
+    levelCharacterMap: LevelCharacterMap
+) {
 
-    interface StateChangeListener {
-        fun onGameStateChange(state: GameState, moves: Int, pushes: Int, levelCleared: Boolean)
+    fun interface StateChangeListener {
+        fun onGameStateChange(state: GameState)
     }
 
 
-    private val levelToGameStateConverter = LevelToGameStateConverter(SokobanLevelCharacterMap())
+    private val levelToGameStateConverter = LevelToGameStateConverter(levelCharacterMap)
 
     private val moveCoordinator = MoveCoordinatorFactory.newWithDefaultValidators()
 
@@ -23,19 +23,13 @@ class GameStateService(private val levelRepository: LevelRepository) {
 
     private lateinit var state: GameState
 
-    private var moves = 0
-
-    private var pushes = 0
-
-    private var levelCleared = false
-
 
     fun addGameStateChangedListener(listener: StateChangeListener) {
         stateChangeListeners += listener
     }
 
     private fun notifyGameStateChangedListeners() {
-        stateChangeListeners.forEach { it.onGameStateChange(state, moves, pushes, levelCleared) }
+        stateChangeListeners.forEach { it.onGameStateChange(state) }
     }
 
 
@@ -45,13 +39,11 @@ class GameStateService(private val levelRepository: LevelRepository) {
         val level = levelRepository.getLevelOrNull(levelId)
             ?: throw IllegalStateException("Level with id '$levelId' does not exist!")
 
-        moves = 0
-        pushes = 0
-        levelCleared = false
-
         state = levelToGameStateConverter.convert(level)
         notifyGameStateChangedListeners()
     }
+
+    fun reload() = loadLevel(state.levelId)
 
 
     fun getPlayer(): Entity? = state.getPlayer()
@@ -62,18 +54,8 @@ class GameStateService(private val levelRepository: LevelRepository) {
             throw IllegalStateException("Cannot move Entity: No game state loaded!")
         }
 
-        val moveCoordinatorResult = moveCoordinator.moveEntityIfPossible(state, entity, direction)
-        if (moveCoordinatorResult.success) {
-            moves++
-            // TODO: Create getter method for this:
-            if (MoveValidatorStatus.BOX_AHEAD_NEEDS_TO_MOVE in moveCoordinatorResult.moveValidatorStatuses) {
-                pushes++
-            }
-        }
-
-        moveCoordinatorResult.gameState?.let { newState ->
-            levelCleared = checkLevelCleared(newState)
-            state = newState
+        moveCoordinator.moveEntityIfPossible(state, entity, direction).gameState?.let { newState ->
+            state = newState.copy(levelCleared = checkLevelCleared(newState))
         }
 
         notifyGameStateChangedListeners()
@@ -82,7 +64,7 @@ class GameStateService(private val levelRepository: LevelRepository) {
     private fun checkLevelCleared(state: GameState): Boolean {
         state.tiles.forEachIndexed { y, row ->
             row.forEachIndexed { x, tile ->
-                val entity = state.getEntityAtPositionOrNull(Position(x, y))
+                val entity = state.entityAt(Position(x, y))
                 if (tile.type == TileType.TARGET && (entity == null || entity.type != EntityType.BOX)) {
                     return false
                 }
