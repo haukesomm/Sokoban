@@ -40,7 +40,7 @@ public class GameField extends JPanel {
 
                 var entity = state.getEntityAtPositionOrNull(new Position(column, row));
                 if (entity != null) {
-                    texture = textureRepository.getForEntityType(entity.getType());
+                    texture = textureRepository.getForEntityType(entity.getType(), entity.getFacingDirection());
                 } else {
                     var tile = tiles[row][column];
                     texture = textureRepository.getForTileType(tile.getType());

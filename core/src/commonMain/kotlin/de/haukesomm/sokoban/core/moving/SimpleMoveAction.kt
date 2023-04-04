@@ -16,7 +16,8 @@ class SimpleMoveAction(
         val movedEntity = Entity(
             entity.id,
             entity.type,
-            entity.position.nextInDirection(direction)
+            entity.position.nextInDirection(direction),
+            direction
         )
         entities.add(movedEntity)
 

@@ -1,9 +1,6 @@
 package de.haukesomm.sokoban.core.level
 
-import de.haukesomm.sokoban.core.Entity
-import de.haukesomm.sokoban.core.GameState
-import de.haukesomm.sokoban.core.Position
-import de.haukesomm.sokoban.core.Tile
+import de.haukesomm.sokoban.core.*
 
 class LevelToGameStateConverter(private val levelCharacterMap: LevelCharacterMap) {
 
@@ -18,7 +15,7 @@ class LevelToGameStateConverter(private val levelCharacterMap: LevelCharacterMap
                 val tile = Tile(levelCharacterMap.getTileType(character))
 
                 levelCharacterMap.getEntityType(character)?.let { type ->
-                    entities += Entity(type = type, position = position)
+                    entities += Entity(type = type, position = position, facingDirection = Direction.TOP)
                 }
 
                 tile
