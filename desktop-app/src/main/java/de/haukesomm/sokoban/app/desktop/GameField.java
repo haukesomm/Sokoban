@@ -32,7 +32,7 @@ public class GameField extends JPanel {
 
         removeAll();
 
-        var tiles = state.tiles();
+        var tiles = state.getTiles();
 
         for (int row = 0; row < SIZE_Y; row++) {
             for (int column = 0; column < SIZE_X; column++) {
@@ -40,10 +40,10 @@ public class GameField extends JPanel {
 
                 var entity = state.getEntityAtPositionOrNull(new Position(column, row));
                 if (entity != null) {
-                    texture = textureRepository.getForEntityType(entity.type());
+                    texture = textureRepository.getForEntityType(entity.getType());
                 } else {
                     var tile = tiles[row][column];
-                    texture = textureRepository.getForTileType(tile.type());
+                    texture = textureRepository.getForTileType(tile.getType());
                 }
 
                 var jLabel = new JLabel();

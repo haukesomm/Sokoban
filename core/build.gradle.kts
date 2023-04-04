@@ -3,12 +3,10 @@ plugins {
 }
 
 kotlin {
-    jvm {
-        withJava()
-    }
+    jvm()
     js(BOTH)
 
     sourceSets {
-        val jvmMain by getting
+        val commonMain by getting
     }
 }

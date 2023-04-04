@@ -1,9 +1,5 @@
 package de.haukesomm.sokoban.core
 
-import kotlin.jvm.JvmField
-import kotlin.jvm.JvmRecord
-
-@JvmRecord
 data class GameState(
     val tiles: Array<Array<Tile>>,
     val entities: Collection<Entity>

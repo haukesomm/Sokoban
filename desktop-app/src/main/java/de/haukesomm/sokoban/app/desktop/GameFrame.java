@@ -123,7 +123,7 @@ public class GameFrame extends JFrame {
                 showLevelClearedDialog(moves, pushes);
             }
         });
-        levelInfoBar.addLevelSelectedListener(levelDescription -> loadLevel(levelDescription.id()));
+        levelInfoBar.addLevelSelectedListener(levelDescription -> loadLevel(levelDescription.getId()));
     }
 
     private void loadLevel(String id) {
@@ -140,7 +140,7 @@ public class GameFrame extends JFrame {
                 .getAvailableLevels()
                 .stream()
                 .findFirst()
-                .orElseThrow().id();
+                .orElseThrow().getId();
 
         loadLevel(firstLevelId);
     }
