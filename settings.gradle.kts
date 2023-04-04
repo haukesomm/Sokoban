@@ -8,4 +8,4 @@
  */
 
 rootProject.name = "sokoban"
-include("app")
+include(":core", ":desktop-app")
