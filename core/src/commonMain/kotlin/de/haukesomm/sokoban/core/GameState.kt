@@ -10,7 +10,7 @@ data class GameState(
 
     fun getNextTileInDirectionOrNull(position: Position, direction: Direction?): Tile? {
         val (x, y) = position.nextInDirection(direction!!)
-        return if (y > tiles.size || tiles.size > 0 && x > tiles[0].size) {
+        return if (y > tiles.size || tiles.isNotEmpty() && x > tiles[0].size) {
             null
         } else tiles[y][x]
     }

@@ -3,6 +3,7 @@ package de.haukesomm.sokoban.app.desktop.level;
 import de.haukesomm.sokoban.core.level.Level;
 import de.haukesomm.sokoban.core.level.LevelDescription;
 import de.haukesomm.sokoban.core.level.LevelRepository;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -18,6 +19,7 @@ public class BuiltinLevelRepository implements LevelRepository {
     private static final int BUILTIN_LEVEL_HEIGHT = 16;
 
     @Override
+    @NotNull
     public List<LevelDescription> getAvailableLevels() {
         var levelDescriptions = new ArrayList<LevelDescription>();
 

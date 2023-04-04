@@ -3,7 +3,6 @@ package de.haukesomm.sokoban.app.desktop.textures;
 import de.haukesomm.sokoban.core.Direction;
 import de.haukesomm.sokoban.core.EntityType;
 import de.haukesomm.sokoban.core.TileType;
-import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 

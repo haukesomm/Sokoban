@@ -13,7 +13,7 @@ public class MenuBar extends JMenuBar {
     
     private final GameFrame gameFrame;
     
-    private abstract class AbstractMenu extends JMenu {
+    private static abstract class AbstractMenu extends JMenu {
         
         public AbstractMenu(String title) {
             super(title);
@@ -52,14 +52,13 @@ public class MenuBar extends JMenuBar {
             addSeparator();
             
             JMenuItem exit = new JMenuItem("Exit Game");
-            exit.addActionListener(l -> {
-                System.exit(0);
-            });
+            exit.addActionListener(l -> System.exit(0));
             add(exit);
         }
         
     }
-    
+
+    // TODO: Comment in when implementing custom levels
     /*private class LevelMenu extends AbstractMenu {
         
         public LevelMenu() {

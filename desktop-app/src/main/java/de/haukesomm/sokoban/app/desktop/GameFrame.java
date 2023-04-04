@@ -4,7 +4,6 @@ import javax.swing.*;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
-import java.util.Optional;
 
 import de.haukesomm.sokoban.app.desktop.level.BuiltinLevelRepository;
 import de.haukesomm.sokoban.core.Direction;
@@ -34,7 +33,7 @@ public class GameFrame extends JFrame {
     private final GameStateService gameStateService = new GameStateService(new BuiltinLevelRepository());
 
     private final GameField gameField = new GameField();
-    private final LevelInfoBar levelInfoBar = new LevelInfoBar(gameStateService.getAvailableLevels());;
+    private final LevelInfoBar levelInfoBar = new LevelInfoBar(gameStateService.getAvailableLevels());
 
 
     public GameFrame() {
