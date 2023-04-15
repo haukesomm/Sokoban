@@ -1,6 +1,8 @@
 package de.haukesomm.sokoban.core
 
-data class GameState(
+import kotlin.jvm.JvmOverloads
+
+data class GameState @JvmOverloads constructor(
     val levelId: String,
     val tiles: Array<Array<Tile>>,
     val entities: Collection<Entity>,

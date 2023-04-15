@@ -16,6 +16,7 @@ public class MoveCoordinatorTest {
         // #_$$_#
         // ######
         return new GameState(
+                "test-level",
                 new Tile[][]{
                         { new Tile(TileType.WALL), new Tile(TileType.WALL),     new Tile(TileType.WALL),    new Tile(TileType.WALL),    new Tile(TileType.WALL),    new Tile(TileType.WALL) },
                         { new Tile(TileType.WALL), new Tile(TileType.NOTHING),  new Tile(TileType.NOTHING), new Tile(TileType.NOTHING), new Tile(TileType.NOTHING), new Tile(TileType.WALL) },
