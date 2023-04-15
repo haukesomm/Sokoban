@@ -1,12 +1,8 @@
-name: build
+name: Build
 
 on:
   pull_request:
-    branches:
-      - master
-  push:
-    branches:
-      - master
+    branches: [master]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
@@ -33,10 +29,3 @@ jobs:
 
       - name: Build with Gradle
         run: ./gradlew build
-
-#      - name: Archive test-results
-#        if: always()
-#        uses: actions/upload-artifact@v1.0.0
-#        with:
-#          name: Test-Results
-#          path: core/build/reports/tests/allTests
