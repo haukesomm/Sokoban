@@ -2,7 +2,8 @@ package de.haukesomm.sokoban.core
 
 import de.haukesomm.sokoban.core.level.*
 import de.haukesomm.sokoban.core.moving.MoveCoordinatorFactory
-import de.haukesomm.sokoban.core.moving.validation.MoveValidatorStatus
+import de.haukesomm.sokoban.core.state.GameState
+import de.haukesomm.sokoban.core.state.modify
 
 class GameStateService(
     private val levelRepository: LevelRepository,
@@ -55,21 +56,17 @@ class GameStateService(
         }
 
         moveCoordinator.moveEntityIfPossible(state, entity, direction).gameState?.let { newState ->
-            state = newState.copy(levelCleared = checkLevelCleared(newState))
+            state = newState.modify {
+                levelCleared = checkLevelCleared(newState)
+            }
         }
 
         notifyGameStateChangedListeners()
     }
 
-    private fun checkLevelCleared(state: GameState): Boolean {
-        state.tiles.forEachIndexed { y, row ->
-            row.forEachIndexed { x, tile ->
-                val entity = state.entityAt(Position(x, y))
-                if (tile.type == TileType.TARGET && (entity == null || entity.type != EntityType.BOX)) {
-                    return false
-                }
-            }
+    private fun checkLevelCleared(state: GameState): Boolean =
+        state.tiles.none { tile ->
+            val box = state.entityAt(tile.position)?.takeIf(Entity::isBox)
+            tile.isTarget && box == null
         }
-        return true
-    }
 }

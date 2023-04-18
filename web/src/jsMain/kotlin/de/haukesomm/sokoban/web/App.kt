@@ -5,7 +5,7 @@ import de.haukesomm.sokoban.web.components.icons.icon
 import de.haukesomm.sokoban.web.level.BundledLevelCharacterMap
 import de.haukesomm.sokoban.web.level.BundledLevelRepository
 import de.haukesomm.sokoban.core.Direction
-import de.haukesomm.sokoban.core.GameState
+import de.haukesomm.sokoban.core.state.GameState
 import de.haukesomm.sokoban.core.GameStateService
 import de.haukesomm.sokoban.core.level.LevelDescription
 import de.haukesomm.sokoban.web.components.*

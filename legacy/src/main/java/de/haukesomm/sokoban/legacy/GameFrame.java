@@ -32,7 +32,7 @@ public class GameFrame extends JFrame {
 
 
     private final GameStateService gameStateService =
-            new GameStateService(new JarResourceLevelRepository(), new SokobanLevelCharacterMap());
+            new GameStateService(new JarResourceLevelRepository(20, 16), new SokobanLevelCharacterMap());
 
     private final GameField gameField = new GameField();
     private final LevelInfoBar levelInfoBar = new LevelInfoBar(gameStateService.getAvailableLevels());

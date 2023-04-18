@@ -1,12 +1,13 @@
 package de.haukesomm.sokoban.core.moving
 
-import de.haukesomm.sokoban.core.GameState
+import de.haukesomm.sokoban.core.state.GameState
+import de.haukesomm.sokoban.core.state.modify
 
 class PushesIncrementingMoveActionDecorator(
     private val decorated: MoveAction
 ) : MoveAction {
     override fun performMove(state: GameState): GameState =
-        decorated.performMove(state).copy(pushes = state.pushes + 1)
+        decorated.performMove(state).modify { pushes++ }
 }
 
 fun MoveAction.decorateIncrementPushes(): MoveAction =

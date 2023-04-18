@@ -1,6 +1,13 @@
 package de.haukesomm.sokoban.core.moving;
 
 import de.haukesomm.sokoban.core.*;
+import de.haukesomm.sokoban.core.level.LevelRepository;
+import de.haukesomm.sokoban.core.level.LevelToGameStateConverter;
+import de.haukesomm.sokoban.core.level.SokobanLevelCharacterMap;
+import de.haukesomm.sokoban.core.state.*;
+import de.haukesomm.sokoban.legacy.level.JarResourceLevelRepository;
+import kotlin.Unit;
+import kotlin.jvm.functions.Function1;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -8,29 +15,16 @@ import org.junit.jupiter.api.Test;
 import java.util.Set;
 
 public class MoveCoordinatorTest {
+    private final LevelToGameStateConverter converter = new LevelToGameStateConverter(
+            new SokobanLevelCharacterMap()
+    );
+    private final LevelRepository repository = new JarResourceLevelRepository(6, 5);
 
     private GameState newTestGameState() {
-        // ######
-        // #____#
-        // #@$__#
-        // #_$$_#
-        // ######
-        return new GameState(
-                "test-level",
-                new Tile[][]{
-                        { new Tile(TileType.WALL), new Tile(TileType.WALL),     new Tile(TileType.WALL),    new Tile(TileType.WALL),    new Tile(TileType.WALL),    new Tile(TileType.WALL) },
-                        { new Tile(TileType.WALL), new Tile(TileType.NOTHING),  new Tile(TileType.NOTHING), new Tile(TileType.NOTHING), new Tile(TileType.NOTHING), new Tile(TileType.WALL) },
-                        { new Tile(TileType.WALL), new Tile(TileType.NOTHING),  new Tile(TileType.NOTHING), new Tile(TileType.NOTHING), new Tile(TileType.NOTHING), new Tile(TileType.WALL) },
-                        { new Tile(TileType.WALL), new Tile(TileType.NOTHING),  new Tile(TileType.NOTHING), new Tile(TileType.NOTHING), new Tile(TileType.NOTHING), new Tile(TileType.WALL) },
-                        { new Tile(TileType.WALL), new Tile(TileType.WALL),     new Tile(TileType.WALL),    new Tile(TileType.WALL),    new Tile(TileType.WALL),    new Tile(TileType.WALL) },
-                },
-                Set.of(
-                        new Entity("player", EntityType.PLAYER, new Position(1, 2), Direction.TOP),
-                        new Entity("box-0", EntityType.BOX, new Position(2, 2), Direction.TOP),
-                        new Entity("box-1", EntityType.BOX, new Position(2, 3), Direction.TOP),
-                        new Entity("box-2", EntityType.BOX, new Position(3, 3), Direction.TOP)
+        return converter.convert(
+                repository.getLevelOrNull(
+                        repository.getAvailableLevels().get(0).getId()
                 )
-
         );
     }
 
@@ -69,8 +63,8 @@ public class MoveCoordinatorTest {
         var result = sut.moveEntityIfPossible(gameState, gameState.getPlayer(), Direction.RIGHT);
         var state = result.getGameState();
 
-        Assertions.assertEquals(new Position(2, 2), state.getPlayer().getPosition());
-        Assertions.assertEquals(new Position(3, 2), state.getEntityById("box-0").getPosition());
+        Assertions.assertTrue(state.entityAt(2, 2).isPlayer());
+        Assertions.assertTrue(state.entityAt(3, 2).isBox());
     }
 
     @Test
@@ -84,11 +78,9 @@ public class MoveCoordinatorTest {
                 .moveEntityIfPossible(gameState, gameState.getPlayer(), Direction.BOTTOM)
                 .getGameState();
         result = sut
-                .moveEntityIfPossible(result, gameState.getPlayer(), Direction.RIGHT)
+                .moveEntityIfPossible(result, result.getPlayer(), Direction.RIGHT)
                 .getGameState();
 
-        Assertions.assertEquals(new Position(1, 3), result.getPlayer().getPosition());
-        Assertions.assertEquals(new Position(2, 3), result.getEntityById("box-1").getPosition());
-        Assertions.assertEquals(new Position(3, 3), result.getEntityById("box-2").getPosition());
+        Assertions.assertNull(result);
     }
 }

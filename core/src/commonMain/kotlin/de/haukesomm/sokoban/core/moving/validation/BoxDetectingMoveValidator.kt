@@ -3,7 +3,7 @@ package de.haukesomm.sokoban.core.moving.validation
 import de.haukesomm.sokoban.core.Direction
 import de.haukesomm.sokoban.core.Entity
 import de.haukesomm.sokoban.core.EntityType
-import de.haukesomm.sokoban.core.GameState
+import de.haukesomm.sokoban.core.state.GameState
 
 class BoxDetectingMoveValidator : AbstractMoveValidator() {
 

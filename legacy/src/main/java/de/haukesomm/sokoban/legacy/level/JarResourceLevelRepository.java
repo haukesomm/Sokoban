@@ -15,8 +15,15 @@ public class JarResourceLevelRepository implements LevelRepository {
 
     private static final String LEVEL_FILES_RESOURCE_PATH = "de/haukesomm/sokoban/legacy/level";
     private static final String BUILTIN_LEVEL_FILE_EXTENSION = ".sokoban";
-    private static final int BUILTIN_LEVEL_WIDTH = 20;
-    private static final int BUILTIN_LEVEL_HEIGHT = 16;
+
+    private final int levelWidth;
+    private final int levelHeight;
+
+    // TODO: Calculate width and height from file
+    public JarResourceLevelRepository(int levelWidth, int levelHeight) {
+        this.levelWidth = levelWidth;
+        this.levelHeight = levelHeight;
+    }
 
     @Override
     @NotNull
@@ -68,6 +75,6 @@ public class JarResourceLevelRepository implements LevelRepository {
             return null;
         }
 
-        return new Level(id, id, BUILTIN_LEVEL_WIDTH, BUILTIN_LEVEL_HEIGHT, layoutStringBuilder.toString());
+        return new Level(id, id, levelWidth, levelHeight, layoutStringBuilder.toString());
     }
 }
