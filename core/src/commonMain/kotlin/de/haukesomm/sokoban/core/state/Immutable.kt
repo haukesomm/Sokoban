@@ -8,12 +8,21 @@ data class ImmutableGameState(
     override val width: Int,
     override val height: Int,
     override val tiles: List<Tile>,
-    override val entities: Set<Entity>,
     override val moves: Int = 0,
     override val pushes: Int = 0,
     override val levelCleared: Boolean = false
-) : AbstractGameState()
+) : AbstractGameState() {
+
+    override val entities: Set<Entity> by lazy {
+        tiles.flatMap(Tile::entities).toSet()
+    }
+
+    companion object {
+        fun empty(): ImmutableGameState =
+            ImmutableGameState("empty", 0, 0, emptyList())
+    }
+}
 
 fun GameState.toImmutableGameState(): ImmutableGameState =
     if (this is ImmutableGameState) this
-    else ImmutableGameState(levelId, width, height, tiles, entities, moves, pushes, levelCleared)
+    else ImmutableGameState(levelId, width, height, tiles, moves, pushes, levelCleared)

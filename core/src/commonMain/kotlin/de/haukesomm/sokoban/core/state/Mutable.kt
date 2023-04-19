@@ -8,11 +8,18 @@ data class MutableGameState(
     override var width: Int,
     override var height: Int,
     override var tiles: MutableList<Tile>,
-    override var entities: MutableSet<Entity>,
     override var moves: Int = 0,
     override var pushes: Int = 0,
     override var levelCleared: Boolean = false
-) : AbstractGameState()
+) : AbstractGameState() {
+
+    /**
+     * Immutable property containing a combined set of all tile's entities.
+     * Modify a [Tile] directly in order to change it's assigned entities.
+     */
+    override val entities: Set<Entity>
+        get() = tiles.flatMap(Tile::entities).toMutableSet()
+}
 
 fun GameState.toMutableGameState(): MutableGameState =
     MutableGameState(
@@ -20,7 +27,6 @@ fun GameState.toMutableGameState(): MutableGameState =
         width,
         height,
         tiles.toMutableList(),
-        entities.toMutableSet(),
         moves,
         pushes,
         levelCleared

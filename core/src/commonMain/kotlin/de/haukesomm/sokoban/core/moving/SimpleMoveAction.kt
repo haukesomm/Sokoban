@@ -12,13 +12,24 @@ class SimpleMoveAction(
     private val direction: Direction
 ) : MoveAction {
 
+    // TODO: Make it less complicated to move an entity
     override fun performMove(state: GameState): GameState =
         state.modify {
-            val nextPosition = entity.position.nextInDirection(direction)
+            // Remove entity from its current tile
+            val currentTile = tileAt(entity.position)!!
+            val currentTileIndex = tiles.indexOf(currentTile)
+            tiles[currentTileIndex] = currentTile.copy(
+                entities = currentTile.entities - entity
+            )
 
-            val movedEntity = entity.copy(facingDirection = direction, position = nextPosition)
-            entities.removeAll { it.id == entity.id }
-            entities.add(movedEntity)
+            // Add entity to Tile at new position
+            val nextPosition = entity.position.nextInDirection(direction)
+            val entityWithUpdatedPosition = entity.copy(facingDirection = direction, position = nextPosition)
+            val nextTile = tileAt(nextPosition)!!
+            val nextTileIndex = tiles.indexOf(nextTile)
+            tiles[nextTileIndex] = nextTile.copy(
+                entities = nextTile.entities + entityWithUpdatedPosition
+            )
 
             moves++
         }
