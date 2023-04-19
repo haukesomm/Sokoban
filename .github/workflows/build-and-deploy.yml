@@ -1,5 +1,5 @@
 # Simple workflow for deploying static content to GitHub Pages
-name: Build and publish to GitHub pages
+name: Build and Deploy
 
 on:
   push:
@@ -52,7 +52,7 @@ jobs:
         uses: crazy-max/ghaction-github-pages@v2
         with:
           target_branch: gh-pages
-          #fqdn: sokoban.haukesomm.de
+          fqdn: sokoban.haukesomm.de
           build_dir: ./web/build/distributions
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
