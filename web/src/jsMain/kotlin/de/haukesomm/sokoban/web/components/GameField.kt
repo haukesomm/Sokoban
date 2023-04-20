@@ -4,21 +4,11 @@ import de.haukesomm.sokoban.core.*
 import de.haukesomm.sokoban.core.state.GameState
 import de.haukesomm.sokoban.core.state.ImmutableGameState
 import de.haukesomm.sokoban.web.model.LensesGameStateDecorator
+import de.haukesomm.sokoban.web.model.tiles
 import de.haukesomm.sokoban.web.model.withLenses
 import dev.fritz2.core.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-
-private class TileRowLens(private val rowNumber: Int) : Lens<LensesGameStateDecorator, List<Tile>> {
-
-    override val id: String = "tile-row-$rowNumber"
-
-    override fun get(parent: LensesGameStateDecorator): List<Tile> =
-        parent.tiles.chunked(parent.width)[rowNumber]
-
-    override fun set(parent: LensesGameStateDecorator, value: List<Tile>): LensesGameStateDecorator =
-        throw UnsupportedOperationException()
-}
 
 class GameField(states: Flow<GameState>) {
 
@@ -27,7 +17,7 @@ class GameField(states: Flow<GameState>) {
     ).apply {
         states.map { it.withLenses() } handledBy update
     }
-    private val gameStateHeightFlow = states.map { it.height }
+    private val gameStateTilesFlow = gameStateStore.map(LensesGameStateDecorator.tiles()).data
 
     private fun getTileTexture(tileType: TileType) = when(tileType) {
         TileType.NOTHING -> "ground.png"
@@ -42,14 +32,11 @@ class GameField(states: Flow<GameState>) {
 
     fun RenderContext.render() {
         div {
-            gameStateHeightFlow.render { height ->
-                for (rowNumber in 0 until height) {
-                    div("flex flex-row") {
-                        val tileRowStore = gameStateStore.map(TileRowLens(rowNumber))
-                        tileRowStore.data.renderEach(batch = true) {
-                            renderTile(it, it.entities.firstOrNull())
-                        }
-                    }
+            // TODO: Configure JIT so dynamic column sizes can be used
+            //  Currently, only levels that are 20 tiles wide are supported.
+            div("grid grid-cols-[repeat(20,_1fr]") {
+                gameStateTilesFlow.renderEach(batch = true) {
+                    renderTile(it, it.entities.firstOrNull())
                 }
             }
         }
