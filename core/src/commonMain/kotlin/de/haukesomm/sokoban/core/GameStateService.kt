@@ -7,15 +7,14 @@ import de.haukesomm.sokoban.core.state.modify
 
 class GameStateService(
     private val levelRepository: LevelRepository,
-    levelCharacterMap: LevelCharacterMap
+    tileFactory: TileFactory
 ) {
-
     fun interface StateChangeListener {
         fun onGameStateChange(state: GameState)
     }
 
 
-    private val levelToGameStateConverter = LevelToGameStateConverter(levelCharacterMap)
+    private val levelToGameStateConverter = LevelToGameStateConverter(tileFactory)
 
     private val moveCoordinator = MoveCoordinatorFactory.newWithDefaultValidators()
 

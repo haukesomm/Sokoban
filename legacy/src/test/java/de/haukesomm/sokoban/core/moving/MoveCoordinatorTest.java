@@ -1,13 +1,11 @@
 package de.haukesomm.sokoban.core.moving;
 
 import de.haukesomm.sokoban.core.*;
+import de.haukesomm.sokoban.core.level.DefaultTileFactory;
 import de.haukesomm.sokoban.core.level.LevelRepository;
 import de.haukesomm.sokoban.core.level.LevelToGameStateConverter;
-import de.haukesomm.sokoban.core.level.SokobanLevelCharacterMap;
 import de.haukesomm.sokoban.core.state.*;
 import de.haukesomm.sokoban.legacy.level.JarResourceLevelRepository;
-import kotlin.Unit;
-import kotlin.jvm.functions.Function1;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,9 +13,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Set;
 
 public class MoveCoordinatorTest {
-    private final LevelToGameStateConverter converter = new LevelToGameStateConverter(
-            new SokobanLevelCharacterMap()
-    );
+    private final LevelToGameStateConverter converter = new LevelToGameStateConverter(new DefaultTileFactory());
     private final LevelRepository repository = new JarResourceLevelRepository(6, 5);
 
     private GameState newTestGameState() {

@@ -2,7 +2,6 @@ package de.haukesomm.sokoban.web
 
 import de.haukesomm.sokoban.web.components.icons.GitHubIcons
 import de.haukesomm.sokoban.web.components.icons.icon
-import de.haukesomm.sokoban.web.level.BundledLevelCharacterMap
 import de.haukesomm.sokoban.web.level.BundledLevelRepository
 import de.haukesomm.sokoban.core.Direction
 import de.haukesomm.sokoban.core.state.GameState
@@ -10,6 +9,7 @@ import de.haukesomm.sokoban.core.GameStateService
 import de.haukesomm.sokoban.core.level.LevelDescription
 import de.haukesomm.sokoban.web.components.*
 import de.haukesomm.sokoban.web.components.icons.HeroIcons
+import de.haukesomm.sokoban.web.level.BundledLevelTileFactory
 import dev.fritz2.core.*
 import kotlinx.coroutines.flow.*
 
@@ -17,7 +17,7 @@ fun main() {
     render {
         val darkModeStore = initDarkMode()
 
-        val gameStateService = GameStateService(BundledLevelRepository(), BundledLevelCharacterMap())
+        val gameStateService = GameStateService(BundledLevelRepository(), BundledLevelTileFactory())
         val levelDescriptions = gameStateService.getAvailableLevels()
         val selectedLevelDescription = storeOf(levelDescriptions.first())
 

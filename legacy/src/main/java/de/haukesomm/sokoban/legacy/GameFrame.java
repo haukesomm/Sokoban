@@ -5,11 +5,11 @@ import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
 
+import de.haukesomm.sokoban.core.level.DefaultTileFactory;
 import de.haukesomm.sokoban.legacy.level.JarResourceLevelRepository;
 import de.haukesomm.sokoban.core.Direction;
 import de.haukesomm.sokoban.core.Entity;
 import de.haukesomm.sokoban.core.GameStateService;
-import de.haukesomm.sokoban.core.level.SokobanLevelCharacterMap;
 
 public class GameFrame extends JFrame {
 
@@ -32,7 +32,10 @@ public class GameFrame extends JFrame {
 
 
     private final GameStateService gameStateService =
-            new GameStateService(new JarResourceLevelRepository(20, 16), new SokobanLevelCharacterMap());
+            new GameStateService(
+                    new JarResourceLevelRepository(20, 16),
+                    new DefaultTileFactory()
+            );
 
     private final GameField gameField = new GameField();
     private final LevelInfoBar levelInfoBar = new LevelInfoBar(gameStateService.getAvailableLevels());
