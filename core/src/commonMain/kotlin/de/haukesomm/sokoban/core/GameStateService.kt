@@ -7,8 +7,9 @@ import de.haukesomm.sokoban.core.moving.rules.ConditionalMoveRule
 import de.haukesomm.sokoban.core.moving.rules.OutOfBoundsPreventingMoveRule
 import de.haukesomm.sokoban.core.state.GameState
 import de.haukesomm.sokoban.core.state.transform
+import kotlin.jvm.JvmOverloads
 
-class GameStateService(
+class GameStateService @JvmOverloads constructor(
     private val levelRepository: LevelRepository,
     tileFactory: TileFactory,
     customRules: Set<MoveRule>? = null
