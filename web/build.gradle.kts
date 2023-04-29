@@ -1,3 +1,6 @@
+import java.io.ByteArrayOutputStream
+import java.nio.charset.Charset
+
 plugins {
     kotlin("multiplatform")
     id("com.google.devtools.ksp")
@@ -39,6 +42,25 @@ kotlin {
 // FIXME: Entfernen, sobald nicht mehr explizit benötigt
 tasks.named("jsBrowserDevelopmentRun") {
     dependsOn("jsDevelopmentExecutableCompileSync")
+}
+
+tasks.named<ProcessResources>("jsProcessResources") {
+    filesMatching("index.html") {
+        val output = ByteArrayOutputStream()
+        exec {
+            workingDir = rootProject.projectDir
+            commandLine("git rev-parse --short HEAD".split(" "))
+            standardOutput = output
+        }
+
+        val version = version
+        val commitHash = output.toString(Charset.defaultCharset()).trim()
+
+        expand(
+            "sokobanVersion" to version,
+            "sokobanCommitHash" to commitHash
+        )
+    }
 }
 
 /**

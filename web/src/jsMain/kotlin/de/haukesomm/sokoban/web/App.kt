@@ -49,67 +49,82 @@ fun main() {
             .filter { it.levelCleared }
             .map { } handledBy showLevelClearedAlert
 
-        div(
-            """sticky w-full py-2 px-4 flex flex-row justify-between items-center gap-4
+        div("h-screen flex flex-col") {
+            div(
+                """sticky w-full py-2 px-4 flex flex-row justify-between items-center gap-4
                 | bg-white dark:bg-darkgray-400 shadow-sm dark:shadow-md
                 | text-primary-800 dark:text-primary-200""".trimMargin()
-        ) {
-            span("text-xl font-semibold text-primary-500") {
-                +"Sokoban"
-            }
-            div("flex gap-4 items-center grow max-w-sm") {
-                div("grow") {
-                    listBox {
-                        entries = levelDescriptions
-                        format = LevelDescription::name
-                        value(selectedLevelDescription)
-                    }
+            ) {
+                span("text-xl font-semibold text-primary-500") {
+                    +"Sokoban"
                 }
-                span("text-sm") {
-                    +"Moves: "
-                    code {
-                        gameStateStore.data.filterNotNull().render(into = this) {
-                            +it.moves.toString()
+                div("flex gap-4 items-center grow max-w-sm") {
+                    div("grow") {
+                        listBox {
+                            entries = levelDescriptions
+                            format = LevelDescription::name
+                            value(selectedLevelDescription)
                         }
                     }
-                }
-                span("text-sm") {
-                    +"Pushes: "
-                    code {
-                        gameStateStore.data.filterNotNull().render(into = this) {
-                            +it.pushes.toString()
+                    span("text-sm") {
+                        +"Moves: "
+                        code {
+                            gameStateStore.data.filterNotNull().render(into = this) {
+                                +it.moves.toString()
+                            }
                         }
                     }
+                    span("text-sm") {
+                        +"Pushes: "
+                        code {
+                            gameStateStore.data.filterNotNull().render(into = this) {
+                                +it.pushes.toString()
+                            }
+                        }
+                    }
+                    button {
+                        type("button")
+                        icon("w-4 h-4", definition = HeroIcons.refresh)
+                        title("Reset level")
+                    }.clicks handledBy {
+                        gameStateService.reloadLevel()
+                    }
                 }
-                button {
-                    type("button")
-                    icon("w-4 h-4", definition = HeroIcons.refresh)
-                    title("Reset level")
-                }.clicks handledBy {
-                    gameStateService.reloadLevel()
+                div("flex flex-row items-center gap-4") {
+                    switch {
+                        data(darkModeStore)
+                        label = "Dark mode"
+                    }
+
+                    a {
+                        icon(
+                            "w-8 h-8 text-gray-800 text-gray-700 dark:text-gray-200",
+                            definition = GitHubIcons.octocat
+                        )
+                        href("https://github.com/haukesomm/sokoban")
+                        target("_blank")
+                    }
                 }
             }
-            div("flex flex-row items-center gap-4") {
-                switch {
-                    data(darkModeStore)
-                    label = "Dark mode"
-                }
 
-                a {
-                    icon(
-                        "w-8 h-8 text-gray-800 text-gray-700 dark:text-gray-200",
-                        definition = GitHubIcons.octocat
-                    )
-                    href("https://github.com/haukesomm/sokoban")
-                    target("_blank")
+            main("grow") {
+                div("w-full p-4 flex flex-col items-center") {
+                    div("max-w-min flex justify-center rounded-lg shadow overflow-hidden") {
+                        gameField(gameStateStore.data.filterNotNull())
+                    }
                 }
             }
-        }
 
-        main {
-            div("w-full p-4 flex flex-col items-center") {
-                div("max-w-min flex justify-center rounded-lg shadow overflow-hidden") {
-                    gameField(gameStateStore.data.filterNotNull())
+            div("w-full p-4 flex flex-row justify-center gap-4 text-xs text-gray-400 font-light") {
+                span { +"Sokoban" }
+                span { +"Version: ${VersionInfo.version}" }
+                span {
+                    +"Commit Hash: "
+                    a {
+                        +VersionInfo.commitHash
+                        target("_blank")
+                        href("https://github.com/haukesomm/Sokoban/tree/${VersionInfo.commitHash}")
+                    }
                 }
             }
         }
