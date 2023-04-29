@@ -32,17 +32,16 @@ public class GameField extends JPanel {
 
         removeAll();
 
-        var tiles = state.getTiles();
-
         for (int row = 0; row < SIZE_Y; row++) {
             for (int column = 0; column < SIZE_X; column++) {
+                var position = new Position(column, row);
                 ImageIcon texture;
 
-                var entity = state.entityAt(new Position(column, row));
+                var entity = state.entityAt(position);
                 if (entity != null) {
-                    texture = textureRepository.getForEntityType(entity.getType(), entity.getFacingDirection());
+                    texture = textureRepository.getForEntityType(entity.getType());
                 } else {
-                    var tile = state.tileAt(column, row);
+                    var tile = state.tileAt(position);
                     texture = textureRepository.getForTileType(tile.getType());
                 }
 

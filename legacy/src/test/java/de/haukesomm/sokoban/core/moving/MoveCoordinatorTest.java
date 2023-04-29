@@ -10,8 +10,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.Set;
-
 public class MoveCoordinatorTest {
     private final LevelToGameStateConverter converter = new LevelToGameStateConverter(new DefaultTileFactory());
     private final LevelRepository repository = new JarResourceLevelRepository(6, 5);
@@ -31,8 +29,8 @@ public class MoveCoordinatorTest {
         var gameState = newTestGameState();
         var sut = new MoveCoordinator();
 
-        var result = sut.moveEntityIfPossible(gameState, gameState.getPlayer(), Direction.BOTTOM);
-        var player = result.getGameState().getPlayer();
+        var result = sut.moveEntityIfPossible(gameState, gameState.getPlayer(), Direction.Bottom);
+        var player = result.getPlayer();
 
         Assertions.assertEquals(new Position(1, 3), player.getPosition());
     }
@@ -42,11 +40,11 @@ public class MoveCoordinatorTest {
     @SuppressWarnings("DataFlowIssue")
     public void defaultCheckersWhenBlockedByWallNothingIsMoved() {
         var gameState = newTestGameState();
-        var sut = MoveCoordinatorFactory.newWithDefaultValidators();
+        var sut = MoveCoordinator.withDefaultRules();
 
-        var result = sut.moveEntityIfPossible(gameState, gameState.getPlayer(), Direction.LEFT);
+        var result = sut.moveEntityIfPossible(gameState, gameState.getPlayer(), Direction.Left);
 
-        Assertions.assertNull(result.getGameState());
+        Assertions.assertNull(result);
     }
 
     @Test
@@ -54,13 +52,12 @@ public class MoveCoordinatorTest {
     @SuppressWarnings("DataFlowIssue")
     public void defaultCheckersWhenBoxBlocksMoveItIsMovedToo() {
         var gameState = newTestGameState();
-        var sut = MoveCoordinatorFactory.newWithDefaultValidators();
+        var sut = MoveCoordinator.withDefaultRules();
 
-        var result = sut.moveEntityIfPossible(gameState, gameState.getPlayer(), Direction.RIGHT);
-        var state = result.getGameState();
+        var result = sut.moveEntityIfPossible(gameState, gameState.getPlayer(), Direction.Right);
 
-        Assertions.assertTrue(state.entityAt(2, 2).isPlayer());
-        Assertions.assertTrue(state.entityAt(3, 2).isBox());
+        Assertions.assertTrue(result.entityAt(new Position(2, 2)).isPlayer());
+        Assertions.assertTrue(result.entityAt(new Position(3, 2)).isBox());
     }
 
     @Test
@@ -68,14 +65,10 @@ public class MoveCoordinatorTest {
     @SuppressWarnings("DataFlowIssue")
     public void defaultCheckersWhenTwoBoxesAreInARowNoneAreMoved() {
         var gameState = newTestGameState();
-        var sut = MoveCoordinatorFactory.newWithDefaultValidators();
+        var sut = MoveCoordinator.withDefaultRules();
 
-        var result = sut
-                .moveEntityIfPossible(gameState, gameState.getPlayer(), Direction.BOTTOM)
-                .getGameState();
-        result = sut
-                .moveEntityIfPossible(result, result.getPlayer(), Direction.RIGHT)
-                .getGameState();
+        var result = sut.moveEntityIfPossible(gameState, gameState.getPlayer(), Direction.Bottom);
+        result = sut.moveEntityIfPossible(result, result.getPlayer(), Direction.Right);
 
         Assertions.assertNull(result);
     }

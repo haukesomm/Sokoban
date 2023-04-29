@@ -6,15 +6,15 @@ fun interface TileProvider {
     fun create(position: Position): Tile
 }
 
-class BasicTileProvider(private val tileType: TileType) : TileProvider {
+class BasicTileProvider(private val tileType: Tile.Type) : TileProvider {
     override fun create(position: Position): Tile =
         Tile(tileType, position)
 }
 
-class EntityTileProvider(private val entityType: EntityType) : TileProvider {
+class EntityTileProvider(private val entityType: Entity.Type) : TileProvider {
     override fun create(position: Position): Tile {
         val entity = Entity(type = entityType, position = position)
-        return Tile(TileType.NOTHING, position, entities = setOf(entity))
+        return Tile(Tile.Type.Empty, position, entities = setOf(entity))
     }
 }
 

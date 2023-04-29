@@ -34,10 +34,10 @@ fun main() {
             if (gameStateStore.current?.levelCleared == false) {
                 gameStateService.getPlayer()?.let { player ->
                     when(shortcut) {
-                        Keys.ArrowUp -> gameStateService.moveEntityIfPossible(player, Direction.TOP)
-                        Keys.ArrowDown -> gameStateService.moveEntityIfPossible(player, Direction.BOTTOM)
-                        Keys.ArrowLeft -> gameStateService.moveEntityIfPossible(player, Direction.LEFT)
-                        Keys.ArrowRight -> gameStateService.moveEntityIfPossible(player, Direction.RIGHT)
+                        Keys.ArrowUp -> gameStateService.moveEntityIfPossible(player, Direction.Top)
+                        Keys.ArrowDown -> gameStateService.moveEntityIfPossible(player, Direction.Bottom)
+                        Keys.ArrowLeft -> gameStateService.moveEntityIfPossible(player, Direction.Left)
+                        Keys.ArrowRight -> gameStateService.moveEntityIfPossible(player, Direction.Right)
                     }
                 }
             }
@@ -86,7 +86,7 @@ fun main() {
                     icon("w-4 h-4", definition = HeroIcons.refresh)
                     title("Reset level")
                 }.clicks handledBy {
-                    gameStateService.reload()
+                    gameStateService.reloadLevel()
                 }
             }
             div("flex flex-row items-center gap-4") {

@@ -12,13 +12,11 @@ interface GameState {
     val pushes: Int
     val levelCleared: Boolean
 
-    fun tileAt(x: Int, y: Int): Tile?
     fun tileAt(position: Position): Tile?
-    fun getNextTileInDirectionOrNull(position: Position, direction: Direction?): Tile?
+    fun nextTileInDirection(position: Position, direction: Direction?): Tile?
 
-    fun entityAt(x: Int, y: Int): Entity?
     fun entityAt(position: Position): Entity?
-    fun getEntityAtNextPositionOrNull(position: Position, direction: Direction): Entity?
+    fun nextEntityInDirection(position: Position, direction: Direction): Entity?
 
     fun getPlayer(): Entity?
     fun getEntityById(id: String): Entity?
@@ -26,25 +24,20 @@ interface GameState {
 
 abstract class AbstractGameState : GameState {
 
-    override fun tileAt(x: Int, y: Int): Tile? = tiles
-        .getOrNull(Position(x, y).toIndex(width))
-
     override fun tileAt(position: Position): Tile? =
-        position.run { tileAt(x, y) }
+        tiles.getOrNull(position.toIndex(width))
 
-    override fun getNextTileInDirectionOrNull(position: Position, direction: Direction?): Tile? {
-        val (x, y) = position.nextInDirection(direction!!)
+    override fun nextTileInDirection(position: Position, direction: Direction?): Tile? =
+        position.nextInDirection(direction!!).run {
+            if (x > width || y > height) null
+            else tileAt(this)
+        }
 
-        return if (x > width || y > height) null
-        else tileAt(x, y)
-    }
 
+    override fun entityAt(position: Position): Entity? =
+        entities.find { it.position == position }
 
-    override fun entityAt(x: Int, y: Int): Entity? = entityAt(Position(x, y))
-
-    override fun entityAt(position: Position): Entity? = entities.find { it.position == position }
-
-    override fun getEntityAtNextPositionOrNull(position: Position, direction: Direction): Entity? =
+    override fun nextEntityInDirection(position: Position, direction: Direction): Entity? =
         entityAt(position.nextInDirection(direction))
 
 

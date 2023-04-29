@@ -1,13 +1,13 @@
 package de.haukesomm.sokoban.core.level
 
-import de.haukesomm.sokoban.core.EntityType
-import de.haukesomm.sokoban.core.TileType
+import de.haukesomm.sokoban.core.Entity
+import de.haukesomm.sokoban.core.Tile
 
 class DefaultTileFactory : TileFactory(
-    '_' to BasicTileProvider(TileType.NOTHING),
-    '.' to BasicTileProvider(TileType.TARGET),
-    '#' to BasicTileProvider(TileType.WALL),
-    '$' to EntityTileProvider(EntityType.BOX),
-    '@' to EntityTileProvider(EntityType.PLAYER),
-    default = BasicTileProvider(TileType.NOTHING)
+    '_' to BasicTileProvider(Tile.Type.Empty),
+    '.' to BasicTileProvider(Tile.Type.Target),
+    '#' to BasicTileProvider(Tile.Type.Wall),
+    '$' to EntityTileProvider(Entity.Type.Box),
+    '@' to EntityTileProvider(Entity.Type.Player),
+    default = BasicTileProvider(Tile.Type.Empty)
 )

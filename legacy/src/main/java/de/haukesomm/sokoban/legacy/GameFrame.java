@@ -101,10 +101,10 @@ public class GameFrame extends JFrame {
         inputMap.put(KeyStroke.getKeyStroke("DOWN"), "DOWN");
 
         ActionMap actionMap = getRootPane().getActionMap();
-        actionMap.put("LEFT", new MovePlayerAction(Direction.LEFT));
-        actionMap.put("UP", new MovePlayerAction(Direction.TOP));
-        actionMap.put("RIGHT", new MovePlayerAction(Direction.RIGHT));
-        actionMap.put("DOWN", new MovePlayerAction(Direction.BOTTOM));
+        actionMap.put("LEFT", new MovePlayerAction(Direction.Left));
+        actionMap.put("UP", new MovePlayerAction(Direction.Top));
+        actionMap.put("RIGHT", new MovePlayerAction(Direction.Right));
+        actionMap.put("DOWN", new MovePlayerAction(Direction.Bottom));
 
         getRootPane().setInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW, inputMap);
     }

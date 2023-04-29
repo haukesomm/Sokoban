@@ -8,6 +8,7 @@ import de.haukesomm.sokoban.web.model.tiles
 import de.haukesomm.sokoban.web.model.withLenses
 import dev.fritz2.core.*
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 
 class GameField(states: Flow<GameState>) {
@@ -19,24 +20,28 @@ class GameField(states: Flow<GameState>) {
     }
     private val gameStateTilesFlow = gameStateStore.map(LensesGameStateDecorator.tiles()).data
 
-    private fun getTileTexture(tileType: TileType) = when(tileType) {
-        TileType.NOTHING -> "ground.png"
-        TileType.WALL -> "wall.png"
-        TileType.TARGET -> "target.png"
+    private fun getTileTexture(tileType: Tile.Type) = when(tileType) {
+        Tile.Type.Empty -> "ground.png"
+        Tile.Type.Wall -> "wall.png"
+        Tile.Type.Target -> "target.png"
     }
 
     private fun getEntityTexture(entity: Entity) = when(entity.type) {
-        EntityType.BOX -> "box.png"
-        EntityType.PLAYER -> "player.png"
+        Entity.Type.Box -> "box.png"
+        Entity.Type.Player -> "player.png"
     }
 
     fun RenderContext.render() {
         div {
-            // TODO: Configure JIT so dynamic column sizes can be used
-            //  Currently, only levels that are 20 tiles wide are supported.
-            div("grid grid-cols-[repeat(20,_1fr]") {
-                gameStateTilesFlow.renderEach(batch = true) {
-                    renderTile(it, it.entities.firstOrNull())
+            gameStateStore.data.map { it.width }.render(into = this) { width ->
+                div("grid") {
+                    // Inline-style is needed since levels may have arbitrary, dynamically changing dimensions that
+                    // can't be realized with pure Tailwind CSS (not even in JIT mode).
+                    inlineStyle("grid-template-columns: repeat($width, 1fr);")
+
+                    gameStateTilesFlow.renderEach(batch = true) {
+                        renderTile(it, it.entities.firstOrNull())
+                    }
                 }
             }
         }

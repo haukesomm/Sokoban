@@ -1,9 +1,9 @@
 package de.haukesomm.sokoban.core
 
 import de.haukesomm.sokoban.core.level.*
-import de.haukesomm.sokoban.core.moving.MoveCoordinatorFactory
+import de.haukesomm.sokoban.core.moving.MoveCoordinator
 import de.haukesomm.sokoban.core.state.GameState
-import de.haukesomm.sokoban.core.state.modify
+import de.haukesomm.sokoban.core.state.transform
 
 class GameStateService(
     private val levelRepository: LevelRepository,
@@ -16,7 +16,7 @@ class GameStateService(
 
     private val levelToGameStateConverter = LevelToGameStateConverter(tileFactory)
 
-    private val moveCoordinator = MoveCoordinatorFactory.newWithDefaultValidators()
+    private val moveCoordinator = MoveCoordinator.withDefaultRules()
 
     private val stateChangeListeners = mutableSetOf<StateChangeListener>()
 
@@ -33,7 +33,8 @@ class GameStateService(
     }
 
 
-    fun getAvailableLevels(): List<LevelDescription> = levelRepository.getAvailableLevels()
+    fun getAvailableLevels(): List<LevelDescription> =
+        levelRepository.getAvailableLevels()
 
     fun loadLevel(levelId: String) {
         val level = levelRepository.getLevelOrNull(levelId)
@@ -43,7 +44,7 @@ class GameStateService(
         notifyGameStateChangedListeners()
     }
 
-    fun reload() = loadLevel(state.levelId)
+    fun reloadLevel() = loadLevel(state.levelId)
 
 
     fun getPlayer(): Entity? = state.getPlayer()
@@ -54,8 +55,8 @@ class GameStateService(
             throw IllegalStateException("Cannot move Entity: No game state loaded!")
         }
 
-        moveCoordinator.moveEntityIfPossible(state, entity, direction).gameState?.let { newState ->
-            state = newState.modify {
+        moveCoordinator.moveEntityIfPossible(state, entity, direction)?.let { newState ->
+            state = newState.transform {
                 levelCleared = checkLevelCleared(newState)
             }
         }

@@ -1,8 +1,3 @@
 package de.haukesomm.sokoban.core
 
-enum class Direction {
-    TOP,
-    RIGHT,
-    BOTTOM,
-    LEFT
-}
+enum class Direction { Top, Right, Bottom, Left }

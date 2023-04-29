@@ -2,10 +2,8 @@ package de.haukesomm.sokoban.core.moving
 
 import de.haukesomm.sokoban.core.Direction
 import de.haukesomm.sokoban.core.Entity
-import de.haukesomm.sokoban.core.EntityType
-import de.haukesomm.sokoban.core.Position
 import de.haukesomm.sokoban.core.state.GameState
-import de.haukesomm.sokoban.core.state.modify
+import de.haukesomm.sokoban.core.state.transform
 
 class SimpleMoveAction(
     private val entity: Entity,
@@ -14,7 +12,7 @@ class SimpleMoveAction(
 
     // TODO: Make it less complicated to move an entity
     override fun performMove(state: GameState): GameState =
-        state.modify {
+        state.transform {
             // Remove entity from its current tile
             val currentTile = tileAt(entity.position)!!
             val currentTileIndex = tiles.indexOf(currentTile)
@@ -24,7 +22,7 @@ class SimpleMoveAction(
 
             // Add entity to Tile at new position
             val nextPosition = entity.position.nextInDirection(direction)
-            val entityWithUpdatedPosition = entity.copy(facingDirection = direction, position = nextPosition)
+            val entityWithUpdatedPosition = entity.copy(position = nextPosition)
             val nextTile = tileAt(nextPosition)!!
             val nextTileIndex = tiles.indexOf(nextTile)
             tiles[nextTileIndex] = nextTile.copy(
