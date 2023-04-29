@@ -5,6 +5,9 @@ import de.haukesomm.sokoban.core.Entity
 import de.haukesomm.sokoban.core.state.GameState
 
 interface MoveRule {
+    val title: String
+    val description: String
+
     fun check(
         state: GameState,
         entity: Entity,

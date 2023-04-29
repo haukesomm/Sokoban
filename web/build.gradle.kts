@@ -45,6 +45,9 @@ tasks.named("jsBrowserDevelopmentRun") {
 }
 
 tasks.named<ProcessResources>("jsProcessResources") {
+    // Always run task:
+    outputs.upToDateWhen { false }
+
     filesMatching("index.html") {
         val output = ByteArrayOutputStream()
         exec {

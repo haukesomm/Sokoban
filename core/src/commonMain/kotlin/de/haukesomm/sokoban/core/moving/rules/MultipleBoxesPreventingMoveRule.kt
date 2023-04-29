@@ -5,6 +5,8 @@ import de.haukesomm.sokoban.core.Entity
 import de.haukesomm.sokoban.core.state.GameState
 
 class MultipleBoxesPreventingMoveRule : MoveRule {
+    override val title: String = "One box per push"
+    override val description: String = "Prevent the player from pushing multiple boxes in a row"
 
     override fun check(state: GameState, entity: Entity, direction: Direction): Collection<MoveRuleResult> {
         val entityAhead = state.nextEntityInDirection(entity.position, direction)

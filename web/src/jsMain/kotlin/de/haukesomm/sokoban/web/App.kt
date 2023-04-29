@@ -7,6 +7,9 @@ import de.haukesomm.sokoban.core.Direction
 import de.haukesomm.sokoban.core.state.GameState
 import de.haukesomm.sokoban.core.GameStateService
 import de.haukesomm.sokoban.core.level.LevelDescription
+import de.haukesomm.sokoban.core.moving.rules.MoveRule
+import de.haukesomm.sokoban.core.moving.rules.MultipleBoxesPreventingMoveRule
+import de.haukesomm.sokoban.core.moving.rules.WallCollisionPreventingMoveRule
 import de.haukesomm.sokoban.web.components.*
 import de.haukesomm.sokoban.web.components.icons.HeroIcons
 import de.haukesomm.sokoban.web.level.BundledLevelTileFactory
@@ -17,7 +20,17 @@ fun main() {
     render {
         val darkModeStore = initDarkMode()
 
-        val gameStateService = GameStateService(BundledLevelRepository(), BundledLevelTileFactory())
+        val availableRules = listOf(
+            MultipleBoxesPreventingMoveRule(),
+            WallCollisionPreventingMoveRule()
+        )
+        val enabledRules = storeOf(availableRules)
+
+        val gameStateService = GameStateService(
+            BundledLevelRepository(),
+            BundledLevelTileFactory(),
+            customRules = enabledRules.current.toSet()
+        )
         val levelDescriptions = gameStateService.getAvailableLevels()
         val selectedLevelDescription = storeOf(levelDescriptions.first())
 
@@ -28,6 +41,10 @@ fun main() {
 
         selectedLevelDescription.data handledBy { levelDescription ->
             gameStateService.loadLevel(levelDescription.id)
+        }
+
+        enabledRules.data handledBy { rules ->
+            gameStateService.setCustomRules(rules.toSet())
         }
 
         Window.keydowns.map { shortcutOf(it.key) } handledBy { shortcut ->
@@ -107,7 +124,27 @@ fun main() {
                 }
             }
 
-            main("grow") {
+            main("grow grid grid-cols-[fit-content(400px)_auto] gap-4") {
+                div("p-4 m-4 space-y-4 max-w-md bg-white dark:bg-darkgray-400 rounded-md shadow") {
+                    div("flex gap-2 items-center") {
+                        span("font-semibold text_white dark:text-gray-300") {
+                            +"Edit Rules"
+                        }
+                        div(
+                            """px-1.5 py-0.5 flex items-center gap-1 rounded-full border border-primary-500 
+                                | text-xs text-primary-500""".trimMargin()
+                        ) {
+                            icon("w-3 h-3", definition = HeroIcons.beaker)
+                            +"Experimental"
+                        }
+                    }
+                    checkboxGroup {
+                        values(enabledRules)
+                        options = availableRules
+                        optionsFormat = MoveRule::title
+                        optionDescriptionFormat = MoveRule::description
+                    }
+                }
                 div("w-full p-4 flex flex-col items-center") {
                     div("max-w-min flex justify-center rounded-lg shadow overflow-hidden") {
                         gameField(gameStateStore.data.filterNotNull())

@@ -2,12 +2,16 @@ package de.haukesomm.sokoban.core
 
 import de.haukesomm.sokoban.core.level.*
 import de.haukesomm.sokoban.core.moving.MoveCoordinator
+import de.haukesomm.sokoban.core.moving.rules.*
+import de.haukesomm.sokoban.core.moving.rules.ConditionalMoveRule
+import de.haukesomm.sokoban.core.moving.rules.OutOfBoundsPreventingMoveRule
 import de.haukesomm.sokoban.core.state.GameState
 import de.haukesomm.sokoban.core.state.transform
 
 class GameStateService(
     private val levelRepository: LevelRepository,
-    tileFactory: TileFactory
+    tileFactory: TileFactory,
+    customRules: Set<MoveRule>? = null
 ) {
     fun interface StateChangeListener {
         fun onGameStateChange(state: GameState)
@@ -16,7 +20,9 @@ class GameStateService(
 
     private val levelToGameStateConverter = LevelToGameStateConverter(tileFactory)
 
-    private val moveCoordinator = MoveCoordinator.withDefaultRules()
+    private var moveCoordinator = customRules
+        ?.let { MoveCoordinator.withMinimalRecommendedRules(additional = it) }
+        ?: MoveCoordinator.withDefaultRules()
 
     private val stateChangeListeners = mutableSetOf<StateChangeListener>()
 
@@ -30,6 +36,18 @@ class GameStateService(
 
     private fun notifyGameStateChangedListeners() {
         stateChangeListeners.forEach { it.onGameStateChange(state) }
+    }
+
+
+    /**
+     * Overrides the standard recommended rules with a set of custom rules.
+     *
+     * A minimal set of rules will always be enabled, regardless of the given [rules]:
+     * - Enable movement of boxes
+     * - Prevent moves outside the game field
+     */
+    fun setCustomRules(rules: Set<MoveRule>) {
+        moveCoordinator = MoveCoordinator.withMinimalRecommendedRules(additional = rules)
     }
 
 

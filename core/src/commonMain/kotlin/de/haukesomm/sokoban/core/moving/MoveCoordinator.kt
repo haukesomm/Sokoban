@@ -17,9 +17,9 @@ private data class InternalMoveCoordinatorResult(
     }
 }
 
-class MoveCoordinator(vararg moveRules: MoveRule) {
+class MoveCoordinator(private val moveRuleList: Set<MoveRule>) {
 
-    private val moveRuleList = moveRules.toSet()
+    constructor(vararg moveRules: MoveRule) : this(moveRules.toSet())
 
     fun moveEntityIfPossible(
         state: GameState,
@@ -75,6 +75,18 @@ class MoveCoordinator(vararg moveRules: MoveRule) {
                         WallCollisionPreventingMoveRule(),
                         BoxDetectingMoveRule(),
                         MultipleBoxesPreventingMoveRule()
+                    )
+                )
+            )
+
+        @JvmStatic
+        fun withMinimalRecommendedRules(additional: Set<MoveRule> = emptySet()): MoveCoordinator =
+            MoveCoordinator(
+                ConditionalMoveRule(
+                    condition = OutOfBoundsPreventingMoveRule(),
+                    moveRules = setOf(
+                        BoxDetectingMoveRule(),
+                        *additional.toTypedArray()
                     )
                 )
             )
