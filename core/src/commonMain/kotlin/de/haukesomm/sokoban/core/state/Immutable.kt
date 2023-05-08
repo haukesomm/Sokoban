@@ -23,6 +23,6 @@ data class ImmutableGameState(
     }
 }
 
-fun GameState.immutable(): ImmutableGameState =
+fun GameState.toImmutable(): ImmutableGameState =
     if (this is ImmutableGameState) this
     else ImmutableGameState(levelId, width, height, tiles, moves, pushes, levelCleared)

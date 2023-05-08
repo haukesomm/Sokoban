@@ -21,7 +21,7 @@ data class MutableGameState(
         get() = tiles.flatMap(Tile::entities).toMutableSet()
 }
 
-fun GameState.mutable(): MutableGameState =
+fun GameState.toMutable(): MutableGameState =
     MutableGameState(
         levelId,
         width,
@@ -37,4 +37,4 @@ fun GameState.mutable(): MutableGameState =
  * The returned state is immutable.
  */
 fun GameState.transform(action: MutableGameState.() -> Unit): GameState =
-    this.mutable().apply(action).immutable()
+    this.toMutable().apply(action).toImmutable()

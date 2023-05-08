@@ -40,7 +40,7 @@ public class MoveCoordinatorTest {
     @SuppressWarnings("DataFlowIssue")
     public void defaultCheckersWhenBlockedByWallNothingIsMoved() {
         var gameState = newTestGameState();
-        var sut = MoveCoordinator.withDefaultRules();
+        var sut = MoveCoordinatorFactory.withDefaultRules();
 
         var result = sut.moveEntityIfPossible(gameState, gameState.getPlayer(), Direction.Left);
 
@@ -52,7 +52,7 @@ public class MoveCoordinatorTest {
     @SuppressWarnings("DataFlowIssue")
     public void defaultCheckersWhenBoxBlocksMoveItIsMovedToo() {
         var gameState = newTestGameState();
-        var sut = MoveCoordinator.withDefaultRules();
+        var sut = MoveCoordinatorFactory.withDefaultRules();
 
         var result = sut.moveEntityIfPossible(gameState, gameState.getPlayer(), Direction.Right);
 
@@ -65,7 +65,7 @@ public class MoveCoordinatorTest {
     @SuppressWarnings("DataFlowIssue")
     public void defaultCheckersWhenTwoBoxesAreInARowNoneAreMoved() {
         var gameState = newTestGameState();
-        var sut = MoveCoordinator.withDefaultRules();
+        var sut = MoveCoordinatorFactory.withDefaultRules();
 
         var result = sut.moveEntityIfPossible(gameState, gameState.getPlayer(), Direction.Bottom);
         result = sut.moveEntityIfPossible(result, result.getPlayer(), Direction.Right);

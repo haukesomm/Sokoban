@@ -2,6 +2,7 @@ package de.haukesomm.sokoban.core
 
 import de.haukesomm.sokoban.core.level.*
 import de.haukesomm.sokoban.core.moving.MoveCoordinator
+import de.haukesomm.sokoban.core.moving.MoveCoordinatorFactory
 import de.haukesomm.sokoban.core.moving.rules.*
 import de.haukesomm.sokoban.core.moving.rules.ConditionalMoveRule
 import de.haukesomm.sokoban.core.moving.rules.OutOfBoundsPreventingMoveRule
@@ -22,8 +23,8 @@ class GameStateService @JvmOverloads constructor(
     private val levelToGameStateConverter = LevelToGameStateConverter(tileFactory)
 
     private var moveCoordinator = customRules
-        ?.let { MoveCoordinator.withMinimalRecommendedRules(additional = it) }
-        ?: MoveCoordinator.withDefaultRules()
+        ?.let { MoveCoordinatorFactory.withMinimalRecommendedRules(additional = it) }
+        ?: MoveCoordinatorFactory.withDefaultRules()
 
     private val stateChangeListeners = mutableSetOf<StateChangeListener>()
 
@@ -48,7 +49,7 @@ class GameStateService @JvmOverloads constructor(
      * - Prevent moves outside the game field
      */
     fun setCustomRules(rules: Set<MoveRule>) {
-        moveCoordinator = MoveCoordinator.withMinimalRecommendedRules(additional = rules)
+        moveCoordinator = MoveCoordinatorFactory.withMinimalRecommendedRules(additional = rules)
     }
 
 
