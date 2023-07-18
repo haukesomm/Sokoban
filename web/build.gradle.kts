@@ -24,16 +24,16 @@ kotlin {
         val jsMain by getting {
             dependencies {
                 // tailwind
-                implementation(npm("tailwindcss", "3.0.19"))
-                implementation(npm("@tailwindcss/forms", "0.4.0"))
+                implementation(npm("tailwindcss", "3.3.3"))
+                implementation(npm("@tailwindcss/forms", "0.5.4"))
 
                 // webpack
-                implementation(devNpm("postcss", "8.4.6"))
-                implementation(devNpm("postcss-loader", "6.2.1"))
-                implementation(devNpm("autoprefixer", "10.4.2"))
-                implementation(devNpm("css-loader", "6.6.0"))
-                implementation(devNpm("style-loader", "3.3.1"))
-                implementation(devNpm("cssnano", "5.0.17"))
+                implementation(devNpm("postcss", "8.4.26"))
+                implementation(devNpm("postcss-loader", "7.3.3"))
+                implementation(devNpm("autoprefixer", "10.4.14"))
+                implementation(devNpm("css-loader", "6.8.1"))
+                implementation(devNpm("style-loader", "3.3.3"))
+                implementation(devNpm("cssnano", "6.0.1"))
             }
         }
     }

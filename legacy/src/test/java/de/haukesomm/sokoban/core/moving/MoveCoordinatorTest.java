@@ -14,6 +14,7 @@ public class MoveCoordinatorTest {
     private final LevelToGameStateConverter converter = new LevelToGameStateConverter(new DefaultTileFactory());
     private final LevelRepository repository = new JarResourceLevelRepository(6, 5);
 
+    @SuppressWarnings("DataFlowIssue")
     private GameState newTestGameState() {
         return converter.convert(
                 repository.getLevelOrNull(
@@ -40,7 +41,7 @@ public class MoveCoordinatorTest {
     @SuppressWarnings("DataFlowIssue")
     public void defaultCheckersWhenBlockedByWallNothingIsMoved() {
         var gameState = newTestGameState();
-        var sut = MoveCoordinatorFactory.withDefaultRules();
+        var sut = MoveCoordinatorFactory.create();
 
         var result = sut.moveEntityIfPossible(gameState, gameState.getPlayer(), Direction.Left);
 
@@ -52,7 +53,7 @@ public class MoveCoordinatorTest {
     @SuppressWarnings("DataFlowIssue")
     public void defaultCheckersWhenBoxBlocksMoveItIsMovedToo() {
         var gameState = newTestGameState();
-        var sut = MoveCoordinatorFactory.withDefaultRules();
+        var sut = MoveCoordinatorFactory.create();
 
         var result = sut.moveEntityIfPossible(gameState, gameState.getPlayer(), Direction.Right);
 
@@ -65,7 +66,7 @@ public class MoveCoordinatorTest {
     @SuppressWarnings("DataFlowIssue")
     public void defaultCheckersWhenTwoBoxesAreInARowNoneAreMoved() {
         var gameState = newTestGameState();
-        var sut = MoveCoordinatorFactory.withDefaultRules();
+        var sut = MoveCoordinatorFactory.create();
 
         var result = sut.moveEntityIfPossible(gameState, gameState.getPlayer(), Direction.Bottom);
         result = sut.moveEntityIfPossible(result, result.getPlayer(), Direction.Right);

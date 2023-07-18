@@ -92,7 +92,7 @@ public class GameFrame extends JFrame {
         }
     }
 
-    private void activateKeyBindings() {
+    private void initializeKeyBindings() {
         InputMap inputMap = new ComponentInputMap(getRootPane());
 
         inputMap.put(KeyStroke.getKeyStroke("LEFT"), "LEFT");
@@ -109,10 +109,6 @@ public class GameFrame extends JFrame {
         getRootPane().setInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW, inputMap);
     }
 
-    private void disableKeyBindings() {
-        getRootPane().setInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW, null);
-    }
-
     private void initListeners() {
         gameStateService.addGameStateChangedListener(state -> {
             var moves = state.getMoves();
@@ -126,7 +122,6 @@ public class GameFrame extends JFrame {
             repaint();
 
             if (state.getLevelCleared()) {
-                disableKeyBindings();
                 showLevelClearedDialog(moves, pushes);
             }
         });
@@ -139,7 +134,7 @@ public class GameFrame extends JFrame {
 
         gameStateService.loadLevel(id);
 
-        activateKeyBindings();
+        initializeKeyBindings();
     }
 
     private void loadDefaultLevel() {

@@ -24,5 +24,5 @@ subprojects {
 }
 
 ext {
-    set("fritz2version", "1.0-RC4")
+    set("fritz2version", "1.0-RC6")
 }

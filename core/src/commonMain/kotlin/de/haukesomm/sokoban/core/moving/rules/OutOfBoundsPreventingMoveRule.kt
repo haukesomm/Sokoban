@@ -5,7 +5,7 @@ import de.haukesomm.sokoban.core.Entity
 import de.haukesomm.sokoban.core.state.GameState
 
 internal class OutOfBoundsPreventingMoveRule : MoveRule {
-    override val title: String = "[Internal] Don't move out of bounds"
+    override val title: String = "Don't move out of bounds"
     override val description: String = "Prevent moves outside the game field"
 
     override fun check(state: GameState, entity: Entity, direction: Direction): Collection<MoveRuleResult> {

@@ -1,4 +1,4 @@
-package de.haukesomm.sokoban.web.components
+package de.haukesomm.sokoban.web.components.game
 
 import de.haukesomm.sokoban.core.*
 import de.haukesomm.sokoban.core.state.GameState
@@ -8,7 +8,6 @@ import de.haukesomm.sokoban.web.model.tiles
 import de.haukesomm.sokoban.web.model.withLenses
 import dev.fritz2.core.*
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 
 class GameField(states: Flow<GameState>) {

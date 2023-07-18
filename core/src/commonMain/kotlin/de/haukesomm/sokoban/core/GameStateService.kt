@@ -10,10 +10,9 @@ import de.haukesomm.sokoban.core.state.GameState
 import de.haukesomm.sokoban.core.state.transform
 import kotlin.jvm.JvmOverloads
 
-class GameStateService @JvmOverloads constructor(
+class GameStateService(
     private val levelRepository: LevelRepository,
-    tileFactory: TileFactory,
-    customRules: Set<MoveRule>? = null
+    tileFactory: TileFactory
 ) {
     fun interface StateChangeListener {
         fun onGameStateChange(state: GameState)
@@ -22,14 +21,12 @@ class GameStateService @JvmOverloads constructor(
 
     private val levelToGameStateConverter = LevelToGameStateConverter(tileFactory)
 
-    private var moveCoordinator = customRules
-        ?.let { MoveCoordinatorFactory.withMinimalRecommendedRules(additional = it) }
-        ?: MoveCoordinatorFactory.withDefaultRules()
-
     private val stateChangeListeners = mutableSetOf<StateChangeListener>()
 
 
     private lateinit var state: GameState
+
+    private var moveCoordinator = MoveCoordinatorFactory.create()
 
 
     fun addGameStateChangedListener(listener: StateChangeListener) {
@@ -41,15 +38,8 @@ class GameStateService @JvmOverloads constructor(
     }
 
 
-    /**
-     * Overrides the standard recommended rules with a set of custom rules.
-     *
-     * A minimal set of rules will always be enabled, regardless of the given [rules]:
-     * - Enable movement of boxes
-     * - Prevent moves outside the game field
-     */
-    fun setCustomRules(rules: Set<MoveRule>) {
-        moveCoordinator = MoveCoordinatorFactory.withMinimalRecommendedRules(additional = rules)
+    fun setCustomRules(rules: Collection<MoveRule>) {
+        moveCoordinator = MoveCoordinatorFactory.create(rules)
     }
 
 
@@ -83,6 +73,7 @@ class GameStateService @JvmOverloads constructor(
 
         notifyGameStateChangedListeners()
     }
+
 
     private fun checkLevelCleared(state: GameState): Boolean =
         state.tiles.none { tile ->
