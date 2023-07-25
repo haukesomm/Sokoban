@@ -1,4 +1,4 @@
-package de.haukesomm.sokoban.web.components.game
+package de.haukesomm.sokoban.web
 
 import de.haukesomm.sokoban.core.Direction
 import de.haukesomm.sokoban.core.GameStateService
@@ -7,47 +7,40 @@ import de.haukesomm.sokoban.core.moving.rules.MoveRule
 import de.haukesomm.sokoban.core.moving.rules.MultipleBoxesPreventingMoveRule
 import de.haukesomm.sokoban.core.moving.rules.WallCollisionPreventingMoveRule
 import de.haukesomm.sokoban.core.state.GameState
-import de.haukesomm.sokoban.web.DarkModeStore
-import de.haukesomm.sokoban.web.VersionInfo
 import de.haukesomm.sokoban.web.components.alertModal
 import de.haukesomm.sokoban.web.components.checkboxGroup
+import de.haukesomm.sokoban.web.components.game.gameField
 import de.haukesomm.sokoban.web.components.icons.GitHubIcons
 import de.haukesomm.sokoban.web.components.icons.HeroIcons
 import de.haukesomm.sokoban.web.components.icons.icon
 import de.haukesomm.sokoban.web.components.listBox
 import de.haukesomm.sokoban.web.components.switch
 import de.haukesomm.sokoban.web.level.BundledLevelRepository
-import de.haukesomm.sokoban.web.level.BundledLevelTileFactory
+import de.haukesomm.sokoban.web.level.bundledTileMapping
 import dev.fritz2.core.*
 import kotlinx.coroutines.flow.*
 
 class GameFrame {
 
-    companion object {
-        private val availableRules = listOf(
-            MultipleBoxesPreventingMoveRule(),
-            WallCollisionPreventingMoveRule()
-        )
-    }
+    private val enabledRulesStore = storeOf(UserSelectableRules.rules)
 
     private val gameStateService = GameStateService(
         BundledLevelRepository(),
-        BundledLevelTileFactory()
-    ).apply {
-        setCustomRules(availableRules.toSet())
-    }
+        bundledTileMapping,
+        enabledRulesStore.data.map { it.rules }
+    )
 
     private val levelDescriptions = gameStateService.getAvailableLevels()
 
 
     private fun RenderContext.initializeKeyboardInput() {
         Window.keydowns.map { shortcutOf(it.key) } handledBy { shortcut ->
-            gameStateService.getPlayer()?.let { player ->
+            gameStateService.getPlayerPosition()?.let { position ->
                 when(shortcut) {
-                    Keys.ArrowUp -> gameStateService.moveEntityIfPossible(player, Direction.Top)
-                    Keys.ArrowDown -> gameStateService.moveEntityIfPossible(player, Direction.Bottom)
-                    Keys.ArrowLeft -> gameStateService.moveEntityIfPossible(player, Direction.Left)
-                    Keys.ArrowRight -> gameStateService.moveEntityIfPossible(player, Direction.Right)
+                    Keys.ArrowUp -> gameStateService.moveEntityIfPossible(position, Direction.Top)
+                    Keys.ArrowDown -> gameStateService.moveEntityIfPossible(position, Direction.Bottom)
+                    Keys.ArrowLeft -> gameStateService.moveEntityIfPossible(position, Direction.Left)
+                    Keys.ArrowRight -> gameStateService.moveEntityIfPossible(position, Direction.Right)
                 }
             }
         }
@@ -55,45 +48,29 @@ class GameFrame {
 
 
     fun RenderContext.render() {
-        val nullableGameStateStore = storeOf<GameState?>(null)
-        val gameStateFlow = nullableGameStateStore.data.filterNotNull()
-        gameStateService.addGameStateChangedListener { state ->
-            nullableGameStateStore.update(state)
-        }
-
         val selectedLevelStore = storeOf(levelDescriptions.first())
         selectedLevelStore.data handledBy {
             gameStateService.loadLevel(it.id)
         }
 
-        val enabledRulesStore = storeOf(availableRules)
-        enabledRulesStore.data handledBy {
-            gameStateService.setCustomRules(it)
+
+        initializeKeyboardInput()
+        gameStateService.state.let { state ->
+            state.filter { it.levelCleared }.map { } handledBy levelClearedAlert(state)
         }
 
 
-        initializeKeyboardInput()
-        gameStateFlow
-            .filter { it.levelCleared }
-            .map { } handledBy levelClearedAlert(gameStateFlow)
-
-
         div("h-full w-full flex flex-col gap-4") {
-            titleBar(gameStateFlow, selectedLevelStore)
-
+            titleBar(selectedLevelStore)
             main("mx-4 grow grid grid-cols-[fit-content(400px)_auto] gap-4") {
                 sideBar(enabledRulesStore)
-                gameFieldContainer(gameStateFlow)
+                gameFieldContainer()
             }
-
             footerBar()
         }
     }
 
-    private fun RenderContext.titleBar(
-        gameStateFlow: Flow<GameState>,
-        selectedLevelStore: Store<LevelDescription>
-    ) {
+    private fun RenderContext.titleBar(selectedLevelStore: Store<LevelDescription>) {
         div(
             """sticky w-full py-2 px-4 flex flex-row justify-between items-center gap-4
                 | bg-white dark:bg-darkgray-400 shadow-sm dark:shadow-md
@@ -113,7 +90,7 @@ class GameFrame {
                 span("text-sm") {
                     +"Moves: "
                     code {
-                        gameStateFlow.render(into = this) {
+                        gameStateService.state.render(into = this) {
                             +it.moves.toString()
                         }
                     }
@@ -121,7 +98,7 @@ class GameFrame {
                 span("text-sm") {
                     +"Pushes: "
                     code {
-                        gameStateFlow.render(into = this) {
+                        gameStateService.state.render(into = this) {
                             +it.pushes.toString()
                         }
                     }
@@ -152,17 +129,15 @@ class GameFrame {
         }
     }
 
-    private fun RenderContext.sideBar(
-        enabledRulesStore: Store<List<MoveRule>>
-    ) {
+    private fun RenderContext.sideBar(enabledRulesStore: Store<List<MoveRuleWithDescription>>) {
         div("p-4 space-y-4 max-w-md bg-white dark:bg-darkgray-400 rounded-md shadow") {
             div("flex gap-2 items-center") {
                 span("font-semibold text_white dark:text-gray-300") {
-                    +"Edit Rules"
+                    +"Toggle rules"
                 }
                 div(
                     """px-1.5 py-0.5 flex items-center gap-1 rounded-full border border-primary-500 
-                                | text-xs text-primary-500""".trimMargin()
+                        | text-xs text-primary-500""".trimMargin()
                 ) {
                     icon("w-3 h-3", definition = HeroIcons.beaker)
                     +"Experimental"
@@ -170,9 +145,9 @@ class GameFrame {
             }
             checkboxGroup {
                 values(enabledRulesStore)
-                options = availableRules
-                optionsFormat = MoveRule::title
-                optionDescriptionFormat = MoveRule::description
+                options = UserSelectableRules.rules
+                optionsFormat = MoveRuleWithDescription::title
+                optionDescriptionFormat = MoveRuleWithDescription::description
             }
         }
     }
@@ -192,12 +167,10 @@ class GameFrame {
         }
     }
 
-    private fun RenderContext.gameFieldContainer(
-        gameStateFlow: Flow<GameState>
-    ) {
+    private fun RenderContext.gameFieldContainer() {
         div("w-full flex flex-col items-center") {
             div("max-w-min flex justify-center rounded-lg shadow overflow-hidden") {
-                gameField(gameStateFlow)
+                gameField(gameStateService.state)
             }
         }
     }

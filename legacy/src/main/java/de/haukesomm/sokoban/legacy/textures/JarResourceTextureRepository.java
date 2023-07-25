@@ -1,7 +1,7 @@
 package de.haukesomm.sokoban.legacy.textures;
 
-import de.haukesomm.sokoban.core.Entity;
-import de.haukesomm.sokoban.core.Tile;
+import de.haukesomm.sokoban.core.EntityType;
+import de.haukesomm.sokoban.core.TileType;
 
 import javax.swing.*;
 
@@ -10,7 +10,7 @@ public class JarResourceTextureRepository implements TextureRepository {
     private static final String BASE_PATH = "/de/haukesomm/sokoban/legacy/textures";
 
     @Override
-    public ImageIcon getForTileType(Tile.Type tileType) {
+    public ImageIcon getForTileType(TileType tileType) {
         String textureFileName = switch (tileType) {
             case Empty -> "ground.png";
             case Wall -> "wall.png";
@@ -21,7 +21,7 @@ public class JarResourceTextureRepository implements TextureRepository {
     }
 
     @Override
-    public ImageIcon getForEntityType(Entity.Type entityType) {
+    public ImageIcon getForEntityType(EntityType entityType) {
         String textureFileName = switch (entityType) {
             case Box -> "box.png";
             case Player -> "player.png";

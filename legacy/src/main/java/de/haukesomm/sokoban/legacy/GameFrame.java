@@ -5,10 +5,13 @@ import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
 
-import de.haukesomm.sokoban.core.level.DefaultTileFactory;
+import de.haukesomm.sokoban.core.GameStateChangeHandler;
+import de.haukesomm.sokoban.core.Position;
+import de.haukesomm.sokoban.core.level.LevelToGameStateConverter;
+import de.haukesomm.sokoban.core.moving.rules.MultipleBoxesPreventingMoveRule;
+import de.haukesomm.sokoban.core.moving.rules.WallCollisionPreventingMoveRule;
 import de.haukesomm.sokoban.legacy.level.JarResourceLevelRepository;
 import de.haukesomm.sokoban.core.Direction;
-import de.haukesomm.sokoban.core.Entity;
 import de.haukesomm.sokoban.core.GameStateService;
 
 public class GameFrame extends JFrame {
@@ -23,9 +26,9 @@ public class GameFrame extends JFrame {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            Entity player = gameStateService.getPlayer();
-            if (player != null) {
-                gameStateService.moveEntityIfPossible(player, direction);
+            Position position = gameStateService.getPlayerPosition();
+            if (position != null) {
+                gameStateService.moveEntityIfPossible(position, direction);
             }
         }
     }
@@ -34,7 +37,9 @@ public class GameFrame extends JFrame {
     private final GameStateService gameStateService =
             new GameStateService(
                     new JarResourceLevelRepository(20, 16),
-                    new DefaultTileFactory()
+                    LevelToGameStateConverter.getDefault(),
+                    new WallCollisionPreventingMoveRule(),
+                    new MultipleBoxesPreventingMoveRule()
             );
 
     private final GameField gameField = new GameField();
@@ -44,9 +49,8 @@ public class GameFrame extends JFrame {
     public GameFrame() {
         initializeFrame();
         initListeners();
-        loadDefaultLevel();
+        initializeKeyBindings();
         showFrame();
-        getRootPane().requestFocus();
     }
 
 
@@ -54,9 +58,6 @@ public class GameFrame extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setResizable(true);
         setFocusable(true);
-
-        // FIXME: LAF crashes on macOS
-        //setLookAndFeel();
 
         setTitle("Sokoban");
         setLayout(new GridBagLayout());
@@ -79,19 +80,6 @@ public class GameFrame extends JFrame {
         add(levelInfoBar, constraints);
     }
 
-    private void setLookAndFeel() {
-        try {
-            UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
-        } catch (ClassNotFoundException |
-                 InstantiationException |
-                 IllegalAccessException |
-                 UnsupportedLookAndFeelException e
-        ) {
-            System.err.println("Unable to set LAF:");
-            e.printStackTrace();
-        }
-    }
-
     private void initializeKeyBindings() {
         InputMap inputMap = new ComponentInputMap(getRootPane());
 
@@ -110,7 +98,7 @@ public class GameFrame extends JFrame {
     }
 
     private void initListeners() {
-        gameStateService.addGameStateChangedListener(state -> {
+        GameStateChangeHandler.handle(gameStateService, state -> {
             var moves = state.getMoves();
             var pushes = state.getPushes();
 
@@ -118,14 +106,17 @@ public class GameFrame extends JFrame {
             levelInfoBar.setPushCount(pushes);
 
             gameField.drawState(state);
+
             revalidate();
+            pack();
             repaint();
+            getRootPane().requestFocus();
 
             if (state.getLevelCleared()) {
                 showLevelClearedDialog(moves, pushes);
             }
         });
-        levelInfoBar.addLevelSelectedListener(levelDescription -> loadLevel(levelDescription.getId()));
+        levelInfoBar.addLevelSelectedListener(description -> loadLevel(description.getId()));
     }
 
     private void loadLevel(String id) {
@@ -133,18 +124,6 @@ public class GameFrame extends JFrame {
         levelInfoBar.setPushCount(0);
 
         gameStateService.loadLevel(id);
-
-        initializeKeyBindings();
-    }
-
-    private void loadDefaultLevel() {
-        var firstLevelId = gameStateService
-                .getAvailableLevels()
-                .stream()
-                .findFirst()
-                .orElseThrow().getId();
-
-        loadLevel(firstLevelId);
     }
 
     private void showFrame() {

@@ -1,16 +1,21 @@
 package de.haukesomm.sokoban.core
 
-data class Tile(
-    val type: Type,
-    val position: Position,
-    val entities: Set<Entity> = emptySet()
-) {
-    @Suppress("unused")
-    enum class Type { Empty, Wall, Target }
+import kotlinx.serialization.Serializable
 
+enum class TileType {
+    Empty,
+    Wall,
+    Target
+}
+
+@Serializable
+data class Tile(
+    val type: TileType,
+    val entity: Entity? = null
+) {
     val isTarget: Boolean
-        get() = type == Type.Target
+        get() = type == TileType.Target
 
     val isWall: Boolean
-        get() = type == Type.Wall
+        get() = type == TileType.Wall
 }

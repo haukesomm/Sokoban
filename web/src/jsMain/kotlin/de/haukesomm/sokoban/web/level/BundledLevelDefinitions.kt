@@ -248,5 +248,5 @@ object BundledLevelDefinitions {
 
     val levelById: Map<String, Level> by lazy { levels.associateBy(Level::id) }
 
-    val levels: List<Level> = _levels.map(Level::withNormalizedLevelString)
+    val levels: List<Level> = _levels.map(Level::normalizeLayoutString)
 }

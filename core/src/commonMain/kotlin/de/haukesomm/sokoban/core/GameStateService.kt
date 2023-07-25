@@ -1,83 +1,68 @@
 package de.haukesomm.sokoban.core
 
+import de.haukesomm.sokoban.core.coroutines.SokobanMainScope
 import de.haukesomm.sokoban.core.level.*
-import de.haukesomm.sokoban.core.moving.MoveCoordinator
-import de.haukesomm.sokoban.core.moving.MoveCoordinatorFactory
+import de.haukesomm.sokoban.core.moving.MoveService
 import de.haukesomm.sokoban.core.moving.rules.*
-import de.haukesomm.sokoban.core.moving.rules.ConditionalMoveRule
-import de.haukesomm.sokoban.core.moving.rules.OutOfBoundsPreventingMoveRule
 import de.haukesomm.sokoban.core.state.GameState
 import de.haukesomm.sokoban.core.state.transform
+import kotlinx.coroutines.flow.*
 import kotlin.jvm.JvmOverloads
 
 class GameStateService(
     private val levelRepository: LevelRepository,
-    tileFactory: TileFactory
+    private val levelToGameStateConverter: LevelToGameStateConverter,
+    rules: Flow<Collection<MoveRule>> = flowOf(emptyList())
 ) {
-    fun interface StateChangeListener {
-        fun onGameStateChange(state: GameState)
+    constructor(
+        levelRepository: LevelRepository,
+        levelToGameStateConverter: LevelToGameStateConverter,
+        vararg rules: MoveRule
+    ) : this(levelRepository, levelToGameStateConverter, flowOf(rules.toSet()))
+
+
+    private val internalState = MutableStateFlow(
+        levelToGameStateConverter.convert(levelRepository.firstOrThrow())
+    )
+    val state: Flow<GameState> = internalState.asSharedFlow()
+
+    private var moveService = MoveService.withDefaultRules()
+
+
+    init {
+        rules.onEach {
+            moveService = MoveService.withDefaultRules(additionalRules = it)
+        }.launchIn(SokobanMainScope)
     }
 
 
-    private val levelToGameStateConverter = LevelToGameStateConverter(tileFactory)
-
-    private val stateChangeListeners = mutableSetOf<StateChangeListener>()
-
-
-    private lateinit var state: GameState
-
-    private var moveCoordinator = MoveCoordinatorFactory.create()
-
-
-    fun addGameStateChangedListener(listener: StateChangeListener) {
-        stateChangeListeners += listener
-    }
-
-    private fun notifyGameStateChangedListeners() {
-        stateChangeListeners.forEach { it.onGameStateChange(state) }
-    }
-
-
-    fun setCustomRules(rules: Collection<MoveRule>) {
-        moveCoordinator = MoveCoordinatorFactory.create(rules)
-    }
-
-
-    fun getAvailableLevels(): List<LevelDescription> =
+    fun getAvailableLevels( ): List<LevelDescription> =
         levelRepository.getAvailableLevels()
 
     fun loadLevel(levelId: String) {
         val level = levelRepository.getLevelOrNull(levelId)
             ?: throw IllegalStateException("Level with id '$levelId' does not exist!")
 
-        state = levelToGameStateConverter.convert(level)
-        notifyGameStateChangedListeners()
+        internalState.tryEmit(levelToGameStateConverter.convert(level))
     }
 
-    fun reloadLevel() = loadLevel(state.levelId)
+    fun reloadLevel(): Unit =
+        loadLevel(internalState.value.levelId)
 
 
-    fun getPlayer(): Entity? = state.getPlayer()
+    fun getPlayerPosition(): Position? =
+        internalState.value.getPlayerPosition()
 
 
-    fun moveEntityIfPossible(entity: Entity, direction: Direction) {
-        if (!this::state.isInitialized) {
-            throw IllegalStateException("Cannot move Entity: No game state loaded!")
-        }
-
-        moveCoordinator.moveEntityIfPossible(state, entity, direction)?.let { newState ->
-            state = newState.transform {
-                levelCleared = checkLevelCleared(newState)
-            }
-        }
-
-        notifyGameStateChangedListeners()
+    fun moveEntityIfPossible(position: Position, direction: Direction) {
+        moveService.moveEntityIfPossible(internalState.value, position, direction)
+            ?.transform { levelCleared = checkLevelCleared(this) }
+            ?.let(internalState::tryEmit)
     }
-
 
     private fun checkLevelCleared(state: GameState): Boolean =
         state.tiles.none { tile ->
-            val box = state.entityAt(tile.position)?.takeIf(Entity::isBox)
+            val box = tile.entity?.takeIf(Entity::isBox)
             tile.isTarget && box == null
         }
 }

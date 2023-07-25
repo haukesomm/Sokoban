@@ -2,6 +2,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("multiplatform") version "1.7.20" apply false
+    kotlin("plugin.serialization") version "1.7.20" apply false
     id("com.google.devtools.ksp") version "1.7.21-1.0.8" apply false
 }
 
@@ -25,4 +26,6 @@ subprojects {
 
 ext {
     set("fritz2version", "1.0-RC6")
+    set("coroutinesVersion", "1.6.4")
+    set("serializationVersion", "1.3.0")
 }

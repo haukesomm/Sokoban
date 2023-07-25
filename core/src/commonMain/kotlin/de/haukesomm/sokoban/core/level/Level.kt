@@ -7,10 +7,11 @@ data class Level(
     val height: Int,
     val layoutString: String
 ) {
-    fun withNormalizedLevelString(): Level {
-        val normalized = layoutString.replace(" ", "").replace("(\r)?\n".toRegex(), "")
-        return copy(layoutString = normalized)
-    }
+    fun normalizeLayoutString(): Level =
+        layoutString
+            .replace(" ", "")
+            .replace("(\r)?\n".toRegex(), "")
+            .let { copy(layoutString = it) }
 
     fun toLevelDescription(): LevelDescription = LevelDescription(id, name)
 }

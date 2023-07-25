@@ -1,12 +1,16 @@
 package de.haukesomm.sokoban.core
 
-data class Entity(
-    val id: String = Id.next(),
-    val type: Type,
-    val position: Position
-) {
-    enum class Type { Box, Player }
+import kotlinx.serialization.Serializable
 
-    val isPlayer: Boolean = type == Type.Player
-    val isBox: Boolean = type == Type.Box
+enum class EntityType {
+    Box,
+    Player
+}
+
+@Serializable
+data class Entity(
+    val type: EntityType
+) {
+    val isPlayer: Boolean = type == EntityType.Player
+    val isBox: Boolean = type == EntityType.Box
 }

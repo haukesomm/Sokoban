@@ -1,7 +1,6 @@
 package de.haukesomm.sokoban.web
 
 import de.haukesomm.sokoban.web.components.alert
-import de.haukesomm.sokoban.web.components.game.gameFrame
 import de.haukesomm.sokoban.web.components.icons.HeroIcons
 import dev.fritz2.core.RenderContext
 import dev.fritz2.core.render

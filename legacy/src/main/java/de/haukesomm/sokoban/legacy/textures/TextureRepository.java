@@ -1,12 +1,13 @@
 package de.haukesomm.sokoban.legacy.textures;
 
-import de.haukesomm.sokoban.core.Entity;
-import de.haukesomm.sokoban.core.Tile;
+import de.haukesomm.sokoban.core.EntityType;
+import de.haukesomm.sokoban.core.TileType;
+
 import javax.swing.*;
 
 public interface TextureRepository {
 
-    ImageIcon getForTileType(Tile.Type tileType);
+    ImageIcon getForTileType(TileType tileType);
 
-    ImageIcon getForEntityType(Entity.Type entityType);
+    ImageIcon getForEntityType(EntityType entityType);
 }

@@ -1,33 +1,35 @@
 package de.haukesomm.sokoban.web.components.game
 
-import de.haukesomm.sokoban.core.*
+import de.haukesomm.sokoban.core.Entity
+import de.haukesomm.sokoban.core.EntityType
+import de.haukesomm.sokoban.core.Tile
+import de.haukesomm.sokoban.core.TileType
 import de.haukesomm.sokoban.core.state.GameState
-import de.haukesomm.sokoban.core.state.ImmutableGameState
-import de.haukesomm.sokoban.web.model.LensesGameStateDecorator
+import de.haukesomm.sokoban.web.model.LensesSupportingGameState
 import de.haukesomm.sokoban.web.model.tiles
-import de.haukesomm.sokoban.web.model.withLenses
-import dev.fritz2.core.*
+import de.haukesomm.sokoban.web.model.toLensesSupporting
+import dev.fritz2.core.RenderContext
+import dev.fritz2.core.src
+import dev.fritz2.core.storeOf
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 class GameField(states: Flow<GameState>) {
 
-    private val gameStateStore = storeOf(
-        ImmutableGameState.empty().withLenses()
-    ).apply {
-        states.map { it.withLenses() } handledBy update
+    private val gameStateStore = storeOf(LensesSupportingGameState("", 0, 0, emptyList())).apply {
+        states.map { it.toLensesSupporting() } handledBy update
     }
-    private val gameStateTilesFlow = gameStateStore.map(LensesGameStateDecorator.tiles()).data
+    private val gameStateTilesFlow = gameStateStore.map(LensesSupportingGameState.tiles()).data
 
-    private fun getTileTexture(tileType: Tile.Type) = when(tileType) {
-        Tile.Type.Empty -> "ground.png"
-        Tile.Type.Wall -> "wall.png"
-        Tile.Type.Target -> "target.png"
+    private fun getTileTexture(tileType: TileType) = when(tileType) {
+        TileType.Empty -> "ground.png"
+        TileType.Wall -> "wall.png"
+        TileType.Target -> "target.png"
     }
 
     private fun getEntityTexture(entity: Entity) = when(entity.type) {
-        Entity.Type.Box -> "box.png"
-        Entity.Type.Player -> "player.png"
+        EntityType.Box -> "box.png"
+        EntityType.Player -> "player.png"
     }
 
     fun RenderContext.render() {
@@ -39,7 +41,7 @@ class GameField(states: Flow<GameState>) {
                     inlineStyle("grid-template-columns: repeat($width, 1fr);")
 
                     gameStateTilesFlow.renderEach(batch = true) {
-                        renderTile(it, it.entities.firstOrNull())
+                        renderTile(it, it.entity)
                     }
                 }
             }

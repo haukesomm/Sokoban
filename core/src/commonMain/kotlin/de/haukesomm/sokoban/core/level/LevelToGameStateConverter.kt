@@ -3,21 +3,40 @@ package de.haukesomm.sokoban.core.level
 import de.haukesomm.sokoban.core.*
 import de.haukesomm.sokoban.core.state.GameState
 import de.haukesomm.sokoban.core.state.ImmutableGameState
+import kotlin.jvm.JvmStatic
 
-class LevelToGameStateConverter(private val tileFactory: TileFactory) {
+data class TileProperties(
+    val tileType: TileType,
+    val entityType: EntityType? = null
+)
 
-    fun convert(level: Level): GameState {
-        val layoutCharacters = level.layoutString.toCharArray()
-        val tiles = mutableListOf<Tile>()
+class LevelToGameStateConverter(
+    vararg tilePropertiesToCharacter: Pair<Char, TileProperties>
+) {
+    private val tilePropertiesToCharacterMap = mapOf(*tilePropertiesToCharacter)
 
-        for (y in 0 until level.height) {
-            for (x in 0 until level.width) {
-                val position = Position(x, y)
-                val character = layoutCharacters[position.toIndex(level.width)]
-                tiles += tileFactory.createForCharacter(character, position)
-            }
+    private fun tileForCharacter(character: Char): Tile {
+        val mapValue = tilePropertiesToCharacterMap[character]
+            ?: TileProperties(TileType.Empty)
+
+        return mapValue.run {
+            Tile(tileType, entityType?.let { Entity(it) })
+        }
+    }
+
+    fun convert(level: Level): GameState =
+        level.run {
+            ImmutableGameState(id, width, height, layoutString.map(::tileForCharacter))
         }
 
-        return ImmutableGameState(level.id, level.width, level.height, tiles)
+    companion object {
+        @JvmStatic
+        val default: LevelToGameStateConverter = LevelToGameStateConverter(
+            '_' to TileProperties(TileType.Empty),
+            '.' to TileProperties(TileType.Target),
+            '#' to TileProperties(TileType.Wall),
+            '$' to TileProperties(TileType.Empty, EntityType.Box),
+            '@' to TileProperties(TileType.Empty, EntityType.Player),
+        )
     }
 }

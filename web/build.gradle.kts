@@ -3,6 +3,7 @@ import java.nio.charset.Charset
 
 plugins {
     kotlin("multiplatform")
+    kotlin("plugin.serialization")
     id("com.google.devtools.ksp")
 }
 
@@ -18,6 +19,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation("dev.fritz2:headless:$fritz2version")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:${rootProject.ext["serializationVersion"]}")
                 implementation(project(":core"))
             }
         }

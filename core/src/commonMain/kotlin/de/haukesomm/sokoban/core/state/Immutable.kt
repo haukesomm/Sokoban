@@ -2,7 +2,9 @@ package de.haukesomm.sokoban.core.state
 
 import de.haukesomm.sokoban.core.Entity
 import de.haukesomm.sokoban.core.Tile
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class ImmutableGameState(
     override val levelId: String,
     override val width: Int,
@@ -11,17 +13,7 @@ data class ImmutableGameState(
     override val moves: Int = 0,
     override val pushes: Int = 0,
     override val levelCleared: Boolean = false
-) : AbstractGameState() {
-
-    override val entities: Set<Entity> by lazy {
-        tiles.flatMap(Tile::entities).toSet()
-    }
-
-    companion object {
-        fun empty(): ImmutableGameState =
-            ImmutableGameState("empty", 0, 0, emptyList())
-    }
-}
+) : GameState
 
 fun GameState.toImmutable(): ImmutableGameState =
     if (this is ImmutableGameState) this
