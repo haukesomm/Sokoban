@@ -6,7 +6,7 @@ import de.haukesomm.sokoban.core.level.LevelRepository
 
 class BundledLevelRepository : LevelRepository {
     override fun getAvailableLevels(): List<LevelDescription> =
-        BundledLevelDefinitions.levels.map(Level::toLevelDescription)
+        BundledLevelDefinitions.levels.map { LevelDescription(it.id, it.name) }
 
     override fun getLevelOrNull(id: String?): Level? =
         BundledLevelDefinitions.levelById[id]

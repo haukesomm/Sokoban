@@ -2,10 +2,8 @@ package de.haukesomm.sokoban.web
 
 import de.haukesomm.sokoban.core.Direction
 import de.haukesomm.sokoban.core.GameStateService
+import de.haukesomm.sokoban.core.level.CharacterMaps
 import de.haukesomm.sokoban.core.level.LevelDescription
-import de.haukesomm.sokoban.core.moving.rules.MoveRule
-import de.haukesomm.sokoban.core.moving.rules.MultipleBoxesPreventingMoveRule
-import de.haukesomm.sokoban.core.moving.rules.WallCollisionPreventingMoveRule
 import de.haukesomm.sokoban.core.state.GameState
 import de.haukesomm.sokoban.web.components.alertModal
 import de.haukesomm.sokoban.web.components.checkboxGroup
@@ -16,7 +14,7 @@ import de.haukesomm.sokoban.web.components.icons.icon
 import de.haukesomm.sokoban.web.components.listBox
 import de.haukesomm.sokoban.web.components.switch
 import de.haukesomm.sokoban.web.level.BundledLevelRepository
-import de.haukesomm.sokoban.web.level.bundledTileMapping
+import de.haukesomm.sokoban.web.level.bundled
 import dev.fritz2.core.*
 import kotlinx.coroutines.flow.*
 
@@ -26,7 +24,7 @@ class GameFrame {
 
     private val gameStateService = GameStateService(
         BundledLevelRepository(),
-        bundledTileMapping,
+        CharacterMaps.bundled,
         enabledRulesStore.data.map { it.rules }
     )
 

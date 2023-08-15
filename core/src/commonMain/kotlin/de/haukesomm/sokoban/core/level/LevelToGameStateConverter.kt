@@ -3,40 +3,41 @@ package de.haukesomm.sokoban.core.level
 import de.haukesomm.sokoban.core.*
 import de.haukesomm.sokoban.core.state.GameState
 import de.haukesomm.sokoban.core.state.ImmutableGameState
-import kotlin.jvm.JvmStatic
 
+/**
+ * Represents both the type of tile and the type of entity that may be present on the tile.
+ * The latter is optional and may be `null` if the tile does not contain an entity.
+ */
 data class TileProperties(
     val tileType: TileType,
     val entityType: EntityType? = null
 )
 
-class LevelToGameStateConverter(
-    vararg tilePropertiesToCharacter: Pair<Char, TileProperties>
-) {
-    private val tilePropertiesToCharacterMap = mapOf(*tilePropertiesToCharacter)
+/**
+ * Converts a [Level] into a [GameState] by using a [CharacterMap] to map the characters of the level's layout string
+ * to a two-dimensional grid of [Tile]s.
+ */
+class LevelToGameStateConverter(private val characterMap: CharacterMap) {
 
     private fun tileForCharacter(character: Char): Tile {
-        val mapValue = tilePropertiesToCharacterMap[character]
+        val tileProperties = characterMap[character]
             ?: TileProperties(TileType.Empty)
 
-        return mapValue.run {
+        return tileProperties.run {
             Tile(tileType, entityType?.let { Entity(it) })
         }
     }
 
+    /**
+     * Converts the given [level] into a [GameState].
+     */
     fun convert(level: Level): GameState =
         level.run {
-            ImmutableGameState(id, width, height, layoutString.map(::tileForCharacter))
+            ImmutableGameState(
+                id,
+                width,
+                height,
+                normalizedLayoutString.map(::tileForCharacter)
+            )
         }
-
-    companion object {
-        @JvmStatic
-        val default: LevelToGameStateConverter = LevelToGameStateConverter(
-            '_' to TileProperties(TileType.Empty),
-            '.' to TileProperties(TileType.Target),
-            '#' to TileProperties(TileType.Wall),
-            '$' to TileProperties(TileType.Empty, EntityType.Box),
-            '@' to TileProperties(TileType.Empty, EntityType.Player),
-        )
-    }
 }

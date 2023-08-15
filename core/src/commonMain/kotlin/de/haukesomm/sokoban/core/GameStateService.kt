@@ -11,15 +11,17 @@ import kotlin.jvm.JvmOverloads
 
 class GameStateService(
     private val levelRepository: LevelRepository,
-    private val levelToGameStateConverter: LevelToGameStateConverter,
+    characterMap: CharacterMap,
     rules: Flow<Collection<MoveRule>> = flowOf(emptyList())
 ) {
     constructor(
         levelRepository: LevelRepository,
-        levelToGameStateConverter: LevelToGameStateConverter,
+        characterMap: CharacterMap,
         vararg rules: MoveRule
-    ) : this(levelRepository, levelToGameStateConverter, flowOf(rules.toSet()))
+    ) : this(levelRepository, characterMap, flowOf(rules.toSet()))
 
+
+    private val levelToGameStateConverter = LevelToGameStateConverter(characterMap)
 
     private val internalState = MutableStateFlow(
         levelToGameStateConverter.convert(levelRepository.firstOrThrow())

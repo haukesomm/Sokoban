@@ -3,7 +3,8 @@ package de.haukesomm.sokoban.web.level
 import de.haukesomm.sokoban.core.level.Level
 
 object BundledLevelDefinitions {
-    private val _levels = listOf(
+
+    val levels: List<Level> = listOf(
         Level(
             id = "bundled-level-01",
             name = "Level 01",
@@ -246,7 +247,7 @@ object BundledLevelDefinitions {
         ),
     )
 
-    val levelById: Map<String, Level> by lazy { levels.associateBy(Level::id) }
-
-    val levels: List<Level> = _levels.map(Level::normalizeLayoutString)
+    val levelById: Map<String, Level> by lazy {
+        levels.associateBy(Level::id)
+    }
 }

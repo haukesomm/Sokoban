@@ -7,7 +7,7 @@ import java.awt.event.ActionEvent;
 
 import de.haukesomm.sokoban.core.GameStateChangeHandler;
 import de.haukesomm.sokoban.core.Position;
-import de.haukesomm.sokoban.core.level.LevelToGameStateConverter;
+import de.haukesomm.sokoban.core.level.CharacterMaps;
 import de.haukesomm.sokoban.core.moving.rules.MultipleBoxesPreventingMoveRule;
 import de.haukesomm.sokoban.core.moving.rules.WallCollisionPreventingMoveRule;
 import de.haukesomm.sokoban.legacy.level.JarResourceLevelRepository;
@@ -37,7 +37,7 @@ public class GameFrame extends JFrame {
     private final GameStateService gameStateService =
             new GameStateService(
                     new JarResourceLevelRepository(20, 16),
-                    LevelToGameStateConverter.getDefault(),
+                    CharacterMaps.getDefault(),
                     new WallCollisionPreventingMoveRule(),
                     new MultipleBoxesPreventingMoveRule()
             );
