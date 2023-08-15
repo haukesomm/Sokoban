@@ -1,8 +1,6 @@
 package de.haukesomm.sokoban.core
 
-enum class Direction {
-    Top,
-    Right,
-    Bottom,
-    Left
-}
+/**
+ * Represents a direction an [Entity] can move in.
+ */
+enum class Direction { Top, Right, Bottom, Left }

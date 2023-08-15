@@ -3,6 +3,12 @@ package de.haukesomm.sokoban.core.state
 import de.haukesomm.sokoban.core.Tile
 import kotlinx.serialization.Serializable
 
+/**
+ * Mutable implementation of [GameState].
+ *
+ * This implementation allows modifications to the game state.
+ * An immutable copy of the game state can be created via the [toImmutable] method.
+ */
 @Serializable
 data class MutableGameState(
     override var levelId: String,
@@ -14,6 +20,9 @@ data class MutableGameState(
     override var levelCleared: Boolean = false
 ) : GameState
 
+/**
+ * Creates a mutable copy of this [GameState].
+ */
 fun GameState.toMutable(): MutableGameState =
     MutableGameState(levelId, width, height, tiles.toMutableList(), moves, pushes, levelCleared)
 
