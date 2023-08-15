@@ -1,9 +1,6 @@
 package de.haukesomm.sokoban.core.state
 
-import de.haukesomm.sokoban.core.Direction
-import de.haukesomm.sokoban.core.Entity
-import de.haukesomm.sokoban.core.Position
-import de.haukesomm.sokoban.core.Tile
+import de.haukesomm.sokoban.core.*
 import kotlinx.serialization.Serializable
 
 interface GameState {
@@ -31,5 +28,27 @@ interface GameState {
         when (val index = tiles.indexOfFirst { it.entity?.isPlayer == true }) {
             -1 -> null
             else -> Position.fromIndex(index, width)
+        }
+
+    fun print(): String =
+        buildString {
+            tiles.forEachIndexed { index, tile ->
+                val char = when (val entity = tile.entity) {
+                    null -> when (tile.type) {
+                        TileType.Wall -> '#'
+                        TileType.Target -> '.'
+                        TileType.Empty -> ' '
+                    }
+                    else -> when(entity.type) {
+                        EntityType.Player -> '@'
+                        EntityType.Box -> '$'
+                    }
+                }
+                if (index % width == 0) {
+                    append("\n")
+                    append(char)
+                }
+                else append(char)
+            }
         }
 }
