@@ -1,6 +1,7 @@
 package de.haukesomm.sokoban.core.moving;
 
 import de.haukesomm.sokoban.core.*;
+import de.haukesomm.sokoban.core.level.CharacterMaps;
 import de.haukesomm.sokoban.core.level.LevelRepository;
 import de.haukesomm.sokoban.core.level.LevelToGameStateConverter;
 import de.haukesomm.sokoban.core.moving.rules.MultipleBoxesPreventingMoveRule;
@@ -14,7 +15,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 public class MoveServiceTest {
-    private final LevelToGameStateConverter converter = LevelToGameStateConverter.getDefault();
+    private final LevelToGameStateConverter converter = new LevelToGameStateConverter(CharacterMaps.getDefault());
     private final LevelRepository repository = new JarResourceLevelRepository(6, 5);
 
     @SuppressWarnings("DataFlowIssue")

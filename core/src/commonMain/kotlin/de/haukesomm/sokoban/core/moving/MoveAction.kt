@@ -12,7 +12,7 @@ import de.haukesomm.sokoban.core.state.transform
  * Typically, this is a move of the player or a box. The action is performed on a [GameState] and returns a _new_
  * [GameState] with the move applied.
  */
-interface MoveAction {
+fun interface MoveAction {
 
     /**
      * Performs the move on the given [state] and returns the new [GameState].
@@ -24,12 +24,9 @@ interface MoveAction {
  * Represents a basic move of an [Entity] at a given [position] in a given [direction].
  *
  * The move is performed by removing the entity from the current position and adding it to the next position.
- * Once the move is performed, the [GameState.moves] counter is incremented. This is done regardless of whether
- * a box has been moved or not after every turn the player makes.
  *
- * Box pushes are counted separately and are only incremented if a box has been moved.
- *
- * @see PushesIncrementingMoveActionDecorator
+ * The moves and pushes counters are not incremented when using this action. Instead, use [movesIncrementing] or
+ * [pushesIncrementing] decorator methods depending on the type of move.
  */
 class SimpleMoveAction(
     private val position: Position,
@@ -50,10 +47,19 @@ class SimpleMoveAction(
 }
 
 /**
- * Decorator for a [MoveAction] that increments the [GameState.pushes] counter after the move is performed.
+ * Convenience method decorating a [MoveAction] so that the [GameState.moves] counter is incremented after the
+ * decorated move is performed.
  */
-class PushesIncrementingMoveActionDecorator(private val decorated: MoveAction) : MoveAction {
+fun MoveAction.movesIncrementing(): MoveAction =
+    MoveAction { state ->
+        performMove(state).transform { moves++ }
+    }
 
-    override fun performMove(state: GameState): GameState =
-        decorated.performMove(state).transform { pushes++ }
-}
+/**
+ * Convenience method decorating a [MoveAction] so that the [GameState.pushes] counter is incremented after the
+ * decorated move is performed.
+ */
+fun MoveAction.pushesIncrementing(): MoveAction =
+    MoveAction { state ->
+        performMove(state).transform { pushes++ }
+    }

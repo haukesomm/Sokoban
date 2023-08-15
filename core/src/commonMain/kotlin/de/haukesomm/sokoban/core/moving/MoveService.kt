@@ -90,15 +90,15 @@ class MoveService(private vararg val moveRules: MoveRule) {
 
             return determineMovesRecursively(state, nextPosition, direction).apply {
                 if (success) {
-                    moveActions += PushesIncrementingMoveActionDecorator(
-                        SimpleMoveAction(position, direction)
-                    )
+                    moveActions += SimpleMoveAction(position, direction).pushesIncrementing()
                 }
             }
         } else {
             return Result(
                 success = true,
-                moveActions = mutableListOf(SimpleMoveAction(position, direction))
+                moveActions = mutableListOf(
+                    SimpleMoveAction(position, direction).movesIncrementing()
+                )
             )
         }
     }
