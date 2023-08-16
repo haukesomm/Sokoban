@@ -1,16 +1,26 @@
-package de.haukesomm.sokoban.web.level
+package de.haukesomm.sokoban.core.level.bundled
 
+import de.haukesomm.sokoban.core.EntityType
+import de.haukesomm.sokoban.core.TileType
 import de.haukesomm.sokoban.core.level.Level
+import de.haukesomm.sokoban.core.level.TileProperties
+import de.haukesomm.sokoban.core.level.characterMapOf
 
-object BundledLevelDefinitions {
+internal val bundledCharacterMap = characterMapOf(
+    '_' to TileProperties(TileType.Empty),
+    '.' to TileProperties(TileType.Target),
+    '#' to TileProperties(TileType.Wall),
+    'X' to TileProperties(TileType.Empty, EntityType.Box),
+    '@' to TileProperties(TileType.Empty, EntityType.Player),
+)
 
-    val levels: List<Level> = listOf(
-        Level(
-            id = "bundled-level-01",
-            name = "Level 01",
-            width = 20,
-            height = 16,
-            layoutString = """
+internal val bundledLevels = listOf(
+    Level(
+        id = "bundled-level-01",
+        name = "Level 01",
+        width = 20,
+        height = 16,
+        layoutString = """
                 ____________________
                 ____________________
                 ____________________
@@ -28,13 +38,13 @@ object BundledLevelDefinitions {
                 ____________________
                 ____________________
             """.trimIndent()
-        ),
-        Level(
-            id = "bundled-level-02",
-            name = "Level 02",
-            width = 20,
-            height = 16,
-            layoutString = """
+    ),
+    Level(
+        id = "bundled-level-02",
+        name = "Level 02",
+        width = 20,
+        height = 16,
+        layoutString = """
                 ____________________
                 ____________________
                 ____________________
@@ -52,13 +62,13 @@ object BundledLevelDefinitions {
                 ____________________
                 ____________________
             """.trimIndent()
-        ),
-        Level(
-            id = "bundled-level-03",
-            name = "Level 03",
-            width = 20,
-            height = 16,
-            layoutString = """
+    ),
+    Level(
+        id = "bundled-level-03",
+        name = "Level 03",
+        width = 20,
+        height = 16,
+        layoutString = """
                 ____________________
                 ____________________
                 ____________________
@@ -76,13 +86,13 @@ object BundledLevelDefinitions {
                 ____________________
                 ____________________
             """.trimIndent()
-        ),
-        Level(
-            id = "bundled-level-04",
-            name = "Level 04",
-            width = 20,
-            height = 16,
-            layoutString = """
+    ),
+    Level(
+        id = "bundled-level-04",
+        name = "Level 04",
+        width = 20,
+        height = 16,
+        layoutString = """
                 ____________________
                 ___________########_
                 ___________#__....#_
@@ -100,13 +110,13 @@ object BundledLevelDefinitions {
                 ###########_________
                 ____________________
             """.trimIndent()
-        ),
-        Level(
-            id = "bundled-level-05",
-            name = "Level 05",
-            width = 20,
-            height = 16,
-            layoutString = """
+    ),
+    Level(
+        id = "bundled-level-05",
+        name = "Level 05",
+        width = 20,
+        height = 16,
+        layoutString = """
                 ____________________
                 ____________________
                 __________#####_____
@@ -124,13 +134,13 @@ object BundledLevelDefinitions {
                 ____________######__
                 ____________________
             """.trimIndent()
-        ),
-        Level(
-            id = "bundled-level-06",
-            name = "Level 06",
-            width = 20,
-            height = 16,
-            layoutString = """
+    ),
+    Level(
+        id = "bundled-level-06",
+        name = "Level 06",
+        width = 20,
+        height = 16,
+        layoutString = """
                 ____________________
                 ____________________
                 ____________________
@@ -148,13 +158,13 @@ object BundledLevelDefinitions {
                 ____________________
                 ____________________
             """.trimIndent()
-        ),
-        Level(
-            id = "bundled-level-07",
-            name = "Level 07",
-            width = 20,
-            height = 16,
-            layoutString = """
+    ),
+    Level(
+        id = "bundled-level-07",
+        name = "Level 07",
+        width = 20,
+        height = 16,
+        layoutString = """
                 ____________________
                 ____________________
                 ____________#####___
@@ -172,13 +182,13 @@ object BundledLevelDefinitions {
                 ____________________
                 ____________________
             """.trimIndent()
-        ),
-        Level(
-            id = "bundled-level-08",
-            name = "Level 08",
-            width = 20,
-            height = 16,
-            layoutString = """
+    ),
+    Level(
+        id = "bundled-level-08",
+        name = "Level 08",
+        width = 20,
+        height = 16,
+        layoutString = """
                 _____####___________
                 _____#__###########_
                 _____#____X___X_X_#_
@@ -196,13 +206,13 @@ object BundledLevelDefinitions {
                 _____#......#_______
                 _____########_______
             """.trimIndent()
-        ),
-        Level(
-            id = "bundled-level-09",
-            name = "Level 09",
-            width = 20,
-            height = 16,
-            layoutString = """
+    ),
+    Level(
+        id = "bundled-level-09",
+        name = "Level 09",
+        width = 20,
+        height = 16,
+        layoutString = """
                 ___________#######__
                 ___________#__...#__
                 _______#####__...#__
@@ -220,13 +230,13 @@ object BundledLevelDefinitions {
                 ____________________
                 ____________________
             """.trimIndent()
-        ),
-        Level(
-            id = "bundled-level-10",
-            name = "Level 10",
-            width = 20,
-            height = 16,
-            layoutString = """
+    ),
+    Level(
+        id = "bundled-level-10",
+        name = "Level 10",
+        width = 20,
+        height = 16,
+        layoutString = """
                 _###__#############_
                 ##@####_______#___#_
                 #_XX___XX__X_X_...#_
@@ -244,10 +254,9 @@ object BundledLevelDefinitions {
                 ____#___________#.#_
                 ____###############_
             """.trimIndent()
-        ),
-    )
+    ),
+)
 
-    val levelById: Map<String, Level> by lazy {
-        levels.associateBy(Level::id)
-    }
+internal val bundledLevelById by lazy {
+    bundledLevels.associateBy(Level::id)
 }

@@ -32,7 +32,7 @@ class ListBox<T> {
                     | focus:outline-none focus:ring-4 focus:ring-primary-600 focus:border-primary-800""".trimMargin()
             ) {
                 span("block truncate w-full") {
-                    value.data.renderText()
+                    value.data.map { format(it) }.render { +it }
                 }
                 icon("w-4 h-4", definition = HeroIcons.chevron_down)
             }

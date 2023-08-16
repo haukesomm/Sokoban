@@ -7,12 +7,8 @@ import java.awt.event.ActionEvent;
 
 import de.haukesomm.sokoban.core.GameStateChangeHandler;
 import de.haukesomm.sokoban.core.Position;
-import de.haukesomm.sokoban.core.level.CharacterMaps;
-import de.haukesomm.sokoban.core.moving.rules.MultipleBoxesPreventingMoveRule;
-import de.haukesomm.sokoban.core.moving.rules.WallCollisionPreventingMoveRule;
-import de.haukesomm.sokoban.legacy.level.JarResourceLevelRepository;
 import de.haukesomm.sokoban.core.Direction;
-import de.haukesomm.sokoban.core.GameStateService;
+import de.haukesomm.sokoban.core.SokobanGame;
 
 public class GameFrame extends JFrame {
 
@@ -26,24 +22,16 @@ public class GameFrame extends JFrame {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            Position position = gameStateService.getPlayerPosition();
-            if (position != null) {
-                gameStateService.moveEntityIfPossible(position, direction);
-            }
+            game.movePlayerIfPossible(direction);
         }
     }
 
 
-    private final GameStateService gameStateService =
-            new GameStateService(
-                    new JarResourceLevelRepository(20, 16),
-                    CharacterMaps.getDefault(),
-                    new WallCollisionPreventingMoveRule(),
-                    new MultipleBoxesPreventingMoveRule()
-            );
+    private final SokobanGame game = SokobanGame.withDefaultLevelsAndRuleSet();
 
     private final GameField gameField = new GameField();
-    private final LevelInfoBar levelInfoBar = new LevelInfoBar(gameStateService.getAvailableLevels());
+
+    private final LevelInfoBar levelInfoBar = new LevelInfoBar(game.getAvailableLevels());
 
 
     public GameFrame() {
@@ -98,7 +86,7 @@ public class GameFrame extends JFrame {
     }
 
     private void initListeners() {
-        GameStateChangeHandler.handle(gameStateService, state -> {
+        GameStateChangeHandler.handle(game, state -> {
             var moves = state.getMoves();
             var pushes = state.getPushes();
 
@@ -123,7 +111,7 @@ public class GameFrame extends JFrame {
         levelInfoBar.setMoveCount(0);
         levelInfoBar.setPushCount(0);
 
-        gameStateService.loadLevel(id);
+        game.loadLevel(id);
     }
 
     private void showFrame() {

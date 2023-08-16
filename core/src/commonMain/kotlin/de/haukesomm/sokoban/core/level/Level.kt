@@ -3,6 +3,17 @@ package de.haukesomm.sokoban.core.level
 import de.haukesomm.sokoban.core.state.GameState
 
 /**
+ * Represents a [Level] that can be loaded from a [LevelRepository].
+ *
+ * It consists of a unique [id] that is used to load the level from the repository and a [name] that can be displayed
+ * to the user.
+ */
+data class LevelDescription(
+    val id: String,
+    val name: String
+)
+
+/**
  * A level is a rectangular grid of game board tiles with a fixed width and height.
  *
  * It has a unique identifier, a name, and a layout string that describes the initial state of the level.
@@ -32,8 +43,7 @@ data class Level(
      * The normalized layout string is the layout string without any whitespace
      * and line breaks.
      */
-    val normalizedLayoutString: String =
-        layoutString
-            .replace(" ", "")
-            .replace("(\r)?\n".toRegex(), "")
+    val normalizedLayoutString: String by lazy {
+        layoutString.replace("[ \r\n]+".toRegex(), "")
+    }
 }

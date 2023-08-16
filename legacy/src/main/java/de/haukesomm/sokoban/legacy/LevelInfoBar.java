@@ -1,19 +1,13 @@
 package de.haukesomm.sokoban.legacy;
 
-import java.awt.Dimension;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
+import java.awt.*;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import javax.swing.JPanel;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
+import javax.swing.*;
 
 import de.haukesomm.sokoban.core.level.LevelDescription;
+import de.haukesomm.sokoban.legacy.level.LevelDescriptionListCellRenderer;
 
 public class LevelInfoBar extends JPanel {
 
@@ -64,6 +58,7 @@ public class LevelInfoBar extends JPanel {
         var levelComboBox = new JComboBox<LevelDescription>();
         levelComboBox.setEditable(false);
         levelComboBox.setMaximumSize(new Dimension(20, Integer.MAX_VALUE));
+        levelComboBox.setRenderer(new LevelDescriptionListCellRenderer());
         availableLevels.forEach(levelComboBox::addItem);
 
         var loadButton = new JButton("Load Level");

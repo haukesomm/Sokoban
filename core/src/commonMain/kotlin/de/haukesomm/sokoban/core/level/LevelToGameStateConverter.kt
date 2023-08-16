@@ -19,25 +19,17 @@ data class TileProperties(
  */
 class LevelToGameStateConverter(private val characterMap: CharacterMap) {
 
-    private fun tileForCharacter(character: Char): Tile {
-        val tileProperties = characterMap[character]
-            ?: TileProperties(TileType.Empty)
-
-        return tileProperties.run {
-            Tile(tileType, entityType?.let { Entity(it) })
-        }
-    }
+    private fun tileForCharacter(character: Char): Tile =
+        characterMap
+            .getOrElse(character) { TileProperties(TileType.Empty) }
+            .run { Tile(tileType, entityType?.let(::Entity)) }
 
     /**
      * Converts the given [level] into a [GameState].
      */
     fun convert(level: Level): GameState =
         level.run {
-            ImmutableGameState(
-                id,
-                width,
-                height,
-                normalizedLayoutString.map(::tileForCharacter)
-            )
+            val tiles = normalizedLayoutString.map(::tileForCharacter)
+            ImmutableGameState(id, width, height, tiles)
         }
 }

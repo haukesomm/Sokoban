@@ -1,9 +1,9 @@
 package de.haukesomm.sokoban.web
 
 import de.haukesomm.sokoban.core.Direction
-import de.haukesomm.sokoban.core.GameStateService
-import de.haukesomm.sokoban.core.level.CharacterMaps
+import de.haukesomm.sokoban.core.SokobanGame
 import de.haukesomm.sokoban.core.level.LevelDescription
+import de.haukesomm.sokoban.core.level.bundled.BundledLevelRepository
 import de.haukesomm.sokoban.core.state.GameState
 import de.haukesomm.sokoban.web.components.alertModal
 import de.haukesomm.sokoban.web.components.checkboxGroup
@@ -13,8 +13,6 @@ import de.haukesomm.sokoban.web.components.icons.HeroIcons
 import de.haukesomm.sokoban.web.components.icons.icon
 import de.haukesomm.sokoban.web.components.listBox
 import de.haukesomm.sokoban.web.components.switch
-import de.haukesomm.sokoban.web.level.BundledLevelRepository
-import de.haukesomm.sokoban.web.level.bundled
 import dev.fritz2.core.*
 import kotlinx.coroutines.flow.*
 
@@ -22,24 +20,21 @@ class GameFrame {
 
     private val enabledRulesStore = storeOf(UserSelectableRules.rules)
 
-    private val gameStateService = GameStateService(
+    private val game = SokobanGame(
         BundledLevelRepository(),
-        CharacterMaps.bundled,
         enabledRulesStore.data.map { it.rules }
     )
 
-    private val levelDescriptions = gameStateService.getAvailableLevels()
+    private val levelDescriptions = game.getAvailableLevels()
 
 
     private fun RenderContext.initializeKeyboardInput() {
         Window.keydowns.map { shortcutOf(it.key) } handledBy { shortcut ->
-            gameStateService.getPlayerPosition()?.let { position ->
-                when(shortcut) {
-                    Keys.ArrowUp -> gameStateService.moveEntityIfPossible(position, Direction.Top)
-                    Keys.ArrowDown -> gameStateService.moveEntityIfPossible(position, Direction.Bottom)
-                    Keys.ArrowLeft -> gameStateService.moveEntityIfPossible(position, Direction.Left)
-                    Keys.ArrowRight -> gameStateService.moveEntityIfPossible(position, Direction.Right)
-                }
+            when(shortcut) {
+                Keys.ArrowUp -> game.movePlayerIfPossible(Direction.Top)
+                Keys.ArrowDown -> game.movePlayerIfPossible(Direction.Bottom)
+                Keys.ArrowLeft -> game.movePlayerIfPossible(Direction.Left)
+                Keys.ArrowRight -> game.movePlayerIfPossible(Direction.Right)
             }
         }
     }
@@ -48,12 +43,12 @@ class GameFrame {
     fun RenderContext.render() {
         val selectedLevelStore = storeOf(levelDescriptions.first())
         selectedLevelStore.data handledBy {
-            gameStateService.loadLevel(it.id)
+            game.loadLevel(it.id)
         }
 
 
         initializeKeyboardInput()
-        gameStateService.state.let { state ->
+        game.state.let { state ->
             state.filter { it.levelCleared }.map { } handledBy levelClearedAlert(state)
         }
 
@@ -88,7 +83,7 @@ class GameFrame {
                 span("text-sm") {
                     +"Moves: "
                     code {
-                        gameStateService.state.render(into = this) {
+                        game.state.render(into = this) {
                             +it.moves.toString()
                         }
                     }
@@ -96,7 +91,7 @@ class GameFrame {
                 span("text-sm") {
                     +"Pushes: "
                     code {
-                        gameStateService.state.render(into = this) {
+                        game.state.render(into = this) {
                             +it.pushes.toString()
                         }
                     }
@@ -106,7 +101,7 @@ class GameFrame {
                     icon("w-4 h-4", definition = HeroIcons.refresh)
                     title("Reset level")
                 }.clicks handledBy {
-                    gameStateService.reloadLevel()
+                    game.reloadLevel()
                 }
             }
             div("flex flex-row items-center gap-4") {
@@ -168,7 +163,7 @@ class GameFrame {
     private fun RenderContext.gameFieldContainer() {
         div("w-full flex flex-col items-center") {
             div("max-w-min flex justify-center rounded-lg shadow overflow-hidden") {
-                gameField(gameStateService.state)
+                gameField(game.state)
             }
         }
     }

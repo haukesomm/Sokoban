@@ -2,12 +2,11 @@ package de.haukesomm.sokoban.core.moving;
 
 import de.haukesomm.sokoban.core.*;
 import de.haukesomm.sokoban.core.level.CharacterMaps;
-import de.haukesomm.sokoban.core.level.LevelRepository;
+import de.haukesomm.sokoban.core.level.Level;
 import de.haukesomm.sokoban.core.level.LevelToGameStateConverter;
 import de.haukesomm.sokoban.core.moving.rules.MultipleBoxesPreventingMoveRule;
 import de.haukesomm.sokoban.core.moving.rules.WallCollisionPreventingMoveRule;
 import de.haukesomm.sokoban.core.state.*;
-import de.haukesomm.sokoban.legacy.level.JarResourceLevelRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,14 +14,23 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 public class MoveServiceTest {
+
     private final LevelToGameStateConverter converter = new LevelToGameStateConverter(CharacterMaps.getDefault());
-    private final LevelRepository repository = new JarResourceLevelRepository(6, 5);
 
     @SuppressWarnings("DataFlowIssue")
     private GameState newTestGameState() {
         return converter.convert(
-                repository.getLevelOrNull(
-                        repository.getAvailableLevels().get(0).getId()
+                new Level(
+                        "test-level",
+                        "Test Level",
+                        6,
+                        5,
+                        """
+                                ######
+                                #____#
+                                #@$__#
+                                #_$$_#
+                                ######"""
                 )
         );
     }

@@ -41,8 +41,6 @@ class SimpleMoveAction(
 
             val nextIndex = position.nextInDirection(direction).toIndex(state.width)
             tiles[nextIndex] = tiles[nextIndex].copy(entity = entity)
-
-            moves++
         }
 }
 

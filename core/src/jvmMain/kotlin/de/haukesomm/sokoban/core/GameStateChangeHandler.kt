@@ -8,7 +8,7 @@ import java.util.function.Consumer
 
 /**
  * This object provides a static method to register a [Consumer] at a
- * [GameStateService] to be notified about changes in the [GameStateService.state] flow.
+ * [SokobanGame] to be notified about changes in the [SokobanGame.state] flow.
  *
  * It is intended to be used in legacy code that is written in Java and does not support the use
  * of flows.
@@ -16,8 +16,8 @@ import java.util.function.Consumer
 object GameStateChangeHandler {
 
     @JvmStatic
-    fun handle(gameStateService: GameStateService, callback: Consumer<GameState>) {
-        gameStateService.state
+    fun handle(game: SokobanGame, callback: Consumer<GameState>) {
+        game.state
             .onEach(callback::accept)
             .launchIn(SokobanMainScope)
     }
