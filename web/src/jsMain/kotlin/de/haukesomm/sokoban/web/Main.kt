@@ -4,13 +4,20 @@ import de.haukesomm.sokoban.web.components.alert
 import de.haukesomm.sokoban.web.components.icons.HeroIcons
 import dev.fritz2.core.RenderContext
 import dev.fritz2.core.render
+import kotlinx.browser.document
+import org.w3c.dom.Element
 
 fun main() {
     render {
-        div("h-screen w-full hidden lg:block") {
+        DarkModeStore.init(
+            bgLight = "bg-gray-100",
+            bgDark = "bg-darkgray-500"
+        )
+
+        div("hidden md:block") {
             gameFrame()
         }
-        div("h-screen w-full block lg:hidden") {
+        div("block md:hidden") {
             mobileDeviceNotSupportedBanner()
         }
     }
@@ -19,10 +26,11 @@ fun main() {
 private fun RenderContext.mobileDeviceNotSupportedBanner() =
     div("m-4") {
         alert(
-            title = "This app is desktop-only",
-            message = """Currently, this app does not support mobile devices.
-                | In order to use this app, re-open it on a computer.
+            title = "Mobile devices are not yet supported",
+            message = """It appears you are accessing this app from a mobile device.
+                | Unfortunately, Sokoban is not playable on mobile devices yet.
+                | Please try again on a desktop computer.
             """.trimMargin(),
-            icon = HeroIcons.desktop_computer
+            icon = HeroIcons.device_mobile
         )
     }

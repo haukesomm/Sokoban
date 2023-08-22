@@ -21,17 +21,26 @@ class CheckboxGroup<T> {
 
             div("flex flex-col gap-4") {
                 title?.let {
-                    checkboxGroupLabel("text-md font-semibold dark:text-gray-300") {
+                    checkboxGroupLabel("text-md font-medium dark:text-gray-300") {
                         +it
                     }
                 }
                 div("space-y-4") {
                     options.forEach { option ->
                         checkboxGroupOption(option) {
-                            checkboxGroupOptionToggle("grid grid-cols-[min-content_auto] gap-2") {
-                                div("w-4 h-4 mt-1 flex justify-center items-center rounded-sm") {
+                            checkboxGroupOptionToggle("group grid grid-cols-[min-content_auto] gap-2 focus:outline-none") {
+                                // TODO: Define background colors in Tailwind config
+                                div(
+                                    """w-4 h-4 mt-1 flex justify-center items-center rounded-sm
+                                        | group-focus-visible:ring-2 
+                                        | group-focus-visible:ring-offset-2
+                                        | group-focus-visible:ring-offset-gray-100
+                                        | group-focus-visible:dark:ring-offset-darkgray-500
+                                        | group-focus-visible:ring-primary-500
+                                        | group-focus-visible:dark:ring-primary-600""".trimMargin()
+                                ) {
                                     className(selected.map {
-                                        if (it) "bg-primary-500"
+                                        if (it) "bg-primary-500 dark:bg-primary-600"
                                         else "border border-gray-300 dark:border-gray-600"
                                     })
                                     div {

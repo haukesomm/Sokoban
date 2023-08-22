@@ -51,19 +51,8 @@ tasks.named<ProcessResources>("jsProcessResources") {
     outputs.upToDateWhen { false }
 
     filesMatching("index.html") {
-        val output = ByteArrayOutputStream()
-        exec {
-            workingDir = rootProject.projectDir
-            commandLine("git rev-parse --short HEAD".split(" "))
-            standardOutput = output
-        }
-
-        val version = version
-        val commitHash = output.toString(Charset.defaultCharset()).trim()
-
         expand(
-            "sokobanVersion" to version,
-            "sokobanCommitHash" to commitHash
+            "sokobanVersion" to version
         )
     }
 }

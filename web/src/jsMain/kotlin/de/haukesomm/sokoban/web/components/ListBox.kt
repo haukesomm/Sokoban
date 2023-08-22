@@ -20,16 +20,15 @@ class ListBox<T> {
         listbox<T> {
             this@ListBox.value.value?.let { value.use(it) }
 
-            // TODO: Dynamisches label
-            listboxLabel("sr-only", tag = RenderContext::span) { +"Choose the best Star Wars character" }
-
             listboxButton(
                 """flex items-center space-between w-full py-1.5 px-2 gap-2
                     | bg-white dark:bg-darkgray-400 rounded cursor-default
-                    | border border-primary-600 
-                    | font-sans text-sm text-left text-primary-800 dark:text-primary-200
-                    | hover:border-primary-800 
-                    | focus:outline-none focus:ring-4 focus:ring-primary-600 focus:border-primary-800""".trimMargin()
+                    | border border-primary-500 dark:border-primary-600 
+                    | font-sans text-sm text-left text-gray-800 dark:text-gray-300
+                    | hover:border-primary-700 dark:hover:border-primary-400
+                    | focus-visible:outline-none focus-visible:ring-2 
+                    | focus-visible:ring-primary-600
+                    | focus-visible:border-primary-700""".trimMargin()
             ) {
                 span("block truncate w-full") {
                     value.data.map { format(it) }.render { +it }
@@ -39,7 +38,8 @@ class ListBox<T> {
 
             listboxItems(
                 """flex flex-col min-w-max max-w-md max-h-80 py-1 overflow-auto origin-top  
-                    | bg-white dark:bg-darkgray-400 rounded shadow-md divide-y divide-gray-100
+                    | bg-white dark:bg-darkgray-400 rounded shadow-md divide-y 
+                    | divide-gray-100 dark:divide-gray-700
                     | ring-1 ring-primary-600 ring-opacity-5 
                     | focus:outline-none""".trimMargin(),
                 tag = RenderContext::ul
@@ -60,20 +60,28 @@ class ListBox<T> {
                 entries.forEach { entry ->
                     listboxItem(
                         entry,
-                        """w-full relative px-2 py-1.5
+                        """w-full relative h-8 px-2 py-1.5 flex flex-row items-center gap-2
                             | cursor-default select-none disabled:opacity-50
-                            | text-sm""".trimMargin(),
+                            | text-sm text-gray-900 dark:text-gray-300
+                            | hover:bg-primary-400 hover:text-white hover:dark:bg-primary-600 hover:dark:text-white
+                            | """.trimMargin(),
                         tag = RenderContext::li
                     ) {
-                        className(selected.combine(active, ::Pair).map { (selected, active) ->
-                            when {
-                                selected -> "bg-primary-500 text-white font-semibold"
-                                !selected && active -> "bg-primary-400 text-white"
-                                else -> "dark:text-gray-300"
-                            }
+                        className(selected.map {
+                            if (it) "font-semibold"
+                            else ""
                         })
 
-                        span {
+                        className(active.map {
+                            if (it) "bg-primary-400 text-white dark:bg-primary-600 dark:text-white"
+                            else ""
+                        })
+
+                        selected.render {
+                            if (it) icon("w-5 h-5", definition = HeroIcons.check)
+                        }
+
+                        span("absolute left-8") {
                             +format(entry)
                         }
                     }

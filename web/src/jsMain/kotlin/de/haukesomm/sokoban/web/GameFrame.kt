@@ -5,18 +5,20 @@ import de.haukesomm.sokoban.core.SokobanGame
 import de.haukesomm.sokoban.core.level.LevelDescription
 import de.haukesomm.sokoban.core.level.bundled.BundledLevelRepository
 import de.haukesomm.sokoban.core.state.GameState
-import de.haukesomm.sokoban.web.components.alertModal
-import de.haukesomm.sokoban.web.components.checkboxGroup
+import de.haukesomm.sokoban.web.components.*
 import de.haukesomm.sokoban.web.components.game.gameField
 import de.haukesomm.sokoban.web.components.icons.GitHubIcons
 import de.haukesomm.sokoban.web.components.icons.HeroIcons
 import de.haukesomm.sokoban.web.components.icons.icon
-import de.haukesomm.sokoban.web.components.listBox
-import de.haukesomm.sokoban.web.components.switch
 import dev.fritz2.core.*
+import dev.fritz2.headless.components.disclosure
 import kotlinx.coroutines.flow.*
 
 class GameFrame {
+
+    companion object {
+        private const val MAX_TITLEBAR_WIDTH_CLASSES = "max-w-4xl"
+    }
 
     private val enabledRulesStore = storeOf(UserSelectableRules.rules)
 
@@ -26,6 +28,15 @@ class GameFrame {
     )
 
     private val levelDescriptions = game.getAvailableLevels()
+
+    private val selectedLevelStore = storeOf(levelDescriptions.first())
+
+
+    init {
+        selectedLevelStore.data handledBy {
+            game.loadLevel(it.id)
+        }
+    }
 
 
     private fun RenderContext.initializeKeyboardInput() {
@@ -40,131 +51,9 @@ class GameFrame {
     }
 
 
-    fun RenderContext.render() {
-        val selectedLevelStore = storeOf(levelDescriptions.first())
-        selectedLevelStore.data handledBy {
-            game.loadLevel(it.id)
-        }
-
-
-        initializeKeyboardInput()
+    private fun RenderContext.initializeLevelClearedAlert() {
         game.state.let { state ->
             state.filter { it.levelCleared }.map { } handledBy levelClearedAlert(state)
-        }
-
-
-        div("h-full w-full flex flex-col gap-4") {
-            titleBar(selectedLevelStore)
-            main("mx-4 grow grid grid-cols-[fit-content(400px)_auto] gap-4") {
-                sideBar(enabledRulesStore)
-                gameFieldContainer()
-            }
-            footerBar()
-        }
-    }
-
-    private fun RenderContext.titleBar(selectedLevelStore: Store<LevelDescription>) {
-        div(
-            """sticky w-full py-2 px-4 flex flex-row justify-between items-center gap-4
-                | bg-white dark:bg-darkgray-400 shadow-sm dark:shadow-md
-                | text-primary-800 dark:text-primary-200""".trimMargin()
-        ) {
-            span("text-xl font-semibold text-primary-500") {
-                +"Sokoban"
-            }
-            div("flex gap-4 items-center grow max-w-sm") {
-                div("grow") {
-                    listBox {
-                        entries = levelDescriptions
-                        format = LevelDescription::name
-                        value(selectedLevelStore)
-                    }
-                }
-                span("text-sm") {
-                    +"Moves: "
-                    code {
-                        game.state.render(into = this) {
-                            +it.moves.toString()
-                        }
-                    }
-                }
-                span("text-sm") {
-                    +"Pushes: "
-                    code {
-                        game.state.render(into = this) {
-                            +it.pushes.toString()
-                        }
-                    }
-                }
-                button {
-                    type("button")
-                    icon("w-4 h-4", definition = HeroIcons.refresh)
-                    title("Reset level")
-                }.clicks handledBy {
-                    game.reloadLevel()
-                }
-            }
-            div("flex flex-row items-center gap-4") {
-                switch {
-                    data(DarkModeStore)
-                    label = "Dark mode"
-                }
-
-                a {
-                    icon(
-                        "w-8 h-8 text-gray-800 text-gray-700 dark:text-gray-200",
-                        definition = GitHubIcons.octocat
-                    )
-                    href("https://github.com/haukesomm/sokoban")
-                    target("_blank")
-                }
-            }
-        }
-    }
-
-    private fun RenderContext.sideBar(enabledRulesStore: Store<List<MoveRuleWithDescription>>) {
-        div("p-4 space-y-4 max-w-md bg-white dark:bg-darkgray-400 rounded-md shadow") {
-            div("flex gap-2 items-center") {
-                span("font-semibold text_white dark:text-gray-300") {
-                    +"Toggle rules"
-                }
-                div(
-                    """px-1.5 py-0.5 flex items-center gap-1 rounded-full border border-primary-500 
-                        | text-xs text-primary-500""".trimMargin()
-                ) {
-                    icon("w-3 h-3", definition = HeroIcons.beaker)
-                    +"Experimental"
-                }
-            }
-            checkboxGroup {
-                values(enabledRulesStore)
-                options = UserSelectableRules.rules
-                optionsFormat = MoveRuleWithDescription::title
-                optionDescriptionFormat = MoveRuleWithDescription::description
-            }
-        }
-    }
-
-    private fun RenderContext.footerBar() {
-        div("w-full p-4 flex flex-row justify-center gap-4 text-xs text-gray-400 font-light") {
-            span { +"Sokoban" }
-            span { +"Version: ${VersionInfo.version}" }
-            span {
-                +"Commit Hash: "
-                a {
-                    +VersionInfo.commitHash
-                    target("_blank")
-                    href("https://github.com/haukesomm/Sokoban/tree/${VersionInfo.commitHash}")
-                }
-            }
-        }
-    }
-
-    private fun RenderContext.gameFieldContainer() {
-        div("w-full flex flex-col items-center") {
-            div("max-w-min flex justify-center rounded-lg shadow overflow-hidden") {
-                gameField(game.state)
-            }
         }
     }
 
@@ -187,6 +76,121 @@ class GameFrame {
                 }
             }
         }
+
+
+    fun RenderContext.render() {
+        initializeKeyboardInput()
+        initializeLevelClearedAlert()
+
+        div("mb-4 w-full flex flex-col gap-4 items-center") {
+            titleBar()
+
+            div("max-w-min rounded-lg shadow overflow-hidden") {
+                gameField(game.state)
+            }
+
+            div("flex flex-row justify-center gap-4 text-xs text-gray-400 font-light") {
+                span { +"Sokoban" }
+                span { +"Version: ${VersionInfo.version}" }
+            }
+        }
+    }
+
+    private fun RenderContext.titleBar() {
+        disclosure("w-full py-2 px-4 flex flex-col items-center bg-white dark:bg-darkgray-400 shadow-sm dark:shadow-md") {
+            div(
+                classes(
+                    // TODO: Define the following text colors as defaults
+                    """w-full flex flex-row justify-between items-center gap-4
+                        | text-sm text-gray-800 dark:text-gray-300""".trimMargin(),
+                    MAX_TITLEBAR_WIDTH_CLASSES
+                )
+            ) {
+                span("text-xl font-semibold text-primary-500 dark:text-primary-600") {
+                    +"Sokoban"
+                }
+                div("grow max-w-md flex gap-6 items-center") {
+                    div("grow") {
+                        listBox {
+                            entries = levelDescriptions
+                            format = LevelDescription::name
+                            value(selectedLevelStore)
+                        }
+                    }
+                    span {
+                        +"Moves: "
+                        code {
+                            game.state.map { it.moves }.render(into = this) {
+                                +it.toString()
+                            }
+                        }
+                    }
+                    span {
+                        +"Pushes: "
+                        code {
+                            game.state.map { it.pushes }.render(into = this) {
+                                +it.toString()
+                            }
+                        }
+                    }
+                    plainButton {
+                        iconDefinition(HeroIcons.refresh)
+                        iconSize = PlainButton.IconSize.Small
+                        text("Reload")
+                    }.run {
+                        title("Reload level")
+                        clicks handledBy {
+                            game.reloadLevel()
+                        }
+                    }
+                }
+                disclosureButton(
+                    """p-1 flex flex-row gap-2 items-center rounded-sm focus:outline-none
+                        | focus-visible:ring-2 focus-visible:ring-primary-500 
+                        | focus-visible:dark:ring-primary-600""".trimMargin()
+                ) {
+                    opened.map {
+                        if (it) HeroIcons.chevron_up
+                        else HeroIcons.chevron_down
+                    }.render {
+                        icon("w-4 h-4", definition = it)
+                    }
+                    span { +"More options" }
+                }
+            }
+            disclosurePanel {
+                div(
+                    classes(
+                        """mt-4 my-2 p-4 bg-gray-50 dark:bg-darkgray-300 rounded-md
+                            | grid grid-cols-3 gap-6""".trimMargin(),
+                        MAX_TITLEBAR_WIDTH_CLASSES
+                    )
+                ) {
+                    withTitle("Rules") {
+                        checkboxGroup {
+                            values(enabledRulesStore)
+                            options = UserSelectableRules.rules
+                            optionsFormat = MoveRuleWithDescription::title
+                            optionDescriptionFormat = MoveRuleWithDescription::description
+                        }
+                    }
+                    withTitle("User Interface") {
+                        switch {
+                            data(DarkModeStore)
+                            label = "Dark mode"
+                        }
+                    }
+                    withTitle("Other") {
+                        iconLink(
+                            GitHubIcons.octocat,
+                            text = "Project on GitHub",
+                            href = "https://github.com/haukesomm/sokoban"
+                        )
+                    }
+                }
+            }
+        }
+    }
 }
 
 fun RenderContext.gameFrame() =
