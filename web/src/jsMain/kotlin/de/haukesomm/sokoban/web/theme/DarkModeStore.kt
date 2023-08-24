@@ -1,12 +1,8 @@
-package de.haukesomm.sokoban.web
+package de.haukesomm.sokoban.web.theme
 
 import dev.fritz2.core.RootStore
 import kotlinx.browser.window
 import org.w3c.dom.Element
-import org.w3c.dom.events.EventListener
-
-private val darkModeQueryList
-    get() = window.matchMedia("(prefers-color-scheme: dark)")
 
 /**
  * A Store that reflects the current dark mode setting of the browser.
@@ -14,7 +10,7 @@ private val darkModeQueryList
  * Additionally, it updates the CSS classes of the `:root` element to reflect the current dark mode setting
  * so that Tailwind CSS can apply the correct color scheme.
  */
-object DarkModeStore : RootStore<Boolean>(darkModeQueryList.matches) {
+object DarkModeStore : RootStore<Boolean>(DarkModeStrategies.getCurrentStrategy().initiallyEnabled) {
 
     private const val DARK_MODE_CLASS = "dark"
 
@@ -31,22 +27,23 @@ object DarkModeStore : RootStore<Boolean>(darkModeQueryList.matches) {
         bgLight: String? = null,
         bgDark: String? = null
     ) {
-        darkModeQueryList.addEventListener("change", EventListener { event ->
-            (event.asDynamic().matches as? Boolean)?.let {
-                update(it)
-            } ?: run {
-                console.warn("Sokoban: Unable to update dark mode based on browser event")
-            }
-        })
+        var activeStrategy: DarkModeStrategy? = null
+
+        ThemePreferences.selectedPreference handledBy { preference ->
+            activeStrategy?.run { onDeactivate() }
+
+            val newStrategy = DarkModeStrategies.getStrategyByPreference(preference)
+            newStrategy.run { onActivate() }
+            activeStrategy = newStrategy
+        }
 
         window.document.querySelector(":root")?.let(Element::classList)?.run {
-            data handledBy  { darkModeEnabled ->
+            data handledBy { darkModeEnabled ->
                 if (darkModeEnabled) {
                     add(DARK_MODE_CLASS)
                     bgLight?.let { remove(it) }
                     bgDark?.let { add(it) }
-                }
-                else {
+                } else {
                     remove(DARK_MODE_CLASS)
                     bgLight?.let { add(it) }
                     bgDark?.let { remove(it) }

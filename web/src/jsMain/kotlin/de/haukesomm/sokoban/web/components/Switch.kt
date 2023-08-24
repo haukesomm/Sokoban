@@ -22,9 +22,10 @@ class Switch {
                 switchToggle(
                     """relative inline-flex flex-shrink-0 h-4 w-8
                         | cursor-pointer rounded-full
-                        | border-2 border-transparent ring-2
+                        | border-2 border-transparent ring-1
                         | transition-colors ease-in-out duration-200 
                         | focus-visible:outline-none
+                        | focus-visible:ring-2
                         | focus-visible:ring-offset-2 
                         | focus-visible:ring-offset-gray-100 focus-visible:dark:ring-offset-darkgray-500 
                         | focus-visible:ring-primary-500""".trimMargin()

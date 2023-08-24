@@ -7,9 +7,12 @@ import de.haukesomm.sokoban.core.level.bundled.BundledLevelRepository
 import de.haukesomm.sokoban.core.state.GameState
 import de.haukesomm.sokoban.web.components.*
 import de.haukesomm.sokoban.web.components.game.gameField
+import de.haukesomm.sokoban.web.components.icons.Fritz2Icons
 import de.haukesomm.sokoban.web.components.icons.GitHubIcons
 import de.haukesomm.sokoban.web.components.icons.HeroIcons
 import de.haukesomm.sokoban.web.components.icons.icon
+import de.haukesomm.sokoban.web.theme.ThemePreference
+import de.haukesomm.sokoban.web.theme.ThemePreferences
 import dev.fritz2.core.*
 import dev.fritz2.headless.components.disclosure
 import kotlinx.coroutines.flow.*
@@ -174,10 +177,26 @@ class GameFrame {
                             optionDescriptionFormat = MoveRuleWithDescription::description
                         }
                     }
-                    withTitle("User Interface") {
-                        switch {
-                            data(DarkModeStore)
-                            label = "Dark mode"
+                    withTitle("Theme") {
+                        val preference = storeOf(ThemePreferences.getCurrentDarkModePreference())
+                        preference.data.drop(1) handledBy ThemePreferences::setDarkModePreference
+
+                        radioGroup<ThemePreference> {
+                            value(preference)
+                            options = ThemePreference.values().toList()
+                            optionsFormat = {
+                                when (it) {
+                                    ThemePreference.AlwaysLight -> "Light"
+                                    ThemePreference.AlwaysDark -> "Dark"
+                                    ThemePreference.FollowSystem -> "System"
+                                }
+                            }
+                            optionDescriptionFormat = {
+                                when (it) {
+                                    ThemePreference.FollowSystem -> "Follow the system's setting"
+                                    else -> null
+                                }
+                            }
                         }
                     }
                     withTitle("Other") {
@@ -186,6 +205,16 @@ class GameFrame {
                             text = "Project on GitHub",
                             href = "https://github.com/haukesomm/sokoban"
                         )
+                        iconLink(
+                            Fritz2Icons.fritz2,
+                            text = "Built with fritz2",
+                            href = "https://fritz2.dev"
+                        )
+                        div("pt-2 border-t border-gray-800 dark:border-gray-300 flex flex-row gap-x-1 items-center text-xs") {
+                            span { +"Made with " }
+                            icon("w-3 h-3", definition = HeroIcons.heart)
+                            span { +" in Hamburg, Germany" }
+                        }
                     }
                 }
             }

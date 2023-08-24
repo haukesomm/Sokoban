@@ -63,7 +63,7 @@ class ListBox<T> {
                         """w-full relative h-8 px-2 py-1.5 flex flex-row items-center gap-2
                             | cursor-default select-none disabled:opacity-50
                             | text-sm text-gray-900 dark:text-gray-300
-                            | hover:bg-primary-400 hover:text-white hover:dark:bg-primary-600 hover:dark:text-white
+                            | hover:bg-primary-500 hover:text-white hover:dark:bg-primary-600 hover:dark:text-white
                             | """.trimMargin(),
                         tag = RenderContext::li
                     ) {
@@ -73,12 +73,12 @@ class ListBox<T> {
                         })
 
                         className(active.map {
-                            if (it) "bg-primary-400 text-white dark:bg-primary-600 dark:text-white"
+                            if (it) "bg-primary-500 text-white dark:bg-primary-600 dark:text-white"
                             else ""
                         })
 
                         selected.render {
-                            if (it) icon("w-5 h-5", definition = HeroIcons.check)
+                            if (it) icon("w-4 h-4", definition = HeroIcons.check)
                         }
 
                         span("absolute left-8") {

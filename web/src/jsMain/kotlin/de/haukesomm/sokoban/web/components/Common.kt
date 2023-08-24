@@ -20,7 +20,7 @@ fun RenderContext.iconLink(icon: IconDefinition, text: String, href: String): Ta
         href(href)
         target("_blank")
 
-        icon("w-6 h-6", definition = icon)
+        icon("w-5 h-5", definition = icon)
 
         span("text-sm font-medium") {
             +text

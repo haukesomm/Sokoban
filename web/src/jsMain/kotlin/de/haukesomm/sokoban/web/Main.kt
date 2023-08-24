@@ -2,10 +2,9 @@ package de.haukesomm.sokoban.web
 
 import de.haukesomm.sokoban.web.components.alert
 import de.haukesomm.sokoban.web.components.icons.HeroIcons
+import de.haukesomm.sokoban.web.theme.DarkModeStore
 import dev.fritz2.core.RenderContext
 import dev.fritz2.core.render
-import kotlinx.browser.document
-import org.w3c.dom.Element
 
 fun main() {
     render {
