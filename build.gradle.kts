@@ -25,7 +25,7 @@ subprojects {
 }
 
 ext {
-    set("fritz2version", "1.0-RC6")
+    set("fritz2version", "1.0-RC11")
     set("coroutinesVersion", "1.6.4")
     set("serializationVersion", "1.3.0")
 }

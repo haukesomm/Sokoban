@@ -6,8 +6,7 @@ import dev.fritz2.core.RenderContext
 import dev.fritz2.core.transition
 import dev.fritz2.headless.components.listbox
 import dev.fritz2.headless.foundation.DatabindingProperty
-import dev.fritz2.headless.foundation.utils.popper.Placement
-import kotlinx.coroutines.flow.combine
+import dev.fritz2.headless.foundation.utils.floatingui.utils.PlacementValues
 import kotlinx.coroutines.flow.map
 
 class ListBox<T> {
@@ -44,8 +43,7 @@ class ListBox<T> {
                     | focus:outline-none""".trimMargin(),
                 tag = RenderContext::ul
             ) {
-                placement = Placement.bottomStart
-                distance = 5
+                placement = PlacementValues.bottomStart
 
                 transition(
                     opened,

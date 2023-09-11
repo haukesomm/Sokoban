@@ -4,10 +4,9 @@ import de.haukesomm.sokoban.web.components.alert
 import de.haukesomm.sokoban.web.components.icons.HeroIcons
 import de.haukesomm.sokoban.web.theme.DarkModeStore
 import dev.fritz2.core.RenderContext
-import dev.fritz2.core.render
 
 fun main() {
-    render {
+    renderWithPortalRoot {
         DarkModeStore.init(
             bgLight = "bg-gray-100",
             bgDark = "bg-darkgray-500"
