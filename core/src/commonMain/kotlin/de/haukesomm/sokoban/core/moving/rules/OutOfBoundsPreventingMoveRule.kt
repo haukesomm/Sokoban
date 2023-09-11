@@ -10,8 +10,12 @@ internal class OutOfBoundsPreventingMoveRule : MoveRule {
     override fun check(state: GameState, position: Position, direction: Direction): Collection<MoveRuleResult> {
         val (x, y) = position.nextInDirection(direction)
         return setOf(
-            if (x !in 0..state.width || y !in 0..state.height) MoveRuleResult.Impossible
-            else MoveRuleResult.Possible
+            if (x !in 0 until state.width ||
+                y !in 0 until state.height) {
+                MoveRuleResult.Impossible
+            } else {
+                MoveRuleResult.Possible
+            }
         )
     }
 }
