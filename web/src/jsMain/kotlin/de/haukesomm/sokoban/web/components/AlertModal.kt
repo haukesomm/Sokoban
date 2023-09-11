@@ -24,7 +24,8 @@ class AlertModal {
                 div("fixed inset-0 flex flex-row justify-center") {
                     div(
                         """absolute p-4 mt-12 flex flex-row items-start gap-4 rounded-lg 
-                            | text-sm text-gray-800 dark:text-gray-200 bg-white dark:bg-darkgray-400""".trimMargin()
+                            | text-sm text-neutral-dark dark:text-neutral-light
+                            | bg-background-light dark:bg-background-dark""".trimMargin()
                     ) {
                         div {
                             hook(content)

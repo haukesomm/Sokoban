@@ -34,26 +34,29 @@ class RadioGroup<T> {
                                     """w-4 h-4 mt-1 flex justify-center items-center rounded-full
                                         | group-focus-visible:ring-2 
                                         | group-focus-visible:ring-offset-2
-                                        | group-focus-visible:ring-offset-gray-100
-                                        | group-focus-visible:dark:ring-offset-darkgray-500
+                                        | group-focus-visible:ring-offset-background-light
+                                        | group-focus-visible:dark:ring-offset-background-dark
                                         | group-focus-visible:ring-primary-500
                                         | group-focus-visible:dark:ring-primary-600""".trimMargin()
                                 ) {
                                     className(selected.map {
                                         if (it) "bg-primary-500 dark:bg-primary-600"
-                                        else "border border-gray-300 dark:border-gray-600"
+                                        else "border border-neutral-dark-secondary dark:border-neutral-light-secondary"
                                     })
                                     div {
                                         className(selected.map { if (it) "" else "!hidden" })
                                         div("w-2 h-2 rounded-full bg-white") {}
                                     }
                                 }
-                                div("flex flex-col dark:text-gray-300") {
+                                div("flex flex-col") {
                                     radioGroupOptionLabel("text-sm font-semibold") {
                                         +optionsFormat(option)
                                     }
                                     optionDescriptionFormat?.let { format ->
-                                        radioGroupOptionDescription("text-xs") {
+                                        radioGroupOptionDescription(
+                                            """text-xs text-neutral-dark-secondary 
+                                                | dark:text-neutral-light-secondary""".trimMargin()
+                                        ) {
                                             format(option)?.let { +it }
                                         }
                                     }

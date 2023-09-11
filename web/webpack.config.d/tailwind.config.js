@@ -1,4 +1,5 @@
 const defaultTheme = require('tailwindcss/defaultTheme')
+const twColors = require('tailwindcss/colors')
 
 // must be in the jsMain/resource folder
 const mainCssFile = 'styles.css';
@@ -15,17 +16,21 @@ const tailwind = {
         },
         extend: {
             colors: {
-                'darkgray': {
-                    '50': '#525356',
-                    '100': '#48494c',
-                    '200': '#3e3f42',
-                    '300': '#343538',
-                    '400': '#2a2b2e',
-                    '500': '#202124',
-                    '600': '#16171a',
-                    '700': '#0c0d10',
-                    '800': '#020306',
-                    '900': '#000000'
+                'neutral': {
+                    'light': {
+                        'DEFAULT': twColors.gray['200'],
+                        'secondary': twColors.gray['400'],
+                    },
+                    'dark': {
+                        'DEFAULT': twColors.gray['800'],
+                        'secondary': twColors.gray['500'],
+                    }
+                },
+                'background': {
+                    'light': '#f9f9fb',
+                    'lightest': twColors.white,
+                    'dark': '#32313b',
+                    'darkest': '#2b2a32',
                 },
                 'primary': {
                     '50': '#FFF7FF',

@@ -4,13 +4,11 @@ import de.haukesomm.sokoban.web.components.alert
 import de.haukesomm.sokoban.web.components.icons.HeroIcons
 import de.haukesomm.sokoban.web.theme.DarkModeStore
 import dev.fritz2.core.RenderContext
+import kotlinx.browser.document
 
 fun main() {
     renderWithPortalRoot {
-        DarkModeStore.init(
-            bgLight = "bg-gray-100",
-            bgDark = "bg-darkgray-500"
-        )
+        initTheme()
 
         div("hidden md:block") {
             gameFrame()
@@ -19,6 +17,20 @@ fun main() {
             mobileDeviceNotSupportedBanner()
         }
     }
+}
+
+private fun initTheme() {
+    // Initialize dark mode handling.
+    // This is also responsible for setting the global page background color.
+    DarkModeStore.init(
+        bgLight = "bg-background-light",
+        bgDark = "bg-background-darkest"
+    )
+
+    // Set global default text color
+    document.querySelector("body")
+        ?.classList
+        ?.add("text-neutral-dark", "dark:text-neutral-light")
 }
 
 private fun RenderContext.mobileDeviceNotSupportedBanner() =

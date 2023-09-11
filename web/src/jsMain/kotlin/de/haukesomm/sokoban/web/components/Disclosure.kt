@@ -19,7 +19,7 @@ class Disclosure {
         disclosure {
             openState(openState)
             disclosureButton {
-                div("flex flex-row gap-2 items-center dark:text-gray-300") {
+                div("flex flex-row gap-2 items-center") {
                     opened.render {
                         if (it) icon("w-4 h-4", definition = HeroIcons.chevron_up)
                         else icon("w-4 h-4", definition = HeroIcons.chevron_down)

@@ -7,8 +7,8 @@ import org.w3c.dom.HTMLAnchorElement
 import org.w3c.dom.HTMLDivElement
 
 fun RenderContext.withTitle(text: String, content: RenderContext.() -> Unit): Tag<HTMLDivElement> =
-    div("space-y-4 dark:text-gray-300") {
-        span("font-semibold dark:text-gray-300") {
+    div("space-y-4") {
+        span("font-semibold") {
             +text
         }
         content()
@@ -21,7 +21,7 @@ fun RenderContext.iconLink(
     description: String? = null,
     href: String
 ): Tag<HTMLAnchorElement> =
-    a("flex items-center gap-2 text-gray-800 text-gray-700 dark:text-gray-200") {
+    a("flex items-center gap-2") {
         href(href)
         target("_blank")
 
@@ -32,7 +32,7 @@ fun RenderContext.iconLink(
                 +text
             }
             description?.let {
-                span("text-xs") {
+                span("text-xs text-neutral-dark-secondary dark:text-neutral-light-secondary") {
                     +it
                 }
             }

@@ -27,7 +27,7 @@ class Switch {
                         | focus-visible:outline-none
                         | focus-visible:ring-2
                         | focus-visible:ring-offset-2 
-                        | focus-visible:ring-offset-gray-100 focus-visible:dark:ring-offset-darkgray-500 
+                        | focus-visible:ring-offset-background-light focus-visible:dark:ring-offset-background-dark 
                         | focus-visible:ring-primary-500""".trimMargin()
                 ) {
                     className(enabled.map {
@@ -48,7 +48,7 @@ class Switch {
 
                 label?.let {
                     switchLabel(
-                        "block text-sm font-medium text-gray-700 dark:text-gray-200",
+                        "block text-sm font-medium",
                         tag = RenderContext::span
                     ) {
                         +it

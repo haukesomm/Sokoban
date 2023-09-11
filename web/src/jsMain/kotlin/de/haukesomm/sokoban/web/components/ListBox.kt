@@ -21,9 +21,9 @@ class ListBox<T> {
 
             listboxButton(
                 """flex items-center space-between w-full py-1.5 px-2 gap-2
-                    | bg-white dark:bg-darkgray-400 rounded cursor-default
+                    | rounded cursor-default
                     | border border-primary-500 dark:border-primary-600 
-                    | font-sans text-sm text-left text-gray-800 dark:text-gray-300
+                    | font-sans text-sm text-left
                     | hover:border-primary-700 dark:hover:border-primary-400
                     | focus-visible:outline-none focus-visible:ring-2 
                     | focus-visible:ring-primary-600
@@ -37,7 +37,7 @@ class ListBox<T> {
 
             listboxItems(
                 """flex flex-col min-w-max max-w-md max-h-80 py-1 overflow-auto origin-top  
-                    | bg-white dark:bg-darkgray-400 rounded shadow-md divide-y 
+                    | bg-background-lightest dark:bg-background-darkest rounded shadow-md divide-y 
                     | divide-gray-100 dark:divide-gray-700
                     | ring-1 ring-primary-600 ring-opacity-5 
                     | focus:outline-none""".trimMargin(),
@@ -60,7 +60,7 @@ class ListBox<T> {
                         entry,
                         """w-full relative h-8 px-2 py-1.5 flex flex-row items-center gap-2
                             | cursor-default select-none disabled:opacity-50
-                            | text-sm text-gray-900 dark:text-gray-300
+                            | text-sm
                             | hover:bg-primary-500 hover:text-white hover:dark:bg-primary-600 hover:dark:text-white
                             | """.trimMargin(),
                         tag = RenderContext::li

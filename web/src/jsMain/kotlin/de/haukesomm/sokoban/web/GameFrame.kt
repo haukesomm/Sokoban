@@ -91,21 +91,14 @@ class GameFrame {
             div("max-w-min rounded-lg shadow overflow-hidden") {
                 gameField(game.state)
             }
-
-            div("flex flex-row justify-center gap-4 text-xs text-gray-400 font-light") {
-                span { +"Sokoban" }
-                span { +"Version: ${VersionInfo.sokobanVersion}" }
-            }
         }
     }
 
     private fun RenderContext.titleBar() {
-        disclosure("w-full py-2 px-4 flex flex-col items-center bg-white dark:bg-darkgray-400 shadow-sm dark:shadow-md") {
+        disclosure("w-full py-2 px-4 flex flex-col items-center bg-background-lightest dark:bg-background-dark shadow-sm dark:shadow-md") {
             div(
                 classes(
-                    // TODO: Define the following text colors as defaults
-                    """w-full flex flex-row justify-between items-center gap-4
-                        | text-sm text-gray-800 dark:text-gray-300""".trimMargin(),
+                    "w-full flex flex-row justify-between items-center gap-4 text-sm",
                     MAX_TITLEBAR_WIDTH_CLASSES
                 )
             ) {
@@ -164,7 +157,7 @@ class GameFrame {
             disclosurePanel {
                 div(
                     classes(
-                        """mt-4 my-2 p-4 bg-gray-50 dark:bg-darkgray-300 rounded-md
+                        """mt-4 my-2 p-4 bg-background-light dark:bg-background-darkest rounded-md
                             | grid grid-cols-3 gap-6""".trimMargin(),
                         MAX_TITLEBAR_WIDTH_CLASSES
                     )
@@ -199,10 +192,11 @@ class GameFrame {
                             }
                         }
                     }
-                    withTitle("Other") {
+                    withTitle("About") {
                         iconLink(
                             GitHubIcons.octocat,
-                            text = "Project on GitHub",
+                            text = "Sokoban",
+                            description = VersionInfo.sokobanVersion,
                             href = "https://github.com/haukesomm/sokoban"
                         )
                         iconLink(
@@ -211,10 +205,11 @@ class GameFrame {
                             description = VersionInfo.fritz2Version,
                             href = "https://fritz2.dev"
                         )
-                        div("pt-2 border-t border-gray-800 dark:border-gray-300 flex flex-row gap-x-1 items-center text-xs") {
-                            span { +"Made with " }
-                            icon("w-3 h-3", definition = HeroIcons.heart)
-                            span { +" in Hamburg, Germany" }
+                        p(
+                            """pt-2 flex flex-row gap-x-1 items-center text-xs border-t
+                                | border-dotted border-neutral-dark-secondary dark:border-neutral-light-secondary""".trimMargin()
+                        ) {
+                            +"Made with ♡ in Hamburg, Germany"
                         }
                     }
                 }
