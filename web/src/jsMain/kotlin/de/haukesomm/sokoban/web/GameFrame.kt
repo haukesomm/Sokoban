@@ -94,7 +94,7 @@ class GameFrame {
 
             div("flex flex-row justify-center gap-4 text-xs text-gray-400 font-light") {
                 span { +"Sokoban" }
-                span { +"Version: ${VersionInfo.version}" }
+                span { +"Version: ${VersionInfo.sokobanVersion}" }
             }
         }
     }
@@ -208,6 +208,7 @@ class GameFrame {
                         iconLink(
                             Fritz2Icons.fritz2,
                             text = "Built with fritz2",
+                            description = VersionInfo.fritz2Version,
                             href = "https://fritz2.dev"
                         )
                         div("pt-2 border-t border-gray-800 dark:border-gray-300 flex flex-row gap-x-1 items-center text-xs") {

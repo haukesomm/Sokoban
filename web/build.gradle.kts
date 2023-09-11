@@ -52,7 +52,8 @@ tasks.named<ProcessResources>("jsProcessResources") {
 
     filesMatching("index.html") {
         expand(
-            "sokobanVersion" to version
+            "sokobanVersion" to version,
+            "fritz2Version" to fritz2version
         )
     }
 }

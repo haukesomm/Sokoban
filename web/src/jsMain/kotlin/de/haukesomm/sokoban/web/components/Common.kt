@@ -15,14 +15,26 @@ fun RenderContext.withTitle(text: String, content: RenderContext.() -> Unit): Ta
     }
 
 // FIXME: Anchor not focusable
-fun RenderContext.iconLink(icon: IconDefinition, text: String, href: String): Tag<HTMLAnchorElement> =
+fun RenderContext.iconLink(
+    icon: IconDefinition,
+    text: String,
+    description: String? = null,
+    href: String
+): Tag<HTMLAnchorElement> =
     a("flex items-center gap-2 text-gray-800 text-gray-700 dark:text-gray-200") {
         href(href)
         target("_blank")
 
         icon("w-5 h-5", definition = icon)
 
-        span("text-sm font-medium") {
-            +text
+        div("flex flex-col") {
+            span("text-sm font-medium") {
+                +text
+            }
+            description?.let {
+                span("text-xs") {
+                    +it
+                }
+            }
         }
     }
