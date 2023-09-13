@@ -18,13 +18,54 @@ import kotlinx.serialization.Serializable
  * be implemented to work with other frameworks mechanics such as fritz2's `@Lenses` annotation.
  */
 interface GameState {
+
+    /**
+     * Unique identifier of the level.
+     */
     val levelId: String
+
+    /**
+     * Width of the game board.
+     */
     val width: Int
+
+    /**
+     * Height of the game board.
+     */
     val height: Int
+
+    /**
+     * List of all tiles on the game board. The length must be equal to [width] * [height].
+     */
     val tiles: List<Tile>
+
+    /**
+     * Number of moves the player has made.
+     */
     val moves: Int
+
+    /**
+     * Number of pushes the player has made.
+     */
     val pushes: Int
+
+    /**
+     * Returns the previous [GameState] or `null` if this is the first state.
+     *
+     * By traversing the game state tree, it is possible to implement features like undo/redo, replay or a visual
+     * representation of the game state history.
+     */
+    val previous: GameState?
+
+
+    /**
+     * `true` if the level has been cleared, `false` otherwise.
+     */
     val levelCleared: Boolean
+        get() = tiles.none { tile ->
+            tile.isTarget && tile.entity?.takeIf { it.isBox } == null
+        }
+
 
     /**
      * Returns the [Tile] at the given [position] or `null` if the position is out of bounds.
@@ -54,7 +95,7 @@ interface GameState {
      * Returns the player's [Position] or `null` if the player is not on the game board.
      */
     fun getPlayerPosition(): Position? =
-        when (val index = tiles.indexOfFirst { it.entity?.isPlayer == true }) {
+        when (val index = tiles.indexOfFirst { it.entity?.type == EntityType.Player }) {
             -1 -> null
             else -> Position.fromIndex(index, width)
         }

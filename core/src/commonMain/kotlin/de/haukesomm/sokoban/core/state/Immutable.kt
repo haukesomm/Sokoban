@@ -17,7 +17,7 @@ data class ImmutableGameState(
     override val tiles: List<Tile>,
     override val moves: Int = 0,
     override val pushes: Int = 0,
-    override val levelCleared: Boolean = false
+    override val previous: GameState? = null
 ) : GameState
 
 /**
@@ -25,4 +25,4 @@ data class ImmutableGameState(
  */
 fun GameState.toImmutable(): ImmutableGameState =
     if (this is ImmutableGameState) this
-    else ImmutableGameState(levelId, width, height, tiles, moves, pushes, levelCleared)
+    else ImmutableGameState(levelId, width, height, tiles, moves, pushes, previous)

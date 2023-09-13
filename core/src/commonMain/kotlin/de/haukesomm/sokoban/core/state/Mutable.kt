@@ -17,14 +17,14 @@ data class MutableGameState(
     override var tiles: MutableList<Tile>,
     override var moves: Int = 0,
     override var pushes: Int = 0,
-    override var levelCleared: Boolean = false
+    override var previous: GameState? = null
 ) : GameState
 
 /**
  * Creates a mutable copy of this [GameState].
  */
 fun GameState.toMutable(): MutableGameState =
-    MutableGameState(levelId, width, height, tiles.toMutableList(), moves, pushes, levelCleared)
+    MutableGameState(levelId, width, height, tiles.toMutableList(), moves, pushes, previous)
 
 /**
  * Returns a copy of the `GameState` and applies the given [action] to it.

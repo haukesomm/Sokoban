@@ -2,11 +2,7 @@ package de.haukesomm.sokoban.core
 
 import kotlinx.serialization.Serializable
 
-enum class TileType {
-    Empty,
-    Wall,
-    Target
-}
+enum class TileType { Empty, Wall, Target }
 
 /**
  * Represents a tile on the game board.

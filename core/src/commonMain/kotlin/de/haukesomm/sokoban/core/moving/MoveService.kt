@@ -4,6 +4,7 @@ import de.haukesomm.sokoban.core.Direction
 import de.haukesomm.sokoban.core.Position
 import de.haukesomm.sokoban.core.moving.rules.*
 import de.haukesomm.sokoban.core.state.GameState
+import de.haukesomm.sokoban.core.state.transform
 import kotlin.jvm.JvmOverloads
 import kotlin.jvm.JvmStatic
 
@@ -64,12 +65,10 @@ class MoveService(private vararg val moveRules: MoveRule) {
         val internalResult = determineMovesRecursively(state, position, direction)
 
         return if (internalResult.success) {
-            var tmpState = state
-            internalResult.moveActions.forEach { tmpState = it.performMove(tmpState) }
-            tmpState
-        } else {
-            null
-        }
+            internalResult.moveActions
+                .fold(state) { acc, action -> action.performMove(acc) }
+                .transform { previous = state }
+        } else null
     }
 
     private fun determineMovesRecursively(state: GameState, position: Position, direction: Direction): Result {

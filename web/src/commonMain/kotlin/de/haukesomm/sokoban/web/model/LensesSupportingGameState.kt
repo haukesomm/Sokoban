@@ -17,7 +17,7 @@ data class LensesSupportingGameState(
     override val tiles: List<Tile>,
     override val moves: Int = 0,
     override val pushes: Int = 0,
-    override val levelCleared: Boolean = false
+    override val previous: GameState? = null
 ) : GameState {
     companion object
 }
@@ -26,4 +26,4 @@ data class LensesSupportingGameState(
  * Converts a [GameState] to a [LensesSupportingGameState].
  */
 fun GameState.toLensesSupporting(): LensesSupportingGameState =
-    LensesSupportingGameState(levelId, width, height, tiles, moves, pushes, levelCleared)
+    LensesSupportingGameState(levelId, width, height, tiles, moves, pushes, previous)

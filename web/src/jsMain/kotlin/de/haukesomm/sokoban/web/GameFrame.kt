@@ -105,7 +105,7 @@ class GameFrame {
                 span("text-xl font-semibold text-primary-500 dark:text-primary-600") {
                     +"Sokoban"
                 }
-                div("grow max-w-md flex gap-6 items-center") {
+                div("grow max-w-lg flex gap-6 items-center") {
                     div("grow") {
                         listBox {
                             entries = levelDescriptions
@@ -113,7 +113,7 @@ class GameFrame {
                             value(selectedLevelStore)
                         }
                     }
-                    span {
+                    span("whitespace-nowrap") {
                         +"Moves: "
                         code {
                             game.state.map { it.moves }.render(into = this) {
@@ -121,7 +121,7 @@ class GameFrame {
                             }
                         }
                     }
-                    span {
+                    span("whitespace-nowrap") {
                         +"Pushes: "
                         code {
                             game.state.map { it.pushes }.render(into = this) {
@@ -130,11 +130,23 @@ class GameFrame {
                         }
                     }
                     plainButton {
+                        // TODO: Import new tailwind icons and use arrow-uturn-left
+                        iconDefinition(HeroIcons.reply)
+                        iconSize = PlainButton.IconSize.Small
+                        text("Undo")
+                    }.run {
+                        title("Undo last move")
+                        disabled(game.previousStateExists.map { !it })
+                        clicks handledBy {
+                            game.undoLastMoveIfPossible()
+                        }
+                    }
+                    plainButton {
                         iconDefinition(HeroIcons.refresh)
                         iconSize = PlainButton.IconSize.Small
-                        text("Reload")
+                        text("Reset")
                     }.run {
-                        title("Reload level")
+                        title("Reset level")
                         clicks handledBy {
                             game.reloadLevel()
                         }

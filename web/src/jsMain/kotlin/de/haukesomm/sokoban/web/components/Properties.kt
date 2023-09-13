@@ -34,6 +34,11 @@ typealias TextProperty = FlowProperty<String>
 typealias IconProperty = FlowProperty<IconDefinition>
 
 /**
+ * A property that holds a [Flow] of [Boolean]s.
+ */
+typealias BooleanProperty = FlowProperty<Boolean>
+
+/**
  * A hook that renders its content in the given [RenderContext].
  */
 class ContentHook : Hook<RenderContext, Unit, Unit>() {

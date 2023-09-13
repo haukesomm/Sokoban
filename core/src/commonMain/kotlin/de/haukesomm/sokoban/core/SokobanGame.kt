@@ -54,6 +54,9 @@ class SokobanGame(
 
     private val levelToGameStateConverter = LevelToGameStateConverter(levelRepository.characterMap)
 
+    private var moveService = MoveService.withDefaultRules()
+
+
     private val internalState = MutableStateFlow(
         levelToGameStateConverter.convert(levelRepository.firstOrThrow())
     )
@@ -65,7 +68,7 @@ class SokobanGame(
      */
     val state: Flow<GameState> = internalState.asSharedFlow()
 
-    private var moveService = MoveService.withDefaultRules()
+    val previousStateExists: Flow<Boolean> = internalState.map { it.previous != null }
 
 
     init {
@@ -105,17 +108,16 @@ class SokobanGame(
      */
     fun movePlayerIfPossible(direction: Direction) {
         internalState.value.let { currentState ->
-            currentState.getPlayerPosition()?.let { playerPosition ->
-                moveService.moveEntityIfPossible(currentState, playerPosition, direction)
-                    ?.transform { levelCleared = checkLevelCleared(this) }
-                    ?.let(internalState::tryEmit)
+            currentState.getPlayerPosition()?.let { position ->
+                moveService.moveEntityIfPossible(currentState, position, direction)
+                    ?.run(internalState::tryEmit)
             }
         }
     }
 
-    private fun checkLevelCleared(state: GameState): Boolean =
-        state.tiles.none { tile ->
-            val box = tile.entity?.takeIf(Entity::isBox)
-            tile.isTarget && box == null
+    fun undoLastMoveIfPossible() {
+        internalState.value.previous?.let { prev ->
+            internalState.tryEmit(prev)
         }
+    }
 }
