@@ -114,6 +114,11 @@ class SokobanGame(
         }
     }
 
+    /**
+     * Undo the last move if the current state has a previous state.
+     *
+     * If not, nothing happens.
+     */
     fun undoLastMoveIfPossible() {
         internalState.value.previous?.let { prev ->
             internalState.tryEmit(prev)

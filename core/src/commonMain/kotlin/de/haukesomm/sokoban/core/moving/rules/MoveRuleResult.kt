@@ -20,6 +20,7 @@ data class MoveRuleResult(
     }
 
     companion object {
+
         /**
          * Creates a new [MoveRuleResult] with the status [Status.Possible].
          */
