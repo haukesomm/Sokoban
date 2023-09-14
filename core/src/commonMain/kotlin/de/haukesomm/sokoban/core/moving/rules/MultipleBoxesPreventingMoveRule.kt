@@ -5,7 +5,11 @@ import de.haukesomm.sokoban.core.Entity
 import de.haukesomm.sokoban.core.Position
 import de.haukesomm.sokoban.core.state.GameState
 
-class MultipleBoxesPreventingMoveRule : MoveRule {
+class MultipleBoxesPreventingMoveRule : UserSelectableMoveRule {
+
+    override val name = "Push one box at a time"
+
+    override val description: String = "Prevents the user from moving multiple boxes at once."
 
     override fun check(state: GameState, position: Position, direction: Direction): Collection<MoveRuleResult> {
         val nextPosition = position.nextInDirection(direction)

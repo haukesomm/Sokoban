@@ -6,7 +6,6 @@ import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
 
 import de.haukesomm.sokoban.core.GameStateChangeHandler;
-import de.haukesomm.sokoban.core.Position;
 import de.haukesomm.sokoban.core.Direction;
 import de.haukesomm.sokoban.core.SokobanGame;
 
@@ -27,7 +26,7 @@ public class GameFrame extends JFrame {
     }
 
 
-    private final SokobanGame game = SokobanGame.withDefaultLevelsAndRuleSet();
+    private final SokobanGame game = SokobanGame.withBundledLevelsAndRecommendedRules();
 
     private final GameField gameField = new GameField();
 

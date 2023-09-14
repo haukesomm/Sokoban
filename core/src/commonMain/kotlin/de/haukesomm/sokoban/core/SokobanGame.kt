@@ -6,7 +6,6 @@ import de.haukesomm.sokoban.core.level.bundled.BundledLevelRepository
 import de.haukesomm.sokoban.core.moving.MoveService
 import de.haukesomm.sokoban.core.moving.rules.*
 import de.haukesomm.sokoban.core.state.GameState
-import de.haukesomm.sokoban.core.state.transform
 import kotlinx.coroutines.flow.*
 import kotlin.jvm.JvmStatic
 
@@ -25,36 +24,29 @@ import kotlin.jvm.JvmStatic
  */
 class SokobanGame(
     private val levelRepository: LevelRepository,
-    rules: Flow<Collection<MoveRule>> = flowOf(emptyList())
+    private var moveService: MoveService,
 ) {
     companion object {
 
         /**
-         * Creates a new [SokobanGame] with a minimal set of [MoveRule]s replicating the original game's
+         * Creates a new [SokobanGame] with a default set of [MoveRule]s replicating the original game's
          * behavior.
          *
-         * In case you need to support a dynamically changing set of rules, want to include custom implemented
-         * rules or load custom levels, please create an instance of this class manually.
+         * In case you need to support a dynamically changing set of rules, simply call [updateMoveService] with
+         * a new [MoveService] instance that has the desired rules whenever the rules change.
          *
-         * The returned [SokobanGame] is able to play levels that are included with the library only.
+         * The returned [SokobanGame] will be able to play the levels that are bundled with the library.
          */
         @JvmStatic
-        fun withDefaultLevelsAndRuleSet(): SokobanGame =
+        fun withBundledLevelsAndRecommendedRules(): SokobanGame =
             SokobanGame(
                 BundledLevelRepository(),
-                rules = flowOf(
-                    setOf(
-                        WallCollisionPreventingMoveRule(),
-                        MultipleBoxesPreventingMoveRule()
-                    )
-                )
+                MoveService.withRecommendedRules()
             )
     }
 
 
     private val levelToGameStateConverter = LevelToGameStateConverter(levelRepository.characterMap)
-
-    private var moveService = MoveService.withDefaultRules()
 
 
     private val internalState = MutableStateFlow(
@@ -68,13 +60,20 @@ class SokobanGame(
      */
     val state: Flow<GameState> = internalState.asSharedFlow()
 
+    /**
+     * Flow emitting `true` if the current state has a previous state, `false` otherwise.
+     * This can be used to determine if the user can undo the last move.
+     */
     val previousStateExists: Flow<Boolean> = internalState.map { it.previous != null }
 
 
-    init {
-        rules.onEach {
-            moveService = MoveService.withDefaultRules(additionalRules = it)
-        }.launchIn(SokobanMainScope)
+    /**
+     * Replaces the current [MoveService] used by the game with the given [moveService].
+     *
+     * This can be used to customize the rules for moving entities.
+     */
+    fun updateMoveService(moveService: MoveService) {
+        this.moveService = moveService
     }
 
 

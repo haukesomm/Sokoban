@@ -3,8 +3,6 @@ package de.haukesomm.sokoban.core.moving
 import de.haukesomm.sokoban.core.*
 import de.haukesomm.sokoban.core.level.Level
 import de.haukesomm.sokoban.core.level.LevelToGameStateConverter
-import de.haukesomm.sokoban.core.moving.rules.MultipleBoxesPreventingMoveRule
-import de.haukesomm.sokoban.core.moving.rules.WallCollisionPreventingMoveRule
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
@@ -39,19 +37,10 @@ class MoveServiceTests {
             )
         )
 
-    private fun newMoveServiceWithBasicRules() =
-        // TODO: Provide central way to create a MoveService with all recommended rules
-        MoveService.withDefaultRules(
-            setOf(
-                WallCollisionPreventingMoveRule(),
-                MultipleBoxesPreventingMoveRule()
-            )
-        )
-
     @Test
     fun `With minimal rules, when moving the player, position is updated`() {
         val state = newTestGameState()
-        val sut = MoveService.withDefaultRules()
+        val sut = MoveService.withMinimalRules()
 
         val result = sut.moveEntityIfPossible(state, state.getPlayerPosition()!!, Direction.Bottom)
         val updatedPosition = result!!.getPlayerPosition()!!
@@ -65,7 +54,7 @@ class MoveServiceTests {
     @Test
     fun `With recommended rules, when blocked by a wall, no move is performed`() {
         val state = newTestGameState()
-        val sut = newMoveServiceWithBasicRules()
+        val sut = MoveService.withRecommendedRules()
 
         val result = sut.moveEntityIfPossible(state, state.getPlayerPosition()!!, Direction.Left)
 
@@ -75,7 +64,7 @@ class MoveServiceTests {
     @Test
     fun `With recommended rules, when blocked by a box, box and player are moved`() {
         val state = newTestGameState()
-        val sut = newMoveServiceWithBasicRules()
+        val sut = MoveService.withRecommendedRules()
 
         val result = sut.moveEntityIfPossible(state, state.getPlayerPosition()!!, Direction.Right)
 
@@ -86,7 +75,7 @@ class MoveServiceTests {
     @Test
     fun `With recommended rules, when blocked by two boxes in a row, none are moved`() {
         val state = newTestGameState()
-        val sut = newMoveServiceWithBasicRules()
+        val sut = MoveService.withRecommendedRules()
 
         // Move player down, then right:
         val result = sut.moveEntityIfPossible(state, state.getPlayerPosition()!!, Direction.Bottom)?.let { result1 ->
