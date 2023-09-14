@@ -9,6 +9,10 @@ class AggregatingMoveRule(
     private vararg val rules: MoveRule
 ) : MoveRule {
 
-    override fun check(state: GameState, position: Position, direction: Direction): Collection<MoveRuleResult> =
-        rules.checkAll(state, position, direction)
+    override fun check(
+        state: GameState,
+        position: Position,
+        direction: Direction
+    ): Collection<MoveRuleResult> =
+        rules.toSet().checkAll(state, position, direction)
 }

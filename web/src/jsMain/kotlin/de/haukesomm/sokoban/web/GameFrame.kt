@@ -4,6 +4,8 @@ import de.haukesomm.sokoban.core.Direction
 import de.haukesomm.sokoban.core.SokobanGame
 import de.haukesomm.sokoban.core.level.LevelDescription
 import de.haukesomm.sokoban.core.level.bundled.BundledLevelRepository
+import de.haukesomm.sokoban.core.moving.MoveService
+import de.haukesomm.sokoban.core.moving.rules.UserSelectableMoveRule
 import de.haukesomm.sokoban.core.state.GameState
 import de.haukesomm.sokoban.web.components.*
 import de.haukesomm.sokoban.web.components.game.gameField
@@ -23,11 +25,11 @@ class GameFrame {
         private const val MAX_TITLEBAR_WIDTH_CLASSES = "max-w-4xl"
     }
 
-    private val enabledRulesStore = storeOf(UserSelectableRules.rules)
+    private val enabledRulesStore = storeOf(MoveService.recommendedRules)
 
     private val game = SokobanGame(
         BundledLevelRepository(),
-        enabledRulesStore.data.map { it.rules }
+        MoveService.withMinimalRules(additional = MoveService.recommendedRules)
     )
 
     private val levelDescriptions = game.getAvailableLevels()
@@ -36,6 +38,10 @@ class GameFrame {
 
 
     init {
+        enabledRulesStore.data handledBy {
+            game.updateMoveService(MoveService.withMinimalRules(additional = it))
+        }
+
         selectedLevelStore.data handledBy {
             game.loadLevel(it.id)
         }
@@ -177,9 +183,9 @@ class GameFrame {
                     withTitle("Rules") {
                         checkboxGroup {
                             values(enabledRulesStore)
-                            options = UserSelectableRules.rules
-                            optionsFormat = MoveRuleWithDescription::title
-                            optionDescriptionFormat = MoveRuleWithDescription::description
+                            options = MoveService.recommendedRules
+                            optionsFormat = UserSelectableMoveRule::name
+                            optionDescriptionFormat = UserSelectableMoveRule::description
                         }
                     }
                     withTitle("Theme") {

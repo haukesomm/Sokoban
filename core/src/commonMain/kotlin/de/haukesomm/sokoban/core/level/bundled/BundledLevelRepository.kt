@@ -1,5 +1,6 @@
 package de.haukesomm.sokoban.core.level.bundled
 
+import de.haukesomm.sokoban.core.CharacterMap
 import de.haukesomm.sokoban.core.level.*
 
 class BundledLevelRepository : LevelRepository {

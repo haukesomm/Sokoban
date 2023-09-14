@@ -17,7 +17,7 @@ internal class ConditionalMoveRule(
     override fun check(state: GameState, position: Position, direction: Direction): Collection<MoveRuleResult> =
         buildSet {
             addAll(condition.check(state, position, direction))
-            if (MoveRuleResult.Impossible !in this)
+            if (none { it.status == MoveRuleResult.Status.Impossible })
                 addAll(moveRules.checkAll(state, position, direction))
         }
 }

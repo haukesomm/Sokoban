@@ -5,15 +5,6 @@ import de.haukesomm.sokoban.core.state.GameState
 import de.haukesomm.sokoban.core.state.ImmutableGameState
 
 /**
- * Represents both the type of tile and the type of entity that may be present on the tile.
- * The latter is optional and may be `null` if the tile does not contain an entity.
- */
-data class TileProperties(
-    val tileType: TileType,
-    val entityType: EntityType? = null
-)
-
-/**
  * Converts a [Level] into a [GameState] by using a [CharacterMap] to map the characters of the level's layout string
  * to a two-dimensional grid of [Tile]s.
  */

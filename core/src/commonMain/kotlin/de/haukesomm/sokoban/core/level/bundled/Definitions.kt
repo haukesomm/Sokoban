@@ -3,8 +3,8 @@ package de.haukesomm.sokoban.core.level.bundled
 import de.haukesomm.sokoban.core.EntityType
 import de.haukesomm.sokoban.core.TileType
 import de.haukesomm.sokoban.core.level.Level
-import de.haukesomm.sokoban.core.level.TileProperties
-import de.haukesomm.sokoban.core.level.characterMapOf
+import de.haukesomm.sokoban.core.TileProperties
+import de.haukesomm.sokoban.core.characterMapOf
 
 internal val bundledCharacterMap = characterMapOf(
     '_' to TileProperties(TileType.Empty),

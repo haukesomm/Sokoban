@@ -12,9 +12,9 @@ internal class OutOfBoundsPreventingMoveRule : MoveRule {
         return setOf(
             if (x !in 0 until state.width ||
                 y !in 0 until state.height) {
-                MoveRuleResult.Impossible
+                MoveRuleResult.impossible("Out of bounds")
             } else {
-                MoveRuleResult.Possible
+                MoveRuleResult.possible()
             }
         )
     }

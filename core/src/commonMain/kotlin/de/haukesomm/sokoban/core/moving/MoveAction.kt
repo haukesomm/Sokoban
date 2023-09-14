@@ -25,8 +25,8 @@ fun interface MoveAction {
  *
  * The move is performed by removing the entity from the current position and adding it to the next position.
  *
- * The moves and pushes counters are not incremented when using this action. Instead, use [movesIncrementing] or
- * [pushesIncrementing] decorator methods depending on the type of move.
+ * The moves and pushes counters are not incremented when using this action. Instead, use [incrementMoves] or
+ * [incrementPushes] decorator methods depending on the type of move.
  */
 class SimpleMoveAction(
     private val position: Position,
@@ -48,16 +48,20 @@ class SimpleMoveAction(
  * Convenience method decorating a [MoveAction] so that the [GameState.moves] counter is incremented after the
  * decorated move is performed.
  */
-fun MoveAction.movesIncrementing(): MoveAction =
+fun MoveAction.incrementMoves(): MoveAction =
     MoveAction { state ->
-        performMove(state).transform { moves++ }
+        this@incrementMoves
+            .performMove(state)
+            .transform { moves++ }
     }
 
 /**
  * Convenience method decorating a [MoveAction] so that the [GameState.pushes] counter is incremented after the
  * decorated move is performed.
  */
-fun MoveAction.pushesIncrementing(): MoveAction =
+fun MoveAction.incrementPushes(): MoveAction =
     MoveAction { state ->
-        performMove(state).transform { pushes++ }
+        this@incrementPushes
+            .performMove(state)
+            .transform { pushes++ }
     }

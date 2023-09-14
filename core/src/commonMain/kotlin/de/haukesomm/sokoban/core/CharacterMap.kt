@@ -1,8 +1,5 @@
-package de.haukesomm.sokoban.core.level
+package de.haukesomm.sokoban.core
 
-import de.haukesomm.sokoban.core.BiMap
-import de.haukesomm.sokoban.core.EntityType
-import de.haukesomm.sokoban.core.TileType
 import de.haukesomm.sokoban.core.state.GameState
 import kotlin.jvm.JvmStatic
 
