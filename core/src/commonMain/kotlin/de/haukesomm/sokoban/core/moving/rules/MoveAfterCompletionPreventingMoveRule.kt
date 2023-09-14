@@ -9,7 +9,7 @@ class MoveAfterCompletionPreventingMoveRule : MoveRule {
 
     override fun check(state: GameState, position: Position, direction: Direction): Collection<MoveRuleResult> =
         listOf(
-            if (state.levelCleared) MoveRuleResult.Impossible
-            else MoveRuleResult.Possible
+            if (state.levelCleared) MoveRuleResult.impossible("Level has been cleared")
+            else MoveRuleResult.possible()
         )
 }

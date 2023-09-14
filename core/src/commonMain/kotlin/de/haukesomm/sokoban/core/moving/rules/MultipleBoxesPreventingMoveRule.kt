@@ -16,8 +16,8 @@ class MultipleBoxesPreventingMoveRule : MoveRule {
             .all { it?.isBox == true }
 
         return setOf(
-            if (multipleBoxesAhead) MoveRuleResult.Impossible
-            else MoveRuleResult.Possible
+            if (multipleBoxesAhead) MoveRuleResult.impossible("Multiple boxes ahead")
+            else MoveRuleResult.possible()
         )
     }
 }

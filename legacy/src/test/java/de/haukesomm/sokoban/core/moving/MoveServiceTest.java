@@ -27,7 +27,7 @@ public class MoveServiceTest {
                         5,
                         """
                                 ######
-                                #____#
+                                #_...#
                                 #@$__#
                                 #_$$_#
                                 ######"""
@@ -50,10 +50,8 @@ public class MoveServiceTest {
     public void noRulesWhenPlayerIsMovedHasUpdatedPosition() {
         var gameState = newTestGameState();
         var sut = newMoveServiceWithBasicRules();
-        System.out.println(GameStateSerialization.toLayoutString(gameState));
 
         var playerPostion = gameState.getPlayerPosition();
-        System.out.println(playerPostion);
         var result = sut.moveEntityIfPossible(gameState, playerPostion, Direction.Bottom);
         var plplayerPositionyer = result.getPlayerPosition();
 

@@ -8,7 +8,7 @@ class BoxDetectingMoveRule : MoveRule {
 
     override fun check(state: GameState, position: Position, direction: Direction): Collection<MoveRuleResult> =
         setOf(
-            if (state.entityInDirection(position, direction)?.isBox == true) MoveRuleResult.BoxAheadNeedsToMove
-            else MoveRuleResult.Possible
+            if (state.entityInDirection(position, direction)?.isBox == true) MoveRuleResult.boxAheadNeedsToMove()
+            else MoveRuleResult.possible()
         )
 }

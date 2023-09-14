@@ -62,26 +62,27 @@ class MoveService(private vararg val moveRules: MoveRule) {
      * The method returns `null` if the move is not possible. Otherwise, the method returns a new [GameState].
      */
     fun moveEntityIfPossible(state: GameState, position: Position, direction: Direction): GameState? {
-        val internalResult = determineMovesRecursively(state, position, direction)
+        val result = determineMovesRecursively(state, position, direction)
 
-        return if (internalResult.success) {
-            internalResult.moveActions
+        return if (result.success) {
+            result.moveActions
                 .fold(state) { acc, action -> action.performMove(acc) }
                 .transform { previous = state }
         } else null
     }
 
     private fun determineMovesRecursively(state: GameState, position: Position, direction: Direction): Result {
-        val moveRuleResults = moveRules
-            .checkAll(state, position, direction)
+        val results = moveRules.checkAll(state, position, direction)
+        val statuses = results
+            .map(MoveRuleResult::status)
             .toMutableSet()
 
-        if (MoveRuleResult.Impossible in moveRuleResults) {
+        if (MoveRuleResult.Status.Impossible in statuses) {
             return Result(
                 success = false,
                 moveActions = mutableListOf()
             )
-        } else if (MoveRuleResult.BoxAheadNeedsToMove in moveRuleResults) {
+        } else if (MoveRuleResult.Status.BoxAheadNeedsToMove in statuses) {
             val nextPosition = position.nextInDirection(direction)
 
             if (state.tileAt(nextPosition)?.entity == null)
@@ -89,14 +90,14 @@ class MoveService(private vararg val moveRules: MoveRule) {
 
             return determineMovesRecursively(state, nextPosition, direction).apply {
                 if (success) {
-                    moveActions += SimpleMoveAction(position, direction).pushesIncrementing()
+                    moveActions += SimpleMoveAction(position, direction).incrementPushes()
                 }
             }
         } else {
             return Result(
                 success = true,
                 moveActions = mutableListOf(
-                    SimpleMoveAction(position, direction).movesIncrementing()
+                    SimpleMoveAction(position, direction).incrementMoves()
                 )
             )
         }
