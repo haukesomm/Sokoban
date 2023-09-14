@@ -9,7 +9,6 @@ repositories {
 
 dependencies {
     implementation(project(":core"))
-    testImplementation("org.junit.jupiter:junit-jupiter:5.9.1")
 }
 
 application {

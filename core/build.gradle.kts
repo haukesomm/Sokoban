@@ -23,5 +23,11 @@ kotlin {
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:${rootProject.ext["serializationVersion"]}")
             }
         }
+        val jvmTest by getting {
+            dependencies {
+                implementation(kotlin("test"))
+                //implementation(kotlin("test-annotations-common"))
+            }
+        }
     }
 }
