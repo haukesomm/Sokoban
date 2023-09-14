@@ -1,5 +1,8 @@
 package de.haukesomm.sokoban.core.level
 
+import de.haukesomm.sokoban.core.CharacterMap
+import de.haukesomm.sokoban.core.CharacterMaps
+
 /**
  * A level repository is a collection of [Level]s that can be played.
  *

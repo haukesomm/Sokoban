@@ -1,7 +1,7 @@
 package de.haukesomm.sokoban.core.moving;
 
 import de.haukesomm.sokoban.core.*;
-import de.haukesomm.sokoban.core.level.CharacterMaps;
+import de.haukesomm.sokoban.core.CharacterMaps;
 import de.haukesomm.sokoban.core.level.Level;
 import de.haukesomm.sokoban.core.level.LevelToGameStateConverter;
 import de.haukesomm.sokoban.core.moving.rules.MultipleBoxesPreventingMoveRule;
@@ -50,8 +50,11 @@ public class MoveServiceTest {
     public void noRulesWhenPlayerIsMovedHasUpdatedPosition() {
         var gameState = newTestGameState();
         var sut = newMoveServiceWithBasicRules();
+        System.out.println(GameStateSerialization.toLayoutString(gameState));
 
-        var result = sut.moveEntityIfPossible(gameState, gameState.getPlayerPosition(), Direction.Bottom);
+        var playerPostion = gameState.getPlayerPosition();
+        System.out.println(playerPostion);
+        var result = sut.moveEntityIfPossible(gameState, playerPostion, Direction.Bottom);
         var plplayerPositionyer = result.getPlayerPosition();
 
         Assertions.assertEquals(new Position(1, 3), plplayerPositionyer);
