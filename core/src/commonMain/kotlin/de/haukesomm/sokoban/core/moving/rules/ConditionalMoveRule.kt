@@ -1,9 +1,11 @@
 package de.haukesomm.sokoban.core.moving.rules
 
 import de.haukesomm.sokoban.core.Direction
-import de.haukesomm.sokoban.core.Entity
+import de.haukesomm.sokoban.core.GameState
 import de.haukesomm.sokoban.core.Position
-import de.haukesomm.sokoban.core.state.GameState
+import de.haukesomm.sokoban.core.moving.MoveRule
+import de.haukesomm.sokoban.core.moving.MoveRuleResult
+import de.haukesomm.sokoban.core.moving.checkAll
 
 /**
  * A special `MoveRule` that only checks a given collection of [moveRules] when the given

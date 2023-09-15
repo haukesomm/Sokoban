@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 
-import de.haukesomm.sokoban.core.state.GameState;
+import de.haukesomm.sokoban.core.GameState;
 import de.haukesomm.sokoban.core.Position;
 import de.haukesomm.sokoban.legacy.textures.JarResourceTextureRepository;
 import de.haukesomm.sokoban.legacy.textures.TextureRepository;

@@ -1,10 +1,6 @@
 package de.haukesomm.sokoban.core.moving
 
-import de.haukesomm.sokoban.core.Direction
-import de.haukesomm.sokoban.core.Entity
-import de.haukesomm.sokoban.core.Position
-import de.haukesomm.sokoban.core.state.GameState
-import de.haukesomm.sokoban.core.state.transform
+import de.haukesomm.sokoban.core.*
 
 /**
  * Represents an action that can be performed on a [GameState].
@@ -12,7 +8,7 @@ import de.haukesomm.sokoban.core.state.transform
  * Typically, this is a move of the player or a box. The action is performed on a [GameState] and returns a _new_
  * [GameState] with the move applied.
  */
-fun interface MoveAction {
+internal fun interface MoveAction {
 
     /**
      * Performs the move on the given [state] and returns the new [GameState].
@@ -28,7 +24,7 @@ fun interface MoveAction {
  * The moves and pushes counters are not incremented when using this action. Instead, use [incrementMoves] or
  * [incrementPushes] decorator methods depending on the type of move.
  */
-class SimpleMoveAction(
+internal class SimpleMoveAction(
     private val position: Position,
     private val direction: Direction
 ) : MoveAction {
@@ -48,7 +44,7 @@ class SimpleMoveAction(
  * Convenience method decorating a [MoveAction] so that the [GameState.moves] counter is incremented after the
  * decorated move is performed.
  */
-fun MoveAction.incrementMoves(): MoveAction =
+internal fun MoveAction.incrementMoves(): MoveAction =
     MoveAction { state ->
         this@incrementMoves
             .performMove(state)
@@ -59,7 +55,7 @@ fun MoveAction.incrementMoves(): MoveAction =
  * Convenience method decorating a [MoveAction] so that the [GameState.pushes] counter is incremented after the
  * decorated move is performed.
  */
-fun MoveAction.incrementPushes(): MoveAction =
+internal fun MoveAction.incrementPushes(): MoveAction =
     MoveAction { state ->
         this@incrementPushes
             .performMove(state)

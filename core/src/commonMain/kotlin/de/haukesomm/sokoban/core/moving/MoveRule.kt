@@ -1,9 +1,8 @@
-package de.haukesomm.sokoban.core.moving.rules
+package de.haukesomm.sokoban.core.moving
 
 import de.haukesomm.sokoban.core.Direction
-import de.haukesomm.sokoban.core.Entity
+import de.haukesomm.sokoban.core.GameState
 import de.haukesomm.sokoban.core.Position
-import de.haukesomm.sokoban.core.state.GameState
 
 /**
  * A rule that determines whether an entity can be moved in a given direction.
@@ -22,22 +21,6 @@ fun interface MoveRule {
         position: Position,
         direction: Direction
     ): Collection<MoveRuleResult>
-}
-
-/**
- * Special [MoveRule] that has a name and a description, so it can be presented to the user.
- */
-interface UserSelectableMoveRule : MoveRule {
-
-    /**
-     * The name of the rule.
-     */
-    val name: String
-
-    /**
-     * A more detailed description of the rule.
-     */
-    val description: String
 }
 
 /**

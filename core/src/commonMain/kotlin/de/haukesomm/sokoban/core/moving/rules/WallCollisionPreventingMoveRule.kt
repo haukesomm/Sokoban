@@ -1,14 +1,12 @@
 package de.haukesomm.sokoban.core.moving.rules
 
 import de.haukesomm.sokoban.core.Direction
+import de.haukesomm.sokoban.core.GameState
 import de.haukesomm.sokoban.core.Position
-import de.haukesomm.sokoban.core.state.GameState
+import de.haukesomm.sokoban.core.moving.MoveRule
+import de.haukesomm.sokoban.core.moving.MoveRuleResult
 
-class WallCollisionPreventingMoveRule : UserSelectableMoveRule {
-
-    override val name: String = "No walking through walls"
-
-    override val description: String = "This rule prevents the player from walking through walls."
+class WallCollisionPreventingMoveRule : MoveRule {
 
     override fun check(state: GameState, position: Position, direction: Direction): Collection<MoveRuleResult> {
         val nextTile = state.tileInDirection(position, direction)

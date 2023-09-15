@@ -8,6 +8,7 @@ import java.awt.event.ActionEvent;
 import de.haukesomm.sokoban.core.GameStateChangeHandler;
 import de.haukesomm.sokoban.core.Direction;
 import de.haukesomm.sokoban.core.SokobanGame;
+import de.haukesomm.sokoban.core.SokobanGameFactory;
 
 public class GameFrame extends JFrame {
 
@@ -26,7 +27,7 @@ public class GameFrame extends JFrame {
     }
 
 
-    private final SokobanGame game = SokobanGame.withBundledLevelsAndRecommendedRules();
+    private final SokobanGame game = SokobanGameFactory.withDefaultConfiguration();
 
     private final GameField gameField = new GameField();
 

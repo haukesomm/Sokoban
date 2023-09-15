@@ -1,7 +1,6 @@
 package de.haukesomm.sokoban.core
 
 import kotlin.math.floor
-import de.haukesomm.sokoban.core.state.GameState
 
 /**
  * Represents a position on the game board denoted by an [x] and [y] coordinate.
@@ -30,7 +29,7 @@ data class Position(val x: Int, val y: Int) {
     fun toIndex(width: Int): Int = x + (width * y)
 
     companion object {
-        // TODO: Unit test
+
         /**
          * Returns a [Position] from the given [index] in a two-dimensional list with the given [width].
          */

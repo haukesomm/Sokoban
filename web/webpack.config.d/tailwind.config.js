@@ -20,10 +20,12 @@ const tailwind = {
                     'light': {
                         'DEFAULT': twColors.gray['200'],
                         'secondary': twColors.gray['400'],
+                        'disabled': twColors.gray['500'],
                     },
                     'dark': {
                         'DEFAULT': twColors.gray['800'],
                         'secondary': twColors.gray['500'],
+                        'disabled': twColors.gray['400'],
                     }
                 },
                 'background': {

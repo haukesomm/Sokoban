@@ -1,6 +1,7 @@
 package de.haukesomm.sokoban.core
 
-import de.haukesomm.sokoban.core.state.GameState
+import de.haukesomm.sokoban.core.CharacterMap.Companion.default
+import kotlin.jvm.JvmInline
 import kotlin.jvm.JvmStatic
 
 /**
@@ -9,36 +10,36 @@ import kotlin.jvm.JvmStatic
  * A character map is a map that maps [Char]s to [TileProperties], which in turn contain the [TileType] and the
  * [EntityType] of the resulting [TileType] on the game board.
  *
- * It is used to convert a [Level] (which contains the level's layout in a String-encoded form)
- * to a [GameState] using the [LevelToGameStateConverter].
+ * All [CharacterMap]s should orient themselves on the default character map, which is defined in the companion object's
+ * [default] property.
  */
-typealias CharacterMap = BiMap<Char, TileProperties>
+@JvmInline
+value class CharacterMap(val map: BiMap<Char, TileProperties>) : BiMap<Char, TileProperties> by map {
+
+    companion object {
+
+        /**
+         * Default character map based on the original Sokoban game.
+         */
+        @JvmStatic
+        val default: CharacterMap = characterMapOf(
+            '_' to TileProperties(TileType.Empty),
+            '.' to TileProperties(TileType.Target),
+            '#' to TileProperties(TileType.Wall),
+            '$' to TileProperties(TileType.Empty, EntityType.Box),
+            '@' to TileProperties(TileType.Empty, EntityType.Player),
+            '*' to TileProperties(TileType.Target, EntityType.Box),
+            '+' to TileProperties(TileType.Target, EntityType.Player)
+        )
+    }
+}
 
 /**
  * Creates a [CharacterMap] from the given [entries].
  */
 fun characterMapOf(vararg entries: Pair<Char, TileProperties>): CharacterMap =
-    BiMap(mapOf(*entries))
-
-/**
- * Contains various predefined [CharacterMap]s.
- *
- * Custom defined character maps can be registered as an extension property of this object.
- * They can be created using the [characterMapOf] function.
- *
- * @see characterMapOf
- */
-object CharacterMaps {
-
-    /**
-     * Default character map based on the original Sokoban game.
-     */
-    @JvmStatic
-    val default: CharacterMap = characterMapOf(
-        '_' to TileProperties(TileType.Empty),
-        '.' to TileProperties(TileType.Target),
-        '#' to TileProperties(TileType.Wall),
-        '$' to TileProperties(TileType.Empty, EntityType.Box),
-        '@' to TileProperties(TileType.Empty, EntityType.Player),
+    CharacterMap(
+        BiMapImpl(
+            mapOf(*entries)
+        )
     )
-}

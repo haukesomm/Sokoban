@@ -1,6 +1,5 @@
-package de.haukesomm.sokoban.core.state
+package de.haukesomm.sokoban.core
 
-import de.haukesomm.sokoban.core.*
 import kotlinx.serialization.Serializable
 
 /**
@@ -99,4 +98,88 @@ interface GameState {
             -1 -> null
             else -> Position.fromIndex(index, width)
         }
+}
+
+
+/**
+ * Immutable implementation of [GameState].
+ *
+ * This implementation does not allow modifications to the game state.
+ * A mutable copy of the game state can be created via the [toMutable] method.
+ */
+@Serializable
+data class ImmutableGameState(
+    override val levelId: String,
+    override val width: Int,
+    override val height: Int,
+    override val tiles: List<Tile>,
+    override val moves: Int = 0,
+    override val pushes: Int = 0,
+    override val previous: GameState? = null
+) : GameState
+
+/**
+ * Creates a mutable copy of this [GameState].
+ */
+fun GameState.toImmutable(): ImmutableGameState =
+    if (this is ImmutableGameState) this
+    else ImmutableGameState(levelId, width, height, tiles, moves, pushes, previous)
+
+
+/**
+ * Mutable implementation of [GameState].
+ *
+ * This implementation allows modifications to the game state.
+ * An immutable copy of the game state can be created via the [toImmutable] method.
+ */
+@Serializable
+data class MutableGameState(
+    override var levelId: String,
+    override var width: Int,
+    override var height: Int,
+    override var tiles: MutableList<Tile>,
+    override var moves: Int = 0,
+    override var pushes: Int = 0,
+    override var previous: GameState? = null
+) : GameState
+
+/**
+ * Creates a mutable copy of this [GameState].
+ */
+fun GameState.toMutable(): MutableGameState =
+    MutableGameState(levelId, width, height, tiles.toMutableList(), moves, pushes, previous)
+
+/**
+ * Returns a copy of the `GameState` and applies the given [action] to it.
+ * The returned state is immutable.
+ */
+fun GameState.transform(action: MutableGameState.() -> Unit): GameState =
+    this.toMutable().apply(action).toImmutable()
+
+
+/**
+ * Converts the given [GameState] to a string representation.
+ *
+ * The string representation is a layout of the game board. Each tile is represented by a single character. The
+ * characters are chosen based on the given [characterMap]. If the [characterMap] does not contain a mapping for a
+ * given tile, the character `?` is used instead.
+ *
+ * The string representation contains line breaks after each row of the game board.
+ */
+@Suppress("unused")
+fun GameState.toLayoutString(characterMap: CharacterMap = CharacterMap.default): String {
+    val characterToTileProperties = characterMap.inverse
+    return buildString {
+        tiles.forEachIndexed { index, tile ->
+            val tileProperties = tile.run {
+                TileProperties(type, entity?.type)
+            }
+
+            characterToTileProperties[tileProperties]
+                ?.let(::append) ?: append('?')
+
+            if ((index + 1) % width == 0)
+                append('\n')
+        }
+    }
 }

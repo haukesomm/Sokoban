@@ -1,13 +1,6 @@
 package de.haukesomm.sokoban.core
 
-import de.haukesomm.sokoban.core.coroutines.SokobanMainScope
-import de.haukesomm.sokoban.core.level.*
-import de.haukesomm.sokoban.core.level.bundled.BundledLevelRepository
-import de.haukesomm.sokoban.core.moving.MoveService
-import de.haukesomm.sokoban.core.moving.rules.*
-import de.haukesomm.sokoban.core.state.GameState
 import kotlinx.coroutines.flow.*
-import kotlin.jvm.JvmStatic
 
 /**
  * Represents a Sokoban game.
@@ -19,38 +12,19 @@ import kotlin.jvm.JvmStatic
  * every time the state of the game changes. The values of the flow can then be collected in order to react
  * to the changes, e.g. in order to update a user interface.
  *
- * A flow of [MoveRule]s can be passed to the service in order to customize the rules for moving entities. If no rules
- * are passed, the service uses a set of default rules.
+ * New [SokobanGame]s can also be created using the [SokobanGameFactory]. The factory provides a convenient
+ * way to create a new game with a [LevelRepository] and a [MoveService] that are already configured.
+ * Additionally, a number of configuration options can be specified.
  */
 class SokobanGame(
     private val levelRepository: LevelRepository,
-    private var moveService: MoveService,
+    private val moveService: MoveService,
 ) {
-    companion object {
-
-        /**
-         * Creates a new [SokobanGame] with a default set of [MoveRule]s replicating the original game's
-         * behavior.
-         *
-         * In case you need to support a dynamically changing set of rules, simply call [updateMoveService] with
-         * a new [MoveService] instance that has the desired rules whenever the rules change.
-         *
-         * The returned [SokobanGame] will be able to play the levels that are bundled with the library.
-         */
-        @JvmStatic
-        fun withBundledLevelsAndRecommendedRules(): SokobanGame =
-            SokobanGame(
-                BundledLevelRepository(),
-                MoveService.withRecommendedRules()
-            )
-    }
-
-
-    private val levelToGameStateConverter = LevelToGameStateConverter(levelRepository.characterMap)
+    private val levelParser = LevelParser(levelRepository.characterMap)
 
 
     private val internalState = MutableStateFlow(
-        levelToGameStateConverter.convert(levelRepository.firstOrThrow())
+        levelParser.convert(levelRepository.firstOrThrow())
     )
 
     /**
@@ -68,16 +42,6 @@ class SokobanGame(
 
 
     /**
-     * Replaces the current [MoveService] used by the game with the given [moveService].
-     *
-     * This can be used to customize the rules for moving entities.
-     */
-    fun updateMoveService(moveService: MoveService) {
-        this.moveService = moveService
-    }
-
-
-    /**
      * Returns the [LevelDescription]s of the levels that are available to be loaded.
      */
     fun getAvailableLevels( ): List<LevelDescription> =
@@ -90,7 +54,7 @@ class SokobanGame(
         val level = levelRepository.getLevelOrNull(levelId)
             ?: throw IllegalStateException("Level with id '$levelId' does not exist!")
 
-        internalState.tryEmit(levelToGameStateConverter.convert(level))
+        internalState.tryEmit(levelParser.convert(level))
     }
 
     /**

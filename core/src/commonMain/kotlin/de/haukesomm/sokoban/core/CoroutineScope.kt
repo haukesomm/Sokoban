@@ -1,4 +1,4 @@
-package de.haukesomm.sokoban.core.coroutines
+package de.haukesomm.sokoban.core
 
 import kotlinx.coroutines.CoroutineScope
 
@@ -7,4 +7,4 @@ import kotlinx.coroutines.CoroutineScope
  *
  * Its implementation depends on the platform the application is running on.
  */
-expect val SokobanMainScope: CoroutineScope
+internal expect val SokobanMainScope: CoroutineScope

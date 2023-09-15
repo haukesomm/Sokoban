@@ -1,6 +1,4 @@
-package de.haukesomm.sokoban.core.level
-
-import de.haukesomm.sokoban.core.state.GameState
+package de.haukesomm.sokoban.core
 
 /**
  * Represents a [Level] that can be loaded from a [LevelRepository].

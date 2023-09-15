@@ -27,8 +27,8 @@ class PlainButton {
         button(
             """p-1 flex flex-row items-center gap-2 rounded-sm focus:outline-none
                 | focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:dark:ring-primary-600
-                | disabled:text-neutral-dark-secondary
-                | disabled:dark:text-neutral-light-secondary""".trimMargin()
+                | disabled:text-neutral-dark-disabled
+                | disabled:dark:text-neutral-light-disabled""".trimMargin()
         ) {
             type("button")
 

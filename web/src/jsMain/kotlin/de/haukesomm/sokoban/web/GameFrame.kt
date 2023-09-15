@@ -2,11 +2,8 @@ package de.haukesomm.sokoban.web
 
 import de.haukesomm.sokoban.core.Direction
 import de.haukesomm.sokoban.core.SokobanGame
-import de.haukesomm.sokoban.core.level.LevelDescription
-import de.haukesomm.sokoban.core.level.bundled.BundledLevelRepository
-import de.haukesomm.sokoban.core.moving.MoveService
-import de.haukesomm.sokoban.core.moving.rules.UserSelectableMoveRule
-import de.haukesomm.sokoban.core.state.GameState
+import de.haukesomm.sokoban.core.SokobanGameFactory
+import de.haukesomm.sokoban.core.LevelDescription
 import de.haukesomm.sokoban.web.components.*
 import de.haukesomm.sokoban.web.components.game.gameField
 import de.haukesomm.sokoban.web.components.icons.Fritz2Icons
@@ -25,48 +22,36 @@ class GameFrame {
         private const val MAX_TITLEBAR_WIDTH_CLASSES = "max-w-4xl"
     }
 
-    private val enabledRulesStore = storeOf(MoveService.recommendedRules)
+    private val enabledGameConfigurations = storeOf(SokobanGameFactory.configurationOptions)
 
-    private val game = SokobanGame(
-        BundledLevelRepository(),
-        MoveService.withMinimalRules(additional = MoveService.recommendedRules)
+    private var gameFlow = MutableStateFlow(
+        SokobanGameFactory.withMinimalConfiguration(
+            additional = SokobanGameFactory.configurationOptions
+        )
     )
 
-    private val levelDescriptions = game.getAvailableLevels()
 
-    private val selectedLevelStore = storeOf(levelDescriptions.first())
-
-
-    init {
-        enabledRulesStore.data handledBy {
-            game.updateMoveService(MoveService.withMinimalRules(additional = it))
-        }
-
-        selectedLevelStore.data handledBy {
-            game.loadLevel(it.id)
-        }
-    }
-
-
-    private fun RenderContext.initializeKeyboardInput() {
+    private fun RenderContext.initializeKeyboardInput(game: SokobanGame) {
         Window.keydowns.map { shortcutOf(it.key) } handledBy { shortcut ->
-            when(shortcut) {
-                Keys.ArrowUp -> game.movePlayerIfPossible(Direction.Top)
-                Keys.ArrowDown -> game.movePlayerIfPossible(Direction.Bottom)
-                Keys.ArrowLeft -> game.movePlayerIfPossible(Direction.Left)
-                Keys.ArrowRight -> game.movePlayerIfPossible(Direction.Right)
+            game.run {
+                when(shortcut) {
+                    Keys.ArrowUp -> movePlayerIfPossible(Direction.Top)
+                    Keys.ArrowDown -> movePlayerIfPossible(Direction.Bottom)
+                    Keys.ArrowLeft -> movePlayerIfPossible(Direction.Left)
+                    Keys.ArrowRight -> movePlayerIfPossible(Direction.Right)
+                }
             }
         }
     }
 
 
-    private fun RenderContext.initializeLevelClearedAlert() {
-        game.state.let { state ->
-            state.filter { it.levelCleared }.map { } handledBy levelClearedAlert(state)
-        }
+    private fun RenderContext.initializeLevelClearedAlert(game: SokobanGame) {
+        game.state
+            .filter { it.levelCleared }
+            .map { } handledBy levelClearedAlert(game)
     }
 
-    private fun RenderContext.levelClearedAlert(gameStateFlow: Flow<GameState>): Handler<Unit> =
+    private fun RenderContext.levelClearedAlert(game: SokobanGame): Handler<Unit> =
         alertModal {
             content {
                 div("space-y-4") {
@@ -77,7 +62,7 @@ class GameFrame {
                         +"Congratulations, you successfully finished this level!"
                         br { }
                         span {
-                            gameStateFlow.render(into = this) {
+                            game.state.render(into = this) {
                                 it.run { +"You needed $moves moves and $pushes pushes." }
                             }
                         }
@@ -88,20 +73,34 @@ class GameFrame {
 
 
     fun RenderContext.render() {
-        initializeKeyboardInput()
-        initializeLevelClearedAlert()
+        gameFlow.render { game ->
+            initializeKeyboardInput(game)
+            initializeLevelClearedAlert(game)
 
-        div("mb-4 w-full flex flex-col gap-4 items-center") {
-            titleBar()
+            div("mb-4 w-full flex flex-col gap-4 items-center") {
+                titleBar(game)
 
-            div("max-w-min rounded-lg shadow overflow-hidden") {
-                gameField(game.state)
+                div("max-w-min rounded-lg shadow overflow-hidden") {
+                    gameField(game.state)
+                }
             }
         }
     }
 
-    private fun RenderContext.titleBar() {
-        disclosure("w-full py-2 px-4 flex flex-col items-center bg-background-lightest dark:bg-background-dark shadow-sm dark:shadow-md") {
+    private fun RenderContext.titleBar(game: SokobanGame) {
+        val levelDescriptions = game.getAvailableLevels()
+        val selectedLevelStore = storeOf(levelDescriptions.first())
+
+        val initiallyEnabledRules = enabledGameConfigurations.current
+
+        selectedLevelStore.data handledBy {
+            game.loadLevel(it.id)
+        }
+
+        disclosure(
+            """w-full py-2 px-4 flex flex-col items-center bg-background-lightest dark:bg-background-dark
+                | shadow-sm dark:shadow-md""".trimMargin()
+        ) {
             div(
                 classes(
                     "w-full flex flex-row justify-between items-center gap-4 text-sm",
@@ -180,12 +179,38 @@ class GameFrame {
                         MAX_TITLEBAR_WIDTH_CLASSES
                     )
                 ) {
-                    withTitle("Rules") {
+                    withTitle("Configuration options") {
                         checkboxGroup {
-                            values(enabledRulesStore)
-                            options = MoveService.recommendedRules
-                            optionsFormat = UserSelectableMoveRule::name
-                            optionDescriptionFormat = UserSelectableMoveRule::description
+                            values(enabledGameConfigurations)
+                            options = SokobanGameFactory.configurationOptions
+                            optionsFormat = SokobanGameFactory.ConfigurationOption::name
+                            optionDescriptionFormat = SokobanGameFactory.ConfigurationOption::description
+                        }
+                        div {
+                            plainButton {
+                                text("Select default options")
+                                iconDefinition(HeroIcons.refresh)
+                                disabled(enabledGameConfigurations.data.map {
+                                    it.toSet() == SokobanGameFactory.configurationOptions.toSet()
+                                })
+                            }.run {
+                                clicks.map { SokobanGameFactory.configurationOptions } handledBy enabledGameConfigurations.update
+                            }
+                            plainButton {
+                                text("Apply options and reload game")
+                                iconDefinition(HeroIcons.arrow_right)
+                                disabled(enabledGameConfigurations.data.map {
+                                    it.toSet() == initiallyEnabledRules.toSet()
+                                })
+                            }.run {
+                                clicks.flatMapLatest { enabledGameConfigurations.data } handledBy {
+                                    gameFlow.tryEmit(
+                                        SokobanGameFactory.withMinimalConfiguration(
+                                            additional = it
+                                        )
+                                    )
+                                }
+                            }
                         }
                     }
                     withTitle("Theme") {
@@ -225,7 +250,8 @@ class GameFrame {
                         )
                         p(
                             """pt-2 flex flex-row gap-x-1 items-center text-xs border-t
-                                | border-dotted border-neutral-dark-secondary dark:border-neutral-light-secondary""".trimMargin()
+                                | border-dotted border-neutral-dark-secondary dark:border-neutral-light-secondary
+                                | """.trimMargin()
                         ) {
                             +"Made with ♡ in Hamburg, Germany"
                         }

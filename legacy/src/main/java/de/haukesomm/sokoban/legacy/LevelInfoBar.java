@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Set;
 import javax.swing.*;
 
-import de.haukesomm.sokoban.core.level.LevelDescription;
+import de.haukesomm.sokoban.core.LevelDescription;
 import de.haukesomm.sokoban.legacy.level.LevelDescriptionListCellRenderer;
 
 public class LevelInfoBar extends JPanel {

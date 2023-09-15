@@ -1,4 +1,4 @@
-package de.haukesomm.sokoban.core.moving.rules
+package de.haukesomm.sokoban.core.moving
 
 /**
  * Represents the result of a [MoveRule].

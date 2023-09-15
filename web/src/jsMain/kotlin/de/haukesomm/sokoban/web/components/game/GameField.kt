@@ -4,7 +4,7 @@ import de.haukesomm.sokoban.core.Entity
 import de.haukesomm.sokoban.core.EntityType
 import de.haukesomm.sokoban.core.Tile
 import de.haukesomm.sokoban.core.TileType
-import de.haukesomm.sokoban.core.state.GameState
+import de.haukesomm.sokoban.core.GameState
 import de.haukesomm.sokoban.web.model.LensesSupportingGameState
 import de.haukesomm.sokoban.web.model.tiles
 import de.haukesomm.sokoban.web.model.toLensesSupporting

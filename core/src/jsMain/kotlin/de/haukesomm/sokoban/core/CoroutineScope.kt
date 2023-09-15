@@ -1,7 +1,7 @@
-package de.haukesomm.sokoban.core.coroutines
+package de.haukesomm.sokoban.core
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 
-actual val SokobanMainScope: CoroutineScope
+internal actual val SokobanMainScope: CoroutineScope
     get() = MainScope()

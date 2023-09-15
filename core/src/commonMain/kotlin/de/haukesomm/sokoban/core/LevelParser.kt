@@ -1,23 +1,16 @@
-package de.haukesomm.sokoban.core.level
-
-import de.haukesomm.sokoban.core.*
-import de.haukesomm.sokoban.core.state.GameState
-import de.haukesomm.sokoban.core.state.ImmutableGameState
+package de.haukesomm.sokoban.core
 
 /**
  * Converts a [Level] into a [GameState] by using a [CharacterMap] to map the characters of the level's layout string
  * to a two-dimensional grid of [Tile]s.
  */
-class LevelToGameStateConverter(private val characterMap: CharacterMap) {
+internal class LevelParser(private val characterMap: CharacterMap) {
 
     private fun tileForCharacter(character: Char): Tile =
         characterMap
             .getOrElse(character) { TileProperties(TileType.Empty) }
-            .run { Tile(tileType, entityType?.let(::Entity)) }
+            .run(Tile::fromTileProperties)
 
-    /**
-     * Converts the given [level] into a [GameState].
-     */
     fun convert(level: Level): GameState =
         level.run {
             val tiles = normalizedLayoutString.map(::tileForCharacter)

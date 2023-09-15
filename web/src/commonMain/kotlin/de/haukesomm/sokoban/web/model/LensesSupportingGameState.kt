@@ -1,7 +1,7 @@
 package de.haukesomm.sokoban.web.model
 
 import de.haukesomm.sokoban.core.Tile
-import de.haukesomm.sokoban.core.state.GameState
+import de.haukesomm.sokoban.core.GameState
 import dev.fritz2.core.Lenses
 import kotlinx.serialization.Serializable
 

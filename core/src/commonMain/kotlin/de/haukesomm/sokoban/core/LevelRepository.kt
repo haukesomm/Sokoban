@@ -1,7 +1,4 @@
-package de.haukesomm.sokoban.core.level
-
-import de.haukesomm.sokoban.core.CharacterMap
-import de.haukesomm.sokoban.core.CharacterMaps
+package de.haukesomm.sokoban.core
 
 /**
  * A level repository is a collection of [Level]s that can be played.
@@ -9,19 +6,25 @@ import de.haukesomm.sokoban.core.CharacterMaps
  * It provides the [CharacterMap] that is used to parse the [Level.layoutString]s, a list of available [Level]s
  * and a method to get a level by its ID.
  *
- * By default, the [CharacterMaps.default] map is used.
+ * By default, the [CharacterMap.default] map is used.
  */
 interface LevelRepository {
 
     /**
      * The [CharacterMap] that is used to parse the [Level.layoutString]s.
-     * By default, the [CharacterMaps.default] map is used.
+     * By default, the [CharacterMap.default] map is used.
      */
     val characterMap: CharacterMap
-        get() = CharacterMaps.default
+        get() = CharacterMap.default
 
+    /**
+     * Returns a list of all available levels.
+     */
     fun getAvailableLevels(): List<LevelDescription>
 
+    /**
+     * Loads the level with the given [id] or returns `null` if the level does not exist.
+     */
     fun getLevelOrNull(id: String?): Level?
 }
 

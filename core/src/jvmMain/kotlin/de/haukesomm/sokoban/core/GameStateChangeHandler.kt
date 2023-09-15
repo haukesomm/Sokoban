@@ -1,7 +1,5 @@
 package de.haukesomm.sokoban.core
 
-import de.haukesomm.sokoban.core.coroutines.SokobanMainScope
-import de.haukesomm.sokoban.core.state.GameState
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import java.util.function.Consumer

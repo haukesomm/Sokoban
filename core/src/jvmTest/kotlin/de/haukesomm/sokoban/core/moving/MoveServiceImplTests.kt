@@ -1,16 +1,19 @@
 package de.haukesomm.sokoban.core.moving
 
 import de.haukesomm.sokoban.core.*
-import de.haukesomm.sokoban.core.level.Level
-import de.haukesomm.sokoban.core.level.LevelToGameStateConverter
+import de.haukesomm.sokoban.core.Level
+import de.haukesomm.sokoban.core.LevelParser
+import de.haukesomm.sokoban.core.moving.rules.BoxDetectingMoveRule
+import de.haukesomm.sokoban.core.moving.rules.MultipleBoxesPreventingMoveRule
+import de.haukesomm.sokoban.core.moving.rules.WallCollisionPreventingMoveRule
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
-class MoveServiceTests {
+class MoveServiceImplTests {
 
-    private val converter = LevelToGameStateConverter(
+    private val converter = LevelParser(
         characterMapOf(
             ' ' to TileProperties(TileType.Empty),
             '#' to TileProperties(TileType.Wall),
@@ -38,9 +41,9 @@ class MoveServiceTests {
         )
 
     @Test
-    fun `With minimal rules, when moving the player, position is updated`() {
+    fun `Without rules, when moving the player, position is updated`() {
         val state = newTestGameState()
-        val sut = MoveService.withMinimalRules()
+        val sut = MoveServiceImpl()
 
         val result = sut.moveEntityIfPossible(state, state.getPlayerPosition()!!, Direction.Bottom)
         val updatedPosition = result!!.getPlayerPosition()!!
@@ -52,9 +55,9 @@ class MoveServiceTests {
     }
 
     @Test
-    fun `With recommended rules, when blocked by a wall, no move is performed`() {
+    fun `With wall blocking rule, when blocked by a wall, no move is performed`() {
         val state = newTestGameState()
-        val sut = MoveService.withRecommendedRules()
+        val sut = MoveServiceImpl(WallCollisionPreventingMoveRule())
 
         val result = sut.moveEntityIfPossible(state, state.getPlayerPosition()!!, Direction.Left)
 
@@ -62,9 +65,9 @@ class MoveServiceTests {
     }
 
     @Test
-    fun `With recommended rules, when blocked by a box, box and player are moved`() {
+    fun `With box detecting rule, when blocked by a box, box and player are moved`() {
         val state = newTestGameState()
-        val sut = MoveService.withRecommendedRules()
+        val sut = MoveServiceImpl(BoxDetectingMoveRule())
 
         val result = sut.moveEntityIfPossible(state, state.getPlayerPosition()!!, Direction.Right)
 
@@ -73,9 +76,12 @@ class MoveServiceTests {
     }
 
     @Test
-    fun `With recommended rules, when blocked by two boxes in a row, none are moved`() {
+    fun `With multiple boxes preventing rule, when blocked by two boxes in a row, none are moved`() {
         val state = newTestGameState()
-        val sut = MoveService.withRecommendedRules()
+        val sut = MoveServiceImpl(
+            BoxDetectingMoveRule(),
+            MultipleBoxesPreventingMoveRule()
+        )
 
         // Move player down, then right:
         val result = sut.moveEntityIfPossible(state, state.getPlayerPosition()!!, Direction.Bottom)?.let { result1 ->
