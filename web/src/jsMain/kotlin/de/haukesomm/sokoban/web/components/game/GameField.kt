@@ -1,66 +1,48 @@
 package de.haukesomm.sokoban.web.components.game
 
-import de.haukesomm.sokoban.core.Entity
 import de.haukesomm.sokoban.core.EntityType
 import de.haukesomm.sokoban.core.Tile
 import de.haukesomm.sokoban.core.TileType
 import de.haukesomm.sokoban.core.GameState
-import de.haukesomm.sokoban.web.model.LensesSupportingGameState
-import de.haukesomm.sokoban.web.model.tiles
-import de.haukesomm.sokoban.web.model.toLensesSupporting
+import de.haukesomm.sokoban.web.components.icons.Textures
+import de.haukesomm.sokoban.web.components.icons.icon
 import dev.fritz2.core.RenderContext
-import dev.fritz2.core.src
-import dev.fritz2.core.storeOf
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-class GameField(states: Flow<GameState>) {
+class GameField(private val states: Flow<GameState>) {
 
-    private val gameStateStore = storeOf(LensesSupportingGameState("", 0, 0, emptyList())).apply {
-        states.map { it.toLensesSupporting() } handledBy update
-    }
-    private val gameStateTilesFlow = gameStateStore.map(LensesSupportingGameState.tiles()).data
-
-    private fun getTileTexture(tileType: TileType) = when(tileType) {
-        TileType.Empty -> "ground.png"
-        TileType.Wall -> "wall.png"
-        TileType.Target -> "target.png"
-    }
-
-    private fun getEntityTexture(entity: Entity) = when(entity.type) {
-        EntityType.Box -> "box.png"
-        EntityType.Player -> "player.png"
+    companion object {
+        private const val TILE_SIZE_CLASSES = "w-8 h-8"
     }
 
     fun RenderContext.render() {
         div {
-            gameStateStore.data.map { it.width }.render(into = this) { width ->
+            states.map { it.width to it.tiles }.render(into = this) { (width, tiles) ->
                 div("grid") {
-                    // Inline-style is needed since levels may have arbitrary, dynamically changing dimensions that
-                    // can't be realized with pure Tailwind CSS (not even in JIT mode).
                     inlineStyle("grid-template-columns: repeat($width, 1fr);")
-
-                    gameStateTilesFlow.renderEach(batch = true) {
-                        renderTile(it, it.entity)
+                    tiles.forEach {
+                        renderTile(it)
                     }
                 }
             }
         }
     }
 
-    private fun RenderContext.renderTile(tile: Tile, entity: Entity?) =
-        div("w-7 h-7") {
-            img("fit-picture") {
-                val baseTexturePath = "./textures/"
-
-                entity?.let(::getEntityTexture)?.let {
-                    src("$baseTexturePath/$it")
-                    return@img
-                }
-
-                src("$baseTexturePath/${getTileTexture(tile.type)}")
-            }
+    private fun RenderContext.renderTile(tile: Tile) {
+        tile.entity?.let { entity ->
+            icon(TILE_SIZE_CLASSES, definition = when(entity.type) {
+                EntityType.Box -> Textures.box
+                EntityType.Player -> Textures.player
+            })
+        } ?: run {
+            icon(TILE_SIZE_CLASSES, definition = when(tile.type) {
+                TileType.Empty -> Textures.ground
+                TileType.Target -> Textures.target
+                TileType.Wall -> Textures.wall
+            })
         }
+    }
 }
 
 fun RenderContext.gameField(states: Flow<GameState>, ) {

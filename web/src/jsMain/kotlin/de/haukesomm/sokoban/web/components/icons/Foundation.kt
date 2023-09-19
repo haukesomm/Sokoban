@@ -5,8 +5,8 @@ import dev.fritz2.core.fill
 import dev.fritz2.core.viewBox
 
 data class IconDefinition(
-    val viewBoxWidth: Int = 24,
-    val viewBoxHeight: Int = 24,
+    val viewBoxWidth: Int,
+    val viewBoxHeight: Int,
     val content: String
 )
 
