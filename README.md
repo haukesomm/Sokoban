@@ -1,13 +1,21 @@
 # Sokoban
 
+<img src="./assets/Logo.svg" width="72">
+
 ![Build Workflow](https://github.com/haukesomm/Sokoban/actions/workflows/build-and-deploy.yml/badge.svg)
 [![Awesome Kotlin Badge](https://kotlin.link/awesome-kotlin.svg)](https://github.com/KotlinBy/awesome-kotlin)
 
-This project is a clone of the popular puzzle game [Sokoban](https://de.wikipedia.org/wiki/Sokoban).  
-It consists of a `core` library written in Kotlin and a [fritz2](https://fritz2.dev) based web app.
-Additionally, a legacy version based on Java and Swing is included for the nostalgia 🦖
+This project is a clone of the popular puzzle game [Sokoban](https://de.wikipedia.org/wiki/Sokoban).
 
-The latest snapshot version can be played [online](https://sokoban.haukesomm.de).
+The project consists of a plain Kotlin `core` library containing the game logic and bundled levels, as well as a
+`web` module that uses the `core` library to create a web app using the [fritz2](https://fritz2.dev) framework.
+
+Additionally, there is a `legacy` module that contains a legacy Java app using Swing. This is a rewrite of the original
+version that I wrote back in school. It has been refactored to use the new `core` library as well.
+
+The latest snapshot version can be played [here](https://sokoban.haukesomm.de).
+
+## Screenshot
 
 <img src="./assets/screenshot.png" width="50%">
 
