@@ -11,13 +11,6 @@ package de.haukesomm.sokoban.core
 interface LevelRepository {
 
     /**
-     * The [CharacterMap] that is used to parse the [Level.layoutString]s.
-     * By default, the [CharacterMap.default] map is used.
-     */
-    val characterMap: CharacterMap
-        get() = CharacterMap.default
-
-    /**
      * Returns a list of all available levels.
      */
     fun getAvailableLevels(): List<LevelDescription>

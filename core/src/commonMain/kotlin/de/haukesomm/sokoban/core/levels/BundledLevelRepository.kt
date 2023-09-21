@@ -10,9 +10,6 @@ import de.haukesomm.sokoban.core.LevelRepository
  */
 class BundledLevelRepository : LevelRepository {
 
-    override val characterMap: CharacterMap =
-        BundledLevels.characterMap
-
     override fun getAvailableLevels(): List<LevelDescription> =
         BundledLevels.levels.map { LevelDescription(it.id, it.name) }
 

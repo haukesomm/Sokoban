@@ -58,7 +58,7 @@ class ListBox<T> {
                 entries.forEach { entry ->
                     listboxItem(
                         entry,
-                        """w-full relative h-8 px-2 py-1.5 flex flex-row items-center gap-2
+                        """w-full relative h-8 px-2 py-1.5 flex-shrink-0 flex flex-row items-center gap-2
                             | cursor-default select-none disabled:opacity-50
                             | text-sm
                             | hover:bg-primary-500 hover:text-white hover:dark:bg-primary-600 hover:dark:text-white

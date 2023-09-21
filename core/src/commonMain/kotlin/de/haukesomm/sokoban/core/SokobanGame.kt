@@ -20,11 +20,8 @@ class SokobanGame(
     private val levelRepository: LevelRepository,
     private val moveService: MoveService,
 ) {
-    private val levelParser = LevelParser(levelRepository.characterMap)
-
-
     private val internalState = MutableStateFlow(
-        levelParser.convert(levelRepository.firstOrThrow())
+        levelRepository.firstOrThrow().toGameState()
     )
 
     /**
@@ -54,7 +51,7 @@ class SokobanGame(
         val level = levelRepository.getLevelOrNull(levelId)
             ?: throw IllegalStateException("Level with id '$levelId' does not exist!")
 
-        internalState.tryEmit(levelParser.convert(level))
+        internalState.tryEmit(level.toGameState())
     }
 
     /**

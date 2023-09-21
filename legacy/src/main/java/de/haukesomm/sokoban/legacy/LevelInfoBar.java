@@ -21,8 +21,6 @@ public class LevelInfoBar extends JPanel {
     private final List<LevelDescription> availableLevels;
 
 
-    private final GridBagConstraints constraints = new GridBagConstraints();
-
     private JTextField moveCounterTextField;
 
     private JTextField pushCounterTextField;
@@ -44,49 +42,50 @@ public class LevelInfoBar extends JPanel {
 
 
     private void initialize() {
-        setLayout(new GridBagLayout());
+        setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 
         var movesLabel = new JLabel("Moves: ");
         var pushesLabel = new JLabel("Pushes: ");
-        
+
         moveCounterTextField = new JTextField("0000");
         moveCounterTextField.setEditable(false);
-        
+
         pushCounterTextField = new JTextField("0000");
         pushCounterTextField.setEditable(false);
 
         var levelComboBox = new JComboBox<LevelDescription>();
         levelComboBox.setEditable(false);
-        levelComboBox.setMaximumSize(new Dimension(20, Integer.MAX_VALUE));
         levelComboBox.setRenderer(new LevelDescriptionListCellRenderer());
         availableLevels.forEach(levelComboBox::addItem);
 
-        var loadButton = new JButton("Load Level");
-        loadButton.addActionListener(l ->
-                notifyLevelSelectedListeners((LevelDescription) levelComboBox.getSelectedItem()));
+        var loadButton = new JButton("Load");
+        loadButton.addActionListener(l -> notifyLevelSelectedListeners((LevelDescription) levelComboBox.getSelectedItem()));
 
-        constraints.weightx = 1.0;
-        constraints.insets = new Insets(3, 3, 3, 3);
 
-        constraints.gridx = 0;
-        add(movesLabel, constraints);
+        var box = Box.createHorizontalBox();
 
-        constraints.gridx = 1;
-        add(moveCounterTextField, constraints);
+        box.add(movesLabel);
 
-        constraints.gridx = 2;
-        add(pushesLabel, constraints);
+        moveCounterTextField.setMaximumSize(moveCounterTextField.getPreferredSize());
+        box.add(moveCounterTextField);
 
-        constraints.gridx = 3;
-        add(pushCounterTextField, constraints);
+        box.add(Box.createHorizontalStrut(10));
 
-        constraints.gridx = 4;
-        constraints.ipadx = 150;
-        add(levelComboBox, constraints);
+        box.add(pushesLabel);
 
-        constraints.gridx = 5;
-        constraints.ipadx = 0;
-        add(loadButton, constraints);
+        pushCounterTextField.setMaximumSize(pushCounterTextField.getPreferredSize());
+        box.add(pushCounterTextField);
+
+        box.add(Box.createHorizontalGlue());
+
+        levelComboBox.setMaximumSize(levelComboBox.getPreferredSize());
+        box.add(levelComboBox);
+        box.add(loadButton);
+
+
+        add(Box.createHorizontalStrut(10));
+        add(box);
+        add(Box.createHorizontalStrut(10));
     }
 
     public void setMoveCount(int count) {

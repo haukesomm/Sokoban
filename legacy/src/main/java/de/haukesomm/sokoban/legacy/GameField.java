@@ -11,10 +11,6 @@ import de.haukesomm.sokoban.legacy.textures.TextureRepository;
 
 public class GameField extends JPanel {
 
-    // TODO: Dynamische Spielfeldgröße erlauben
-    private static final int SIZE_X = 20;
-    private static final int SIZE_Y = 16;
-
     private final TextureRepository textureRepository = new JarResourceTextureRepository();
 
     public GameField() {
@@ -22,18 +18,10 @@ public class GameField extends JPanel {
     }
 
     public void drawState(GameState state) {
-        if (state.getWidth() != SIZE_X || state.getHeight() != SIZE_Y) {
-            System.err.printf(
-                    "Could not load level: GameField size is (%dx%d) but level size was (%dx%d)!%n",
-                    SIZE_X, SIZE_Y, state.getWidth(), state.getHeight()
-            );
-            return;
-        }
-
         removeAll();
 
-        for (int row = 0; row < SIZE_Y; row++) {
-            for (int column = 0; column < SIZE_X; column++) {
+        for (int row = 0; row < state.getHeight(); row++) {
+            for (int column = 0; column < state.getWidth(); column++) {
                 var position = new Position(column, row);
                 ImageIcon texture;
 

@@ -2,7 +2,6 @@ package de.haukesomm.sokoban.core.moving
 
 import de.haukesomm.sokoban.core.*
 import de.haukesomm.sokoban.core.Level
-import de.haukesomm.sokoban.core.LevelParser
 import de.haukesomm.sokoban.core.moving.rules.BoxDetectingMoveRule
 import de.haukesomm.sokoban.core.moving.rules.MultipleBoxesPreventingMoveRule
 import de.haukesomm.sokoban.core.moving.rules.WallCollisionPreventingMoveRule
@@ -13,32 +12,27 @@ import kotlin.test.assertTrue
 
 class MoveServiceImplTests {
 
-    private val converter = LevelParser(
-        characterMapOf(
-            ' ' to TileProperties(TileType.Empty),
-            '#' to TileProperties(TileType.Wall),
-            '.' to TileProperties(TileType.Target),
-            '@' to TileProperties(TileType.Empty, EntityType.Player),
-            'X' to TileProperties(TileType.Empty, EntityType.Box)
-        )
-    )
-
     private fun newTestGameState() =
-        converter.convert(
-            Level(
-                id = "test-level",
-                name = "Test Level",
-                width = 6,
-                height = 5,
-                layoutString = """
-                    ######
-                    #_...#
-                    #@X__#
-                    #_XX_#
-                    ######
-                """.trimIndent()
-            )
-        )
+        Level(
+            id = "test-level",
+            name = "Test Level",
+            width = 6,
+            height = 5,
+            characterMap = characterMapOf(
+                '_' to TileProperties(TileType.Empty),
+                '#' to TileProperties(TileType.Wall),
+                '.' to TileProperties(TileType.Target),
+                '@' to TileProperties(TileType.Empty, EntityType.Player),
+                'X' to TileProperties(TileType.Empty, EntityType.Box)
+            ),
+            layoutString = """
+                ######
+                #_...#
+                #@X__#
+                #_XX_#
+                ######
+            """.trimIndent()
+        ).toGameState()
 
     @Test
     fun `Without rules, when moving the player, position is updated`() {

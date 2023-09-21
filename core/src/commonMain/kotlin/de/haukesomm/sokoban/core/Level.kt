@@ -17,10 +17,10 @@ data class LevelDescription(
  * It has a unique identifier, a name, and a layout string that describes the initial state of the level.
  * The layout string consists of a series of characters that represent the tiles of the level.
  *
- * On a repository-level, no specific encoding of the layout string is enforced. However, an encoding needs to be
- * present in form of a [CharacterMap] when the level is loaded into a [GameState].
+ * The layout string has to have [width] * [height] characters and must only use the characters defined in the
+ * [characterMap].
  *
- * Here is an example of a layout string using the [CharacterMaps.default] character map. It defines a level with a
+ * Here is an example of a layout string using the [CharacterMap.default] character map. It defines a level with a
  * width of 8 and a height of 5. It contains a player (`@`), a box (`$`), and a target (`.`).
  * ```
  * ########
@@ -35,8 +35,10 @@ data class Level(
     val name: String,
     val width: Int,
     val height: Int,
-    val layoutString: String
+    val layoutString: String,
+    val characterMap: CharacterMap = CharacterMap.default
 ) {
+
     /**
      * The normalized layout string is the layout string without any whitespace
      * and line breaks.

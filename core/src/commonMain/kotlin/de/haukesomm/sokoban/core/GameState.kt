@@ -105,7 +105,7 @@ interface GameState {
  * Immutable implementation of [GameState].
  *
  * This implementation does not allow modifications to the game state.
- * A mutable copy of the game state can be created via the [toMutable] method.
+ * A mutable copy of the game state can be created via the [toMutableGameState] method.
  */
 @Serializable
 data class ImmutableGameState(
@@ -121,7 +121,7 @@ data class ImmutableGameState(
 /**
  * Creates a mutable copy of this [GameState].
  */
-fun GameState.toImmutable(): ImmutableGameState =
+fun GameState.toImmutableGameState(): ImmutableGameState =
     if (this is ImmutableGameState) this
     else ImmutableGameState(levelId, width, height, tiles, moves, pushes, previous)
 
@@ -130,7 +130,7 @@ fun GameState.toImmutable(): ImmutableGameState =
  * Mutable implementation of [GameState].
  *
  * This implementation allows modifications to the game state.
- * An immutable copy of the game state can be created via the [toImmutable] method.
+ * An immutable copy of the game state can be created via the [toImmutableGameState] method.
  */
 @Serializable
 data class MutableGameState(
@@ -146,7 +146,7 @@ data class MutableGameState(
 /**
  * Creates a mutable copy of this [GameState].
  */
-fun GameState.toMutable(): MutableGameState =
+fun GameState.toMutableGameState(): MutableGameState =
     MutableGameState(levelId, width, height, tiles.toMutableList(), moves, pushes, previous)
 
 /**
@@ -154,32 +154,4 @@ fun GameState.toMutable(): MutableGameState =
  * The returned state is immutable.
  */
 fun GameState.transform(action: MutableGameState.() -> Unit): GameState =
-    this.toMutable().apply(action).toImmutable()
-
-
-/**
- * Converts the given [GameState] to a string representation.
- *
- * The string representation is a layout of the game board. Each tile is represented by a single character. The
- * characters are chosen based on the given [characterMap]. If the [characterMap] does not contain a mapping for a
- * given tile, the character `?` is used instead.
- *
- * The string representation contains line breaks after each row of the game board.
- */
-@Suppress("unused")
-fun GameState.toLayoutString(characterMap: CharacterMap = CharacterMap.default): String {
-    val characterToTileProperties = characterMap.inverse
-    return buildString {
-        tiles.forEachIndexed { index, tile ->
-            val tileProperties = tile.run {
-                TileProperties(type, entity?.type)
-            }
-
-            characterToTileProperties[tileProperties]
-                ?.let(::append) ?: append('?')
-
-            if ((index + 1) % width == 0)
-                append('\n')
-        }
-    }
-}
+    this.toMutableGameState().apply(action).toImmutableGameState()
