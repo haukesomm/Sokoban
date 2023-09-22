@@ -6,10 +6,7 @@ import de.haukesomm.sokoban.core.SokobanGameFactory
 import de.haukesomm.sokoban.core.LevelDescription
 import de.haukesomm.sokoban.web.components.*
 import de.haukesomm.sokoban.web.components.game.gameField
-import de.haukesomm.sokoban.web.components.icons.Fritz2Icons
-import de.haukesomm.sokoban.web.components.icons.GitHubIcons
-import de.haukesomm.sokoban.web.components.icons.HeroIcons
-import de.haukesomm.sokoban.web.components.icons.icon
+import de.haukesomm.sokoban.web.components.icons.*
 import de.haukesomm.sokoban.web.theme.ThemePreference
 import de.haukesomm.sokoban.web.theme.ThemePreferences
 import dev.fritz2.core.*
@@ -101,14 +98,12 @@ class GameFrame {
             """w-full py-2 px-4 flex flex-col items-center bg-background-lightest dark:bg-background-dark
                 | shadow-sm dark:shadow-md""".trimMargin()
         ) {
-            div(
-                classes(
-                    "w-full flex flex-row justify-between items-center gap-4 text-sm",
-                    MAX_TITLEBAR_WIDTH_CLASSES
-                )
-            ) {
-                span("text-xl font-semibold text-primary-500 dark:text-primary-600") {
-                    +"Sokoban"
+            div("w-full flex flex-row justify-between items-center gap-4 text-sm") {
+                div("flex flex-row items-center gap-2"){
+                    icon("w-7 h-7", definition = SokobanAppIcons.logo)
+                    span("text-xl font-semibold text-primary-500 dark:text-primary-600") {
+                        +"Sokoban"
+                    }
                 }
                 div("grow max-w-lg flex gap-6 items-center") {
                     div("grow") {
