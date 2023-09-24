@@ -4,7 +4,6 @@ import de.haukesomm.sokoban.web.components.icons.HeroIcons
 import de.haukesomm.sokoban.web.components.icons.icon
 import dev.fritz2.core.RenderContext
 import dev.fritz2.core.storeOf
-import dev.fritz2.core.transition
 import dev.fritz2.headless.components.disclosure
 import dev.fritz2.headless.foundation.hook
 

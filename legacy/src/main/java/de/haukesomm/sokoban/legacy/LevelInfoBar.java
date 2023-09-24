@@ -1,13 +1,12 @@
 package de.haukesomm.sokoban.legacy;
 
-import java.awt.*;
+import de.haukesomm.sokoban.core.LevelDescription;
+import de.haukesomm.sokoban.legacy.level.LevelDescriptionListCellRenderer;
+
+import javax.swing.*;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import javax.swing.*;
-
-import de.haukesomm.sokoban.core.LevelDescription;
-import de.haukesomm.sokoban.legacy.level.LevelDescriptionListCellRenderer;
 
 public class LevelInfoBar extends JPanel {
 

@@ -2,7 +2,10 @@ package de.haukesomm.sokoban.web.components
 
 import de.haukesomm.sokoban.web.components.icons.IconDefinition
 import de.haukesomm.sokoban.web.components.icons.icon
-import dev.fritz2.core.*
+import dev.fritz2.core.RenderContext
+import dev.fritz2.core.Tag
+import dev.fritz2.core.href
+import dev.fritz2.core.target
 import org.w3c.dom.HTMLAnchorElement
 import org.w3c.dom.HTMLDivElement
 

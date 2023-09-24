@@ -11,7 +11,11 @@ game published in 1984 by Spectrum Holobyte.
 
 The latest snapshot version can be played [here](https://sokoban.haukesomm.de).
 
-<img src="./assets/screenshot.png" width="50%">
+## Screenshots
+
+| Desktop                                                | Mobile                                               |
+|--------------------------------------------------------|------------------------------------------------------|
+| ![Desktop Screenshot](./assets/screenshot-desktop.png) | ![Mobile Screenshot](./assets/screenshot-mobile.png) |
 
 ## Modules
 

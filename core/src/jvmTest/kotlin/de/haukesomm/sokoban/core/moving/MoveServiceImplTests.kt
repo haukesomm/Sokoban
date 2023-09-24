@@ -1,7 +1,6 @@
 package de.haukesomm.sokoban.core.moving
 
 import de.haukesomm.sokoban.core.*
-import de.haukesomm.sokoban.core.Level
 import de.haukesomm.sokoban.core.moving.rules.BoxDetectingMoveRule
 import de.haukesomm.sokoban.core.moving.rules.MultipleBoxesPreventingMoveRule
 import de.haukesomm.sokoban.core.moving.rules.WallCollisionPreventingMoveRule

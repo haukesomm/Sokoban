@@ -1,7 +1,5 @@
 package de.haukesomm.sokoban.core
 
-import kotlinx.serialization.Serializable
-
 enum class TileType { Empty, Wall, Target }
 
 /**
@@ -20,7 +18,6 @@ data class TileProperties(
  *
  * A tile can hold an [Entity] and has a [TileType] that determines if it is a wall, a target or empty.
  */
-@Serializable
 data class Tile(
     val type: TileType,
     val entity: Entity? = null

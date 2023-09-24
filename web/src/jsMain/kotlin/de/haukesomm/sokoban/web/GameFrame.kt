@@ -1,11 +1,13 @@
 package de.haukesomm.sokoban.web
 
 import de.haukesomm.sokoban.core.Direction
+import de.haukesomm.sokoban.core.LevelDescription
 import de.haukesomm.sokoban.core.SokobanGame
 import de.haukesomm.sokoban.core.SokobanGameFactory
-import de.haukesomm.sokoban.core.LevelDescription
 import de.haukesomm.sokoban.web.components.*
+import de.haukesomm.sokoban.web.components.game.MoveEvent
 import de.haukesomm.sokoban.web.components.game.gameField
+import de.haukesomm.sokoban.web.components.game.moveButtons
 import de.haukesomm.sokoban.web.components.icons.*
 import de.haukesomm.sokoban.web.theme.ThemePreference
 import de.haukesomm.sokoban.web.theme.ThemePreferences
@@ -15,10 +17,6 @@ import kotlinx.coroutines.flow.*
 
 class GameFrame {
 
-    companion object {
-        private const val MAX_TITLEBAR_WIDTH_CLASSES = "max-w-4xl"
-    }
-
     private val enabledGameConfigurations = storeOf(SokobanGameFactory.configurationOptions)
 
     private var gameFlow = MutableStateFlow(
@@ -26,20 +24,6 @@ class GameFrame {
             additional = SokobanGameFactory.configurationOptions
         )
     )
-
-
-    private fun RenderContext.initializeKeyboardInput(game: SokobanGame) {
-        Window.keydowns.map { shortcutOf(it.key) } handledBy { shortcut ->
-            game.run {
-                when(shortcut) {
-                    Keys.ArrowUp -> movePlayerIfPossible(Direction.Top)
-                    Keys.ArrowDown -> movePlayerIfPossible(Direction.Bottom)
-                    Keys.ArrowLeft -> movePlayerIfPossible(Direction.Left)
-                    Keys.ArrowRight -> movePlayerIfPossible(Direction.Right)
-                }
-            }
-        }
-    }
 
 
     private fun RenderContext.initializeLevelClearedAlert(game: SokobanGame) {
@@ -71,14 +55,43 @@ class GameFrame {
 
     fun RenderContext.render() {
         gameFlow.render { game ->
-            initializeKeyboardInput(game)
             initializeLevelClearedAlert(game)
 
             div("mb-4 w-full flex flex-col gap-4 items-center") {
+                // Disable double-tap to zoom on mobile devices as this interferes with the
+                // virtual gamepad.
+                inlineStyle("touch-action: manipulation;")
+
                 titleBar(game)
 
                 div("max-w-min rounded-lg shadow overflow-hidden") {
                     gameField(game.state)
+                }
+
+                div("block md:hidden") {
+                    moveButtons {
+                        merge(
+                            moveEvents,
+                            Window.keydowns.mapNotNull {
+                                when(shortcutOf(it.key)) {
+                                    Keys.ArrowUp -> MoveEvent.Up
+                                    Keys.ArrowDown -> MoveEvent.Down
+                                    Keys.ArrowLeft -> MoveEvent.Left
+                                    Keys.ArrowRight -> MoveEvent.Right
+                                    else -> null
+                                }
+                            },
+                        ) handledBy { moveEvent ->
+                            game.run {
+                                when(moveEvent) {
+                                    MoveEvent.Up -> movePlayerIfPossible(Direction.Top)
+                                    MoveEvent.Down -> movePlayerIfPossible(Direction.Bottom)
+                                    MoveEvent.Left -> movePlayerIfPossible(Direction.Left)
+                                    MoveEvent.Right -> movePlayerIfPossible(Direction.Right)
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -95,18 +108,18 @@ class GameFrame {
         }
 
         disclosure(
-            """w-full py-2 px-4 flex flex-col items-center bg-background-lightest dark:bg-background-dark
+            """w-full py-2 px-4 flex flex-col items-stretch md:items-center bg-background-lightest dark:bg-background-dark
                 | shadow-sm dark:shadow-md""".trimMargin()
         ) {
-            div("w-full flex flex-row justify-between items-center gap-4 text-sm") {
+            div("w-full flex flex-row flex-wrap justify-between items-center gap-x-4 gap-y-6 text-sm") {
                 div("flex flex-row items-center gap-2"){
                     icon("w-7 h-7", definition = SokobanAppIcons.logo)
                     span("text-xl font-semibold text-primary-500 dark:text-primary-600") {
                         +"Sokoban"
                     }
                 }
-                div("grow max-w-lg flex gap-6 items-center") {
-                    div("grow") {
+                div("grow max-w-lg flex flex-wrap gap-x-6 gap-y-2 items-center") {
+                    div("grow w-full md:w-auto") {
                         listBox {
                             entries = levelDescriptions
                             format = LevelDescription::name
@@ -169,9 +182,8 @@ class GameFrame {
             disclosurePanel {
                 div(
                     classes(
-                        """mt-4 my-2 p-4 bg-background-light dark:bg-background-darkest rounded-md
-                            | grid grid-cols-3 gap-6""".trimMargin(),
-                        MAX_TITLEBAR_WIDTH_CLASSES
+                        """max-w-4xl mt-4 my-2 p-4 bg-background-light dark:bg-background-darkest rounded-md
+                            | grid grid-cols-1 md:grid-cols-3 gap-6""".trimMargin(),
                     )
                 ) {
                     withTitle("Configuration options") {

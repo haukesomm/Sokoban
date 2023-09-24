@@ -1,5 +1,7 @@
 package de.haukesomm.sokoban.web.theme
 
+import de.haukesomm.sokoban.web.theme.ThemePreferences.getCurrentDarkModePreference
+import de.haukesomm.sokoban.web.theme.ThemePreferences.selectedPreference
 import kotlinx.browser.window
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow

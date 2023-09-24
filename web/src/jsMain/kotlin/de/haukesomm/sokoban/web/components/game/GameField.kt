@@ -1,9 +1,9 @@
 package de.haukesomm.sokoban.web.components.game
 
 import de.haukesomm.sokoban.core.EntityType
+import de.haukesomm.sokoban.core.GameState
 import de.haukesomm.sokoban.core.Tile
 import de.haukesomm.sokoban.core.TileType
-import de.haukesomm.sokoban.core.GameState
 import de.haukesomm.sokoban.web.components.icons.Textures
 import de.haukesomm.sokoban.web.components.icons.icon
 import dev.fritz2.core.RenderContext
@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.map
 class GameField(private val states: Flow<GameState>) {
 
     companion object {
-        private const val TILE_SIZE_CLASSES = "w-8 h-8"
+        private const val TILE_SIZE_CLASSES = "w-5 h-5 md:w-8 md:h-8"
     }
 
     fun RenderContext.render() {

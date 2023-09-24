@@ -1,7 +1,5 @@
 package de.haukesomm.sokoban.web.components
 
-import de.haukesomm.sokoban.web.components.icons.HeroIcons
-import de.haukesomm.sokoban.web.components.icons.icon
 import dev.fritz2.core.RenderContext
 import dev.fritz2.headless.components.radioGroup
 import dev.fritz2.headless.foundation.DatabindingProperty

@@ -1,7 +1,5 @@
 package de.haukesomm.sokoban.core
 
-import kotlinx.serialization.Serializable
-
 /**
  * Represents the state of a game.
  *
@@ -107,7 +105,6 @@ interface GameState {
  * This implementation does not allow modifications to the game state.
  * A mutable copy of the game state can be created via the [toMutableGameState] method.
  */
-@Serializable
 data class ImmutableGameState(
     override val levelId: String,
     override val width: Int,
@@ -132,7 +129,6 @@ fun GameState.toImmutableGameState(): ImmutableGameState =
  * This implementation allows modifications to the game state.
  * An immutable copy of the game state can be created via the [toImmutableGameState] method.
  */
-@Serializable
 data class MutableGameState(
     override var levelId: String,
     override var width: Int,

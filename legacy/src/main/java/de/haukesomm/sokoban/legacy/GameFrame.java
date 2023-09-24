@@ -1,14 +1,13 @@
 package de.haukesomm.sokoban.legacy;
 
-import javax.swing.*;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
-import java.awt.event.ActionEvent;
-
-import de.haukesomm.sokoban.core.GameStateChangeHandler;
 import de.haukesomm.sokoban.core.Direction;
+import de.haukesomm.sokoban.core.GameStateChangeHandler;
 import de.haukesomm.sokoban.core.SokobanGame;
 import de.haukesomm.sokoban.core.SokobanGameFactory;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
 
 public class GameFrame extends JFrame {
 

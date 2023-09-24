@@ -1,6 +1,5 @@
 package de.haukesomm.sokoban.core.levels
 
-import de.haukesomm.sokoban.core.CharacterMap
 import de.haukesomm.sokoban.core.Level
 import de.haukesomm.sokoban.core.LevelDescription
 import de.haukesomm.sokoban.core.LevelRepository

@@ -2,7 +2,6 @@ package de.haukesomm.sokoban.web.components
 
 import dev.fritz2.core.RenderContext
 import dev.fritz2.core.Tag
-import dev.fritz2.core.tabIndex
 import dev.fritz2.headless.components.switchWithLabel
 import dev.fritz2.headless.foundation.Aria
 import dev.fritz2.headless.foundation.DatabindingProperty
