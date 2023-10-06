@@ -15,9 +15,9 @@ On Android, the process is similar, but the exact steps depend on your browser.
 
 ## Screenshots
 
-| Mobile                                                  | Desktop                                                |
-|---------------------------------------------------------|--------------------------------------------------------|
-| <img src="./assets/screenshot-mobile.png" width="75%"/> | ![Desktop Screenshot](./assets/screenshot-desktop.png) |
+| Mobile                                                  | Desktop                                                   |
+|---------------------------------------------------------|-----------------------------------------------------------|
+| <img src="./assets/screenshot-mobile.png" width="75%"/> | <img src="./assets/screenshot-desktop.png"/> |
 
 ## Modules
 

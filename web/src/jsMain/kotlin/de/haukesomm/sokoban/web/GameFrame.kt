@@ -31,18 +31,20 @@ class GameFrame {
         gameFlow.render { game ->
             initializeLevelClearedAlert(game)
 
-            div("mb-4 w-full flex flex-col gap-4 items-center") {
+            div("h-full pb-8 w-full overflow-auto flex flex-col gap-4 justify-between items-center") {
                 // Disable double-tap to zoom on mobile devices as this interferes with the
                 // virtual gamepad.
                 inlineStyle("touch-action: manipulation;")
 
                 titleBar(game)
 
-                div("max-w-min rounded-lg shadow overflow-hidden") {
+                div("max-w-min shrink-0 rounded-lg shadow overflow-hidden") {
                     gameField(game.state)
                 }
 
-                moveButtons(game)
+                div {
+                    moveButtons(game)
+                }
             }
         }
     }

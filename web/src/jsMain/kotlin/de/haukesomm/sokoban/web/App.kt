@@ -18,8 +18,14 @@ private fun initTheme() {
         bgDark = "bg-background-darkest"
     )
 
-    // Set global default text color
+
+    // Set up necessary CSS classes on the <html> and <body> elements:
+
+    document.querySelector("html")
+        ?.classList
+        ?.add("h-full")
+
     document.querySelector("body")
         ?.classList
-        ?.add("text-neutral-dark", "dark:text-neutral-light")
+        ?.add("h-full", "text-neutral-dark", "dark:text-neutral-light")
 }

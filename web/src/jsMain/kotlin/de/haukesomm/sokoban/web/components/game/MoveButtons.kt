@@ -31,7 +31,7 @@ class MoveButtons<E : HTMLElement>(tag: Tag<E>) : Tag<E> by tag {
 
     private fun RenderContext.renderButton(moveEvent: MoveEvent) {
         button(
-            """w-10 h-10 flex justify-center items-center border border-neutral-dark-secondary 
+            """w-12 h-12 flex justify-center items-center border border-neutral-dark-secondary 
                 | dark:border-neutral-light-secondary rounded-md text-neutral-dark-secondary
                 | dark:text-neutral-light-secondary""".trimMargin()
         ) {
@@ -44,11 +44,16 @@ class MoveButtons<E : HTMLElement>(tag: Tag<E>) : Tag<E> by tag {
     }
 
     fun render() {
-        className("flex gap-4")
-        renderButton(MoveEvent.Left)
+        className("grid grid-cols-3 gap-2")
+        div {}
         renderButton(MoveEvent.Up)
-        renderButton(MoveEvent.Down)
+        div {}
+        renderButton(MoveEvent.Left)
+        div {}
         renderButton(MoveEvent.Right)
+        div {}
+        renderButton(MoveEvent.Down)
+        div {}
     }
 }
 
