@@ -3,16 +3,19 @@ package de.haukesomm.sokoban.web.components.game
 import de.haukesomm.sokoban.web.components.icons.HeroIcons
 import de.haukesomm.sokoban.web.components.icons.icon
 import dev.fritz2.core.RenderContext
+import dev.fritz2.core.Tag
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.map
+import org.w3c.dom.HTMLDivElement
+import org.w3c.dom.HTMLElement
 
 enum class MoveEvent {
     Up, Down, Left, Right
 }
 
-class MoveButtons {
+class MoveButtons<E : HTMLElement>(tag: Tag<E>) : Tag<E> by tag {
 
     companion object {
         private val moveEventToIcon = mapOf(
@@ -23,8 +26,8 @@ class MoveButtons {
         )
     }
 
-    private val _moveEvents: MutableSharedFlow<MoveEvent> = MutableSharedFlow()
-    val moveEvents: Flow<MoveEvent> = _moveEvents.asSharedFlow()
+    private val mutableMoveEventsFlow: MutableSharedFlow<MoveEvent> = MutableSharedFlow()
+    val moveEvents: Flow<MoveEvent> = mutableMoveEventsFlow.asSharedFlow()
 
     private fun RenderContext.renderButton(moveEvent: MoveEvent) {
         button(
@@ -35,19 +38,24 @@ class MoveButtons {
             moveEventToIcon[moveEvent]?.let {
                 icon("w-6 h-6", definition = it)
             }
-        }.clicks.map { moveEvent } handledBy { _moveEvents.emit(it) }
+        }.clicks.map { moveEvent } handledBy {
+            mutableMoveEventsFlow.emit(it)
+        }
     }
 
-    fun RenderContext.render() {
-        div("flex gap-4") {
-            renderButton(MoveEvent.Left)
-            renderButton(MoveEvent.Up)
-            renderButton(MoveEvent.Down)
-            renderButton(MoveEvent.Right)
-        }
+    fun render() {
+        className("flex gap-4")
+        renderButton(MoveEvent.Left)
+        renderButton(MoveEvent.Up)
+        renderButton(MoveEvent.Down)
+        renderButton(MoveEvent.Right)
     }
 }
 
-fun RenderContext.moveButtons(init: MoveButtons.() -> Unit = {}) {
-    MoveButtons().apply(init).run { render() }
+fun RenderContext.moveButtons(init: MoveButtons<HTMLDivElement>.() -> Unit = {}) {
+    div {
+        MoveButtons(this).apply(init).run {
+            render()
+        }
+    }
 }
