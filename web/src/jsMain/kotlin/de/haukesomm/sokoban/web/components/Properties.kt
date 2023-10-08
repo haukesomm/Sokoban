@@ -12,7 +12,11 @@ import kotlinx.coroutines.flow.flowOf
  *
  * This is a workaround for the fact that [Property] does not support [Flow]s.
  */
-class FlowProperty<T> : Property<Flow<T>>() {
+class FlowProperty<T>(initialValue: T? = null) : Property<Flow<T>>() {
+
+    init {
+        value = initialValue?.let(::flowOf)
+    }
 
     operator fun invoke(value: Flow<T>) {
         this.value = value
@@ -37,15 +41,3 @@ typealias IconProperty = FlowProperty<IconDefinition>
  * A property that holds a [Flow] of [Boolean]s.
  */
 typealias BooleanProperty = FlowProperty<Boolean>
-
-/**
- * A hook that renders its content in the given [RenderContext].
- */
-class ContentHook : Hook<RenderContext, Unit, Unit>() {
-
-    operator fun invoke(content: RenderContext.() -> Unit) {
-        value = { _, _ ->
-            content()
-        }
-    }
-}

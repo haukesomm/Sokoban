@@ -14,4 +14,14 @@ class BundledLevelRepository : LevelRepository {
 
     override fun getLevelOrNull(id: String?): Level? =
         BundledLevels.levelById[id]
+
+    override fun getNextLevel(currentLevelId: String): LevelDescription? =
+        getAvailableLevels().let { levels ->
+            val currentIndex = levels.indexOfFirst { it.id == currentLevelId }
+            when (currentIndex) {
+                -1 -> null
+                levels.lastIndex -> null
+                else -> levels[currentIndex + 1]
+            }
+        }
 }

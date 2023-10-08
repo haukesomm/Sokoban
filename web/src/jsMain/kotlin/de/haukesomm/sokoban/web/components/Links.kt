@@ -7,15 +7,6 @@ import dev.fritz2.core.Tag
 import dev.fritz2.core.href
 import dev.fritz2.core.target
 import org.w3c.dom.HTMLAnchorElement
-import org.w3c.dom.HTMLDivElement
-
-fun RenderContext.withTitle(text: String, content: RenderContext.() -> Unit): Tag<HTMLDivElement> =
-    div("space-y-4") {
-        span("font-semibold") {
-            +text
-        }
-        content()
-    }
 
 // FIXME: Anchor not focusable
 fun RenderContext.iconLink(

@@ -1,9 +1,6 @@
 package de.haukesomm.sokoban.core
 
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.*
 
 /**
  * Represents a Sokoban game.
@@ -40,6 +37,14 @@ class SokobanGame(
      */
     val previousStateExists: Flow<Boolean> = internalState.map { it.previous != null }
 
+    /**
+     * Flow emitting the [LevelDescription] of the current level.
+     */
+    val levelDescription: Flow<LevelDescription> =
+        internalState.map { it.levelId }.distinctUntilChanged().map { id ->
+            levelRepository.getLevelOrNull(id)!!.let { LevelDescription(it.id, it.name) }
+        }
+
 
     /**
      * Returns the [LevelDescription]s of the levels that are available to be loaded.
@@ -55,6 +60,16 @@ class SokobanGame(
             ?: throw IllegalStateException("Level with id '$levelId' does not exist!")
 
         internalState.tryEmit(level.toGameState())
+    }
+
+    /**
+     * Loads the next level if there is one.
+     */
+    fun loadNextLevelIfAvailable() {
+        val currentLevelId = internalState.value.levelId
+        levelRepository.getNextLevel(currentLevelId)?.let {
+            loadLevel(it.id)
+        }
     }
 
     /**

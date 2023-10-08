@@ -1,9 +1,6 @@
 package de.haukesomm.sokoban.web
 
-import de.haukesomm.sokoban.core.Direction
-import de.haukesomm.sokoban.core.LevelDescription
-import de.haukesomm.sokoban.core.SokobanGame
-import de.haukesomm.sokoban.core.SokobanGameFactory
+import de.haukesomm.sokoban.core.*
 import de.haukesomm.sokoban.web.components.*
 import de.haukesomm.sokoban.web.components.game.MoveEvent
 import de.haukesomm.sokoban.web.components.game.gameField
@@ -58,6 +55,8 @@ class GameFrame {
         selectedLevelStore.data handledBy {
             game.loadLevel(it.id)
         }
+        game.levelDescription handledBy selectedLevelStore.update
+
 
         disclosure(
             """w-full py-2 px-4 flex flex-col items-stretch md:items-center bg-background-lightest dark:bg-background-dark
@@ -220,31 +219,26 @@ class GameFrame {
     }
 
 
-    private fun RenderContext.initializeLevelClearedAlert(game: SokobanGame) {
-        game.state
-            .filter { it.levelCleared }
-            .map { } handledBy levelClearedAlert(game)
-    }
-
-    private fun RenderContext.levelClearedAlert(game: SokobanGame): Handler<Unit> =
-        alertModal {
+    private fun initializeLevelClearedAlert(game: SokobanGame) {
+        dialog<GameState, Unit>(game.state.filter { it.levelCleared }) {
+            title("Level cleared")
             content {
-                div("space-y-4") {
-                    p("font-semibold text-md") {
-                        +"Level cleared!"
-                    }
-                    p {
-                        +"Congratulations, you successfully finished this level!"
-                        br { }
-                        span {
-                            game.state.render(into = this) {
-                                it.run { +"You needed $moves moves and $pushes pushes." }
-                            }
-                        }
+                p("p-4") {
+                    +"Congratulations, you successfully finished this level!"
+                    br { }
+                    span {
+                        payload.run { +"You needed $moves moves and $pushes pushes." }
                     }
                 }
             }
+            closeButtonText("Next")
+            dismissButtonText("Dismiss")
+        } handledBy { result ->
+            if (result.action == DialogAction.Close) {
+                game.loadNextLevelIfAvailable()
+            }
         }
+    }
 
 
     private fun RenderContext.moveButtons(game: SokobanGame) {

@@ -19,6 +19,11 @@ interface LevelRepository {
      * Loads the level with the given [id] or returns `null` if the level does not exist.
      */
     fun getLevelOrNull(id: String?): Level?
+
+    /**
+     * Returns the next level after the given [currentLevelId] or `null` if there is no next level.
+     */
+    fun getNextLevel(currentLevelId: String): LevelDescription?
 }
 
 /**
