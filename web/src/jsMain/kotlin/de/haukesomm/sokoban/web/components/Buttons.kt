@@ -1,5 +1,6 @@
 package de.haukesomm.sokoban.web.components
 
+import de.haukesomm.sokoban.web.components.icons.IconDefinition
 import de.haukesomm.sokoban.web.components.icons.icon
 import dev.fritz2.core.RenderContext
 import dev.fritz2.core.Tag
@@ -15,18 +16,18 @@ class PlainButton {
         Large("w-8 h-8")
     }
 
-    var iconDefinition: IconProperty = IconProperty()
+    var iconDefinition: FlowProperty<IconDefinition> = FlowProperty()
     var iconSize: IconSize = IconSize.Small
 
-    val text: TextProperty = TextProperty()
+    val text: FlowProperty<String> = FlowProperty<String>()
 
-    val disabled: BooleanProperty = BooleanProperty()
+    val disabled: FlowProperty<Boolean> = FlowProperty()
 
 
     fun RenderContext.render(): Tag<HTMLButtonElement> =
         button(
-            """p-1 flex flex-row items-center gap-2 rounded-sm focus:outline-none
-                | focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:dark:ring-primary-600
+            """p-1 flex flex-row items-center gap-2 rounded-md focus:outline-none
+                | focus-visible:bg-primary-100 focus-visible:dark:bg-primary-800
                 | disabled:text-neutral-dark-disabled
                 | disabled:dark:text-neutral-light-disabled""".trimMargin()
         ) {

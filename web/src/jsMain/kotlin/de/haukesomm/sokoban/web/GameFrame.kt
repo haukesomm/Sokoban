@@ -9,7 +9,6 @@ import de.haukesomm.sokoban.web.components.icons.*
 import de.haukesomm.sokoban.web.theme.ThemePreference
 import de.haukesomm.sokoban.web.theme.ThemePreferences
 import dev.fritz2.core.*
-import dev.fritz2.headless.components.disclosure
 import kotlinx.browser.window
 import kotlinx.coroutines.flow.*
 
@@ -26,7 +25,7 @@ class GameFrame {
 
     fun RenderContext.render() {
         gameFlow.render { game ->
-            initializeLevelClearedAlert(game)
+            levelClearedAlert(game)
 
             div("h-full pb-8 w-full overflow-auto flex flex-col gap-4 justify-between items-center") {
                 // Disable double-tap to zoom on mobile devices as this interferes with the
@@ -50,49 +49,52 @@ class GameFrame {
         val levelDescriptions = game.getAvailableLevels()
         val selectedLevelStore = storeOf(levelDescriptions.first())
 
-        val initiallyEnabledRules = enabledGameConfigurations.current
-
         selectedLevelStore.data handledBy {
             game.loadLevel(it.id)
         }
         game.levelDescription handledBy selectedLevelStore.update
 
 
-        disclosure(
-            """w-full py-2 px-4 flex flex-col items-stretch md:items-center bg-background-lightest dark:bg-background-dark
-                | shadow-sm dark:shadow-md""".trimMargin()
-        ) {
-            div("w-full flex flex-row flex-wrap justify-between items-center gap-x-4 gap-y-6 text-sm") {
-                div("w-full md:w-auto flex flex-row items-center gap-2"){
-                    icon("w-7 h-7", definition = SokobanAppIcons.logo)
+        div("w-full") {
+            div(
+                """py-2 px-4 grid grid-cols-1 lg:grid-cols-3 items-center gap-4 text-sm
+                    | bg-background-lightest dark:bg-background-dark shadow-sm dark:shadow-md
+                """.trimMargin()
+            ) {
+                div("w-full lg:w-auto flex flex-row items-center gap-2"){
+                    icon("w-7 h-7", definition = CustomIcons.sokoban)
                     span("text-xl font-semibold text-primary-500 dark:text-primary-600") {
                         +"Sokoban"
                     }
                 }
-                div("grow md:max-w-xl flex flex-wrap gap-x-6 gap-y-2 items-center") {
-                    div("grow w-full md:w-auto") {
+                div("w-full lg:max-w-sm lg:justify-self-center grid grid-cols-1 lg:grid-cols-2 gap-4 items-center") {
+                    div("grow") {
                         listBox {
                             entries = levelDescriptions
                             format = LevelDescription::name
                             value(selectedLevelStore)
                         }
                     }
-                    span("whitespace-nowrap") {
-                        +"Moves: "
-                        code {
-                            game.state.map { it.moves }.render(into = this) {
-                                +it.toString()
+                    div("flex lg:justify-end items-center gap-4") {
+                        span("whitespace-nowrap") {
+                            +"Moves: "
+                            code {
+                                game.state.map { it.moves }.render(into = this) {
+                                    +it.toString()
+                                }
+                            }
+                        }
+                        span("whitespace-nowrap") {
+                            +"Pushes: "
+                            code {
+                                game.state.map { it.pushes }.render(into = this) {
+                                    +it.toString()
+                                }
                             }
                         }
                     }
-                    span("whitespace-nowrap") {
-                        +"Pushes: "
-                        code {
-                            game.state.map { it.pushes }.render(into = this) {
-                                +it.toString()
-                            }
-                        }
-                    }
+                }
+                div("w-full -mx-1 flex flex-row lg:justify-end gap-4") {
                     plainButton {
                         // TODO: Import new tailwind icons and use arrow-uturn-left
                         iconDefinition(HeroIcons.reply)
@@ -115,102 +117,94 @@ class GameFrame {
                             game.reloadLevel()
                         }
                     }
-                }
-                disclosureButton(
-                    """p-1 w-full md:w-auto flex flex-row gap-2 items-center rounded-sm focus:outline-none
-                        | focus-visible:ring-2 focus-visible:ring-primary-500 
-                        | focus-visible:dark:ring-primary-600""".trimMargin()
-                ) {
-                    opened.map {
-                        if (it) HeroIcons.chevron_up
-                        else HeroIcons.chevron_down
-                    }.render {
-                        icon("w-4 h-4", definition = it)
+                    plainButton {
+                        text("Settings")
+                        iconDefinition(HeroIcons.cog)
+                    }.run {
+                        settingsModal(clicks.map {}) handledBy {}
                     }
-                    span { +"More options" }
                 }
             }
-            div("relative") {
-                disclosurePanel {
-                    div(
-                        """absolute inset-x-0 flex justify-center bg-background-lightest
-                            | dark:bg-background-dark shadow-sm dark:shadow-md""".trimMargin()
-                    ) {
-                        div(
-                            classes(
-                                """grow w-full md:w-auto max-w-none md:max-w-4xl m-4 p-4 rounded-md
-                                    | grid grid-cols-1 md:grid-cols-3 gap-6
-                                    | bg-background-light dark:bg-background-darkest""".trimMargin(),
-                            )
-                        ) {
-                            withTitle("Configuration options") {
-                                checkboxGroup {
-                                    values(enabledGameConfigurations)
-                                    options = SokobanGameFactory.configurationOptions
-                                    optionsFormat = SokobanGameFactory.ConfigurationOption::name
-                                    optionDescriptionFormat = SokobanGameFactory.ConfigurationOption::description
-                                }
-                                div {
-                                    plainButton {
-                                        text("Apply options and reload game")
-                                        iconDefinition(HeroIcons.arrow_right)
-                                        disabled(enabledGameConfigurations.data.map {
-                                            it.toSet() == initiallyEnabledRules.toSet()
-                                        })
-                                    }.run {
-                                        clicks.flatMapLatest { enabledGameConfigurations.data } handledBy {
-                                            gameFlow.tryEmit(
-                                                SokobanGameFactory.withMinimalConfiguration(
-                                                    additional = it
-                                                )
-                                            )
-                                        }
-                                    }
-                                }
-                            }
-                            withTitle("Theme") {
-                                val preference = storeOf(ThemePreferences.getCurrentDarkModePreference())
-                                preference.data.drop(1) handledBy ThemePreferences::setDarkModePreference
+        }
+    }
 
-                                radioGroup<ThemePreference> {
-                                    value(preference)
-                                    options = ThemePreference.values().toList()
-                                    optionsFormat = {
-                                        when (it) {
-                                            ThemePreference.AlwaysLight -> "Light"
-                                            ThemePreference.AlwaysDark -> "Dark"
-                                            ThemePreference.FollowSystem -> "System"
-                                        }
-                                    }
-                                    optionDescriptionFormat = {
-                                        when (it) {
-                                            ThemePreference.FollowSystem -> "Follow the system's setting"
-                                            else -> null
-                                        }
-                                    }
+    private fun settingsModal(trigger: Flow<Unit>): Flow<ModalResult<Unit>> {
+        val initiallyEnabledRules = enabledGameConfigurations.current
+        return modal(trigger) {
+            title("Settings")
+            content {
+                div(
+                    """w-full md:w-auto max-w-none md:max-w-4xl p-4 rounded-md
+                        | grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6
+                    """.trimMargin()
+                ) {
+                    withTitle("Configuration options") {
+                        checkboxGroup {
+                            values(enabledGameConfigurations)
+                            options = SokobanGameFactory.configurationOptions
+                            optionsFormat = SokobanGameFactory.ConfigurationOption::name
+                            optionDescriptionFormat = SokobanGameFactory.ConfigurationOption::description
+                        }
+                        div {
+                            plainButton {
+                                text("Apply options and reload game")
+                                iconDefinition(HeroIcons.arrow_right)
+                                disabled(enabledGameConfigurations.data.map {
+                                    it.toSet() == initiallyEnabledRules.toSet()
+                                })
+                            }.run {
+                                clicks.flatMapLatest { enabledGameConfigurations.data } handledBy {
+                                    gameFlow.tryEmit(
+                                        SokobanGameFactory.withMinimalConfiguration(
+                                            additional = it
+                                        )
+                                    )
+                                    close(ModalAction.Dismiss)
                                 }
                             }
-                            withTitle("About") {
-                                iconLink(
-                                    GitHubIcons.octocat,
-                                    text = "Sokoban",
-                                    description = VersionInfo.sokobanVersion,
-                                    href = "https://github.com/haukesomm/sokoban"
-                                )
-                                iconLink(
-                                    Fritz2Icons.fritz2,
-                                    text = "Built with fritz2",
-                                    description = VersionInfo.fritz2Version,
-                                    href = "https://fritz2.dev"
-                                )
-                                p(
-                                    """pt-2 flex flex-row gap-x-1 items-center text-xs border-t
-                                        | border-dotted border-neutral-dark-secondary dark:border-neutral-light-secondary
-                                        | """.trimMargin()
-                                ) {
-                                    +"Made with ♡ in Hamburg, Germany"
+                        }
+                    }
+                    withTitle("Theme") {
+                        val preference = storeOf(ThemePreferences.getCurrentDarkModePreference())
+                        preference.data.drop(1) handledBy ThemePreferences::setDarkModePreference
+
+                        radioGroup<ThemePreference> {
+                            value(preference)
+                            options = ThemePreference.values().toList()
+                            optionsFormat = {
+                                when (it) {
+                                    ThemePreference.AlwaysLight -> "Light"
+                                    ThemePreference.AlwaysDark -> "Dark"
+                                    ThemePreference.FollowSystem -> "System"
                                 }
                             }
+                            optionDescriptionFormat = {
+                                when (it) {
+                                    ThemePreference.FollowSystem -> "Follow the system's setting"
+                                    else -> null
+                                }
+                            }
+                        }
+                    }
+                    withTitle("About") {
+                        iconLink(
+                            CustomIcons.github,
+                            text = "Sokoban",
+                            description = VersionInfo.sokobanVersion,
+                            href = "https://github.com/haukesomm/sokoban"
+                        )
+                        iconLink(
+                            CustomIcons.fritz2,
+                            text = "Built with fritz2",
+                            description = VersionInfo.fritz2Version,
+                            href = "https://fritz2.dev"
+                        )
+                        p(
+                            """pt-2 flex flex-row gap-x-1 items-center text-xs border-t
+                                | border-dotted border-neutral-dark-secondary dark:border-neutral-light-secondary
+                            """.trimMargin()
+                        ) {
+                            +"Made with ♡ in Hamburg, Germany"
                         }
                     }
                 }
@@ -218,9 +212,8 @@ class GameFrame {
         }
     }
 
-
-    private fun initializeLevelClearedAlert(game: SokobanGame) {
-        dialog<GameState, Unit>(game.state.filter { it.levelCleared }) {
+    private fun levelClearedAlert(game: SokobanGame) {
+        modal<GameState, Unit>(game.state.filter { it.levelCleared }) {
             title("Level cleared")
             content {
                 p("p-4") {
@@ -231,15 +224,14 @@ class GameFrame {
                     }
                 }
             }
-            closeButtonText("Next")
-            dismissButtonText("Dismiss")
+            closeButtonText = "Next"
+            dismissButtonText = "Dismiss"
         } handledBy { result ->
-            if (result.action == DialogAction.Close) {
+            if (result.action == ModalAction.Close) {
                 game.loadNextLevelIfAvailable()
             }
         }
     }
-
 
     private fun RenderContext.moveButtons(game: SokobanGame) {
         moveButtons {

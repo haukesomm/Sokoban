@@ -9,7 +9,7 @@ import dev.fritz2.headless.foundation.hook
 
 class Disclosure {
 
-    val title = TextProperty()
+    val title = FlowProperty<String>()
 
     val content = ContentHook()
 

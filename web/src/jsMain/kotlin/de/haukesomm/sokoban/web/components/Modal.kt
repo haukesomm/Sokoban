@@ -6,10 +6,21 @@ import dev.fritz2.headless.foundation.Hook
 import dev.fritz2.headless.foundation.hook
 import kotlinx.coroutines.flow.*
 
+enum class ModalAction {
+    Close,
+    Dismiss
+}
+
+data class ModalResult<R>(
+    val action: ModalAction,
+    val result: R?
+)
+
 class ModalContentContext<T, R>(
     context: RenderContext,
     val payload: T,
-    val close: Handler<R>,
+    val exportResult: Handler<R>,
+    val close: Handler<ModalAction>,
 ) : RenderContext by context
 
 class ModalContentHook<T, R> : Hook<ModalContentContext<T, R>, Unit, Unit>() {
@@ -21,26 +32,65 @@ class ModalContentHook<T, R> : Hook<ModalContentContext<T, R>, Unit, Unit>() {
     }
 }
 
-class Modal<T, R>(private val payloads: Flow<T>) {
+class Modal<T, R>(payloads: Flow<T>) {
+
+    private val payloadStore = object : RootStore<T?>(null) {
+
+        val receive = handleAndEmit<T, T> { _, payload ->
+            emit(payload)
+            payload
+        }
+    }
+
+    private val exportStore = storeOf<R?>(null)
 
     private val openStore = object : RootStore<Boolean>(false) {
 
-        val close = handleAndEmit<R, R> { _, result ->
-            emit(result)
+        val open = handle { true }
+
+        val close = handleAndEmit<ModalAction, ModalAction> { _, action ->
+            emit(action)
             false
         }
     }
 
-
-    val content: ModalContentHook<T, R> = ModalContentHook()
-
-    internal val results: Flow<R> = openStore.close
-
-
     init {
-        payloads.map { true } handledBy openStore.update
+        payloads handledBy payloadStore.receive
+        payloadStore.receive.map {} handledBy openStore.open
+        openStore.close.map { null } handledBy payloadStore.update
     }
 
+
+    val title: FlowProperty<String> = FlowProperty<String>()
+
+    val content: ModalContentHook<T & Any, R> = ModalContentHook()
+
+    var closeButtonText: String = "Close"
+
+    var dismissButtonText: String? = null
+
+
+    internal val results: Flow<ModalResult<R>> =
+        combine(openStore.close, exportStore.data) { action, result ->
+            ModalResult(action, result)
+        }
+
+
+    private fun RenderContext.actionButton(text: String, primary: Boolean = false) =
+        button(
+            classes(
+                "p-1 flex flex-row items-center gap-2 rounded-md font-semibold focus-visible:outline-none",
+                """text-primary-500 dark:text-primary-600
+                    | focus-visible:bg-primary-100 focus-visible:dark:bg-primary-900
+                """.trimMargin().takeIf { primary },
+                """text-neutral-dark-secondary dark:text-neutral-light-secondary
+                    | focus-visible:bg-background-light focus-visible:dark:bg-background-dark
+                """.trimMargin().takeIf { !primary }
+            )
+        ) {
+            type("button")
+            +text
+        }
 
     fun render() {
         headlessModal {
@@ -50,18 +100,46 @@ class Modal<T, R>(private val payloads: Flow<T>) {
                 }
                 div("fixed inset-0 flex flex-row justify-center items-center") {
                     div(
-                        """absolute m-4 rounded-lg overflow-hidden 
+                        """absolute max-h-full md:m-4 rounded-lg overflow-hidden flex flex-col
                             | shadow-lg text-sm text-neutral-dark dark:text-neutral-light
-                            | bg-background-light dark:bg-background-dark
+                            | bg-background-light dark:bg-background-darkest
                         """.trimMargin()
                     ) {
-                        payloads.render { payload ->
+                        title.value?.render { title ->
+                            div(
+                                """px-4 py-3 bg-background-lightest dark:bg-background-dark 
+                                    | border-b border-neutral-light dark:border-neutral-dark
+                                """.trimMargin()
+                            ) {
+                                p("font-semibold") {
+                                    +title
+                                }
+                            }
+                        }
+
+                        div("flex-shrink overflow-auto") {
                             ModalContentContext(
                                 context = this,
-                                payload = payload,
-                                close = openStore.close,
+                                payload = payloadStore.current!!,
+                                exportResult = exportStore.handle<R> { _, export -> export },
+                                close = openStore.close
                             ).run {
                                 hook(content)
+                            }
+                        }
+
+                        div(
+                            """px-3 py-2 flex flex-row-reverse gap-4
+                                | bg-background-lightest dark:bg-background-dark
+                                | border-t border-neutral-light dark:border-neutral-dark
+                            """.trimMargin()
+                        ) {
+                            actionButton(closeButtonText, primary = true).clicks
+                                .map { ModalAction.Close } handledBy openStore.close
+
+                            dismissButtonText?.let {
+                                actionButton(it).clicks
+                                    .map { ModalAction.Dismiss } handledBy openStore.close
                             }
                         }
                     }
@@ -74,7 +152,7 @@ class Modal<T, R>(private val payloads: Flow<T>) {
 fun <T, R> modal(
     payloads: Flow<T>,
     initialize: Modal<T, R>.() -> Unit
-): Flow<R> =
+): Flow<ModalResult<R>> =
     flow {
         Modal<T, R>(payloads).run {
             initialize()
@@ -82,3 +160,9 @@ fun <T, R> modal(
             results.collect { emit(it) }
         }
     }
+
+fun modal(
+    payloads: Flow<Unit>,
+    initialize: Modal<Unit, Unit>.() -> Unit
+): Flow<ModalResult<Unit>> =
+    modal<Unit, Unit>(payloads, initialize)

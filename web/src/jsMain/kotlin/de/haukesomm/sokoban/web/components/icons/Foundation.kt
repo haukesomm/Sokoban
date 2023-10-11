@@ -15,7 +15,7 @@ fun RenderContext.icon(
     id: String? = null,
     definition: IconDefinition
 ) =
-    definition.let { (viewBoxWidth, viewBoxHeight, content) ->
+    definition.run { ->
         svg(classes, id) {
             content(content)
             viewBox("0 0 $viewBoxWidth $viewBoxHeight")

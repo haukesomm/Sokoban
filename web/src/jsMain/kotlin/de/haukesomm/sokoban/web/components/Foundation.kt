@@ -1,6 +1,5 @@
 package de.haukesomm.sokoban.web.components
 
-import de.haukesomm.sokoban.web.components.icons.IconDefinition
 import dev.fritz2.core.RenderContext
 import dev.fritz2.headless.foundation.Hook
 import dev.fritz2.headless.foundation.Property
@@ -28,16 +27,13 @@ class FlowProperty<T>(initialValue: T? = null) : Property<Flow<T>>() {
 }
 
 /**
- * A property that holds a [Flow] of [String]s.
+ * A hook that renders its content in the given [RenderContext].
  */
-typealias TextProperty = FlowProperty<String>
+class ContentHook : Hook<RenderContext, Unit, Unit>() {
 
-/**
- * A property that holds a [Flow] of [IconDefinition]s.
- */
-typealias IconProperty = FlowProperty<IconDefinition>
-
-/**
- * A property that holds a [Flow] of [Boolean]s.
- */
-typealias BooleanProperty = FlowProperty<Boolean>
+    operator fun invoke(content: RenderContext.() -> Unit) {
+        value = { _, _ ->
+            content()
+        }
+    }
+}
