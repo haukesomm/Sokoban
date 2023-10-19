@@ -15,7 +15,7 @@ fun RenderContext.iconLink(
     description: String? = null,
     href: String
 ): Tag<HTMLAnchorElement> =
-    a("flex items-center gap-2") {
+    a("max-w-max flex items-center gap-2") {
         href(href)
         target("_blank")
 

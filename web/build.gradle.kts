@@ -1,3 +1,8 @@
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
+
 plugins {
     kotlin("multiplatform")
     id("com.google.devtools.ksp")
@@ -48,6 +53,9 @@ tasks.named<ProcessResources>("jsProcessResources") {
     filesMatching("index.html") {
         expand(
             "sokobanVersion" to version,
+            "sokobanBuildTime" to ZonedDateTime
+                .now(ZoneId.of("Europe/Berlin"))
+                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss z")),
             "fritz2Version" to fritz2version
         )
     }

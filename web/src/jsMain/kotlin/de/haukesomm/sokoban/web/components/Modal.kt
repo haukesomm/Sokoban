@@ -32,9 +32,9 @@ class ModalContentHook<T, R> : Hook<ModalContentContext<T, R>, Unit, Unit>() {
     }
 }
 
-class Modal<T, R>(payloads: Flow<T>) {
+class Modal<T, R>(context: RenderContext, payloads: Flow<T>) : RenderContext by context {
 
-    private val payloadStore = object : RootStore<T?>(null) {
+    private val payloadStore = object : RootStore<T?>(initialData = null, job = job) {
 
         val receive = handleAndEmit<T, T> { _, payload ->
             emit(payload)
@@ -44,7 +44,7 @@ class Modal<T, R>(payloads: Flow<T>) {
 
     private val exportStore = storeOf<R?>(null)
 
-    private val openStore = object : RootStore<Boolean>(false) {
+    private val openStore = object : RootStore<Boolean>(initialData = false, job = job) {
 
         val open = handle { true }
 
@@ -79,12 +79,12 @@ class Modal<T, R>(payloads: Flow<T>) {
     private fun RenderContext.actionButton(text: String, primary: Boolean = false) =
         button(
             classes(
-                "p-1 flex flex-row items-center gap-2 rounded-md font-semibold focus-visible:outline-none",
+                "p-1 flex flex-row items-center gap-2 rounded-md text-base font-semibold focus-visible:outline-none",
                 """text-primary-500 dark:text-primary-600
                     | focus-visible:bg-primary-100 focus-visible:dark:bg-primary-900
                 """.trimMargin().takeIf { primary },
                 """text-neutral-dark-secondary dark:text-neutral-light-secondary
-                    | focus-visible:bg-background-light focus-visible:dark:bg-background-dark
+                    | focus-visible:bg-background-light focus-visible:dark:bg-background-darkest
                 """.trimMargin().takeIf { !primary }
             )
         ) {
@@ -111,7 +111,7 @@ class Modal<T, R>(payloads: Flow<T>) {
                                     | border-b border-neutral-light dark:border-neutral-dark
                                 """.trimMargin()
                             ) {
-                                p("font-semibold") {
+                                p("text-lg font-semibold") {
                                     +title
                                 }
                             }
@@ -149,19 +149,19 @@ class Modal<T, R>(payloads: Flow<T>) {
     }
 }
 
-fun <T, R> modal(
+fun <T, R> RenderContext.modal(
     payloads: Flow<T>,
     initialize: Modal<T, R>.() -> Unit
 ): Flow<ModalResult<R>> =
     flow {
-        Modal<T, R>(payloads).run {
+        Modal<T, R>(this@modal, payloads).run {
             initialize()
             render()
             results.collect { emit(it) }
         }
     }
 
-fun modal(
+fun RenderContext.modal(
     payloads: Flow<Unit>,
     initialize: Modal<Unit, Unit>.() -> Unit
 ): Flow<ModalResult<Unit>> =

@@ -8,6 +8,10 @@ object VersionInfo {
         document.asDynamic().sokobanVersion.toString()
     }
 
+    val sokobanBuildTime: String by lazy {
+        document.asDynamic().sokobanBuildTime.toString()
+    }
+
     val fritz2Version: String by lazy {
         document.asDynamic().fritz2Version.toString()
     }

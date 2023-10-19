@@ -8,6 +8,8 @@ import de.haukesomm.sokoban.web.components.icons.Textures
 import de.haukesomm.sokoban.web.components.icons.icon
 import dev.fritz2.core.RenderContext
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 
 class GameField(private val states: Flow<GameState>) {
@@ -17,32 +19,31 @@ class GameField(private val states: Flow<GameState>) {
     }
 
     fun RenderContext.render() {
-        div {
-            states.map { it.width to it.tiles }.render(into = this) { (width, tiles) ->
-                div("grid") {
-                    inlineStyle("grid-template-columns: repeat($width, 1fr);")
-                    tiles.forEach {
-                        renderTile(it)
-                    }
-                }
+        div("grid") {
+            inlineStyle(states.map {
+                "grid-template-columns: repeat(${it.width}, 1fr);"
+            })
+            states.map { it.tiles }.renderEach( batch = true) {
+                renderTile(it)
             }
         }
     }
 
-    private fun RenderContext.renderTile(tile: Tile) {
-        tile.entity?.let { entity ->
-            icon(TILE_SIZE_CLASSES, definition = when(entity.type) {
-                EntityType.Box -> Textures.box
-                EntityType.Player -> Textures.player
-            })
-        } ?: run {
-            icon(TILE_SIZE_CLASSES, definition = when(tile.type) {
-                TileType.Empty -> Textures.ground
-                TileType.Target -> Textures.target
-                TileType.Wall -> Textures.wall
-            })
+    private fun RenderContext.renderTile(tile: Tile) =
+        div {
+            tile.entity?.let { entity ->
+                icon(TILE_SIZE_CLASSES, definition = when(entity.type) {
+                    EntityType.Box -> Textures.box
+                    EntityType.Player -> Textures.player
+                })
+            } ?: run {
+                icon(TILE_SIZE_CLASSES, definition = when(tile.type) {
+                    TileType.Empty -> Textures.ground
+                    TileType.Target -> Textures.target
+                    TileType.Wall -> Textures.wall
+                })
+            }
         }
-    }
 }
 
 fun RenderContext.gameField(states: Flow<GameState>, ) {

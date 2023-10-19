@@ -2,6 +2,7 @@ package de.haukesomm.sokoban.web.theme
 
 import dev.fritz2.core.RootStore
 import kotlinx.browser.window
+import kotlinx.coroutines.Job
 import org.w3c.dom.Element
 
 /**
@@ -10,8 +11,10 @@ import org.w3c.dom.Element
  * Additionally, it updates the CSS classes of the `:root` element to reflect the current dark mode setting
  * so that Tailwind CSS can apply the correct color scheme.
  */
-object DarkModeStore : RootStore<Boolean>(DarkModeStrategies.getCurrentStrategy().initiallyEnabled) {
-
+object DarkModeStore : RootStore<Boolean>(
+    initialData = DarkModeStrategies.getCurrentStrategy().initiallyEnabled,
+    job = Job()
+) {
     private const val DARK_MODE_CLASS = "dark"
 
     /**

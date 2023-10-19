@@ -9,10 +9,11 @@ import de.haukesomm.sokoban.web.components.icons.*
 import de.haukesomm.sokoban.web.theme.ThemePreference
 import de.haukesomm.sokoban.web.theme.ThemePreferences
 import dev.fritz2.core.*
+import kotlinx.browser.document
 import kotlinx.browser.window
 import kotlinx.coroutines.flow.*
 
-class GameFrame {
+class GameFrame(context: RenderContext) : RenderContext by context {
 
     private val enabledGameConfigurations = storeOf(SokobanGameFactory.configurationOptions)
 
@@ -23,7 +24,7 @@ class GameFrame {
     )
 
 
-    fun RenderContext.render() {
+    fun render() {
         gameFlow.render { game ->
             levelClearedAlert(game)
 
@@ -135,7 +136,7 @@ class GameFrame {
             content {
                 div(
                     """w-full md:w-auto max-w-none md:max-w-4xl p-4 rounded-md
-                        | grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6
+                        | grid grid-cols-1 sm:grid-cols-2 gap-6
                     """.trimMargin()
                 ) {
                     withTitle("Configuration options") {
@@ -186,25 +187,27 @@ class GameFrame {
                             }
                         }
                     }
-                    withTitle("About") {
-                        iconLink(
-                            CustomIcons.github,
-                            text = "Sokoban",
-                            description = VersionInfo.sokobanVersion,
-                            href = "https://github.com/haukesomm/sokoban"
-                        )
-                        iconLink(
-                            CustomIcons.fritz2,
-                            text = "Built with fritz2",
-                            description = VersionInfo.fritz2Version,
-                            href = "https://fritz2.dev"
-                        )
-                        p(
-                            """pt-2 flex flex-row gap-x-1 items-center text-xs border-t
-                                | border-dotted border-neutral-dark-secondary dark:border-neutral-light-secondary
-                            """.trimMargin()
-                        ) {
-                            +"Made with ♡ in Hamburg, Germany"
+                    div("md:col-span-2") {
+                        withTitle("About") {
+                            iconLink(
+                                CustomIcons.github,
+                                text = "Sokoban",
+                                description = VersionInfo.run { "$sokobanVersion ($sokobanBuildTime)" },
+                                href = "https://github.com/haukesomm/sokoban"
+                            )
+                            iconLink(
+                                CustomIcons.fritz2,
+                                text = "Built with fritz2",
+                                description = VersionInfo.fritz2Version,
+                                href = "https://fritz2.dev"
+                            )
+                            p(
+                                """pt-2 text-xs border-t border-dotted border-neutral-dark-secondary 
+                                    | dark:border-neutral-light-secondary
+                                """.trimMargin()
+                            ) {
+                                +"Made with ♡ in Hamburg, Germany"
+                            }
                         }
                     }
                 }
@@ -270,4 +273,4 @@ class GameFrame {
 }
 
 fun RenderContext.gameFrame() =
-    GameFrame().run { render() }
+    GameFrame(this).render()
