@@ -25,12 +25,12 @@ kotlin {
         }
         val jsMain by getting {
             dependencies {
-                // tailwind
                 implementation(npm("tailwindcss", "3.3.3"))
                 implementation(npm("@tailwindcss/forms", "0.5.4"))
 
-                // webpack
-                implementation(devNpm("postcss", "8.4.26"))
+                implementation(devNpm("webpack", "5.73.0"))
+                implementation(devNpm("socket.io", "4.7.2"))
+                implementation(devNpm("postcss", "8.4.31"))
                 implementation(devNpm("postcss-loader", "7.3.3"))
                 implementation(devNpm("autoprefixer", "10.4.14"))
                 implementation(devNpm("css-loader", "6.8.1"))
