@@ -8,6 +8,7 @@ import de.haukesomm.sokoban.core.SokobanGameFactory;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.util.Set;
 
 public class GameFrame extends JFrame {
 
@@ -43,7 +44,7 @@ public class GameFrame extends JFrame {
 
     private void initializeFrame() {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setResizable(true);
+        setResizable(false);
         setFocusable(true);
 
         setTitle("Sokoban");

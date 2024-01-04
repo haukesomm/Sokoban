@@ -1,9 +1,11 @@
 package de.haukesomm.sokoban.core
 
 import de.haukesomm.sokoban.core.levels.BundledLevelRepository
+import de.haukesomm.sokoban.core.levels.PaddingLevelRepositoryDecorator
 import de.haukesomm.sokoban.core.moving.MoveRule
 import de.haukesomm.sokoban.core.moving.MoveServiceImpl
 import de.haukesomm.sokoban.core.moving.rules.*
+import kotlin.jvm.JvmOverloads
 import kotlin.jvm.JvmStatic
 
 /**
@@ -88,12 +90,18 @@ object SokobanGameFactory {
      * Additional behavior can be added by passing additional [ConfigurationOption]s. A list of available
      * options can be found in [configurationOptions].
      */
-    fun withMinimalConfiguration(additional: Collection<ConfigurationOption>): SokobanGame {
+    @JvmStatic
+    @JvmOverloads
+    fun withMinimalConfiguration(additional: Collection<ConfigurationOption> = emptySet()): SokobanGame {
         val combinedConfig = additional.fold(ConfigurationContext()) { scope, config ->
             config.applyTo(scope)
         }
         return SokobanGame(
-            BundledLevelRepository(),
+            PaddingLevelRepositoryDecorator(
+                BundledLevelRepository(),
+                minWidth = 20,
+                minHeight = 16
+            ),
             MoveServiceImpl(
                 ConditionalMoveRule(
                     condition = AggregatingMoveRule(

@@ -22,8 +22,6 @@ internal object BundledLevels {
         Level(
             id = "level-01",
             name = "Level 01",
-            width = 19,
-            height = 11,
             characterMap = characterMap,
             layoutString = """
                 ____#####__________
@@ -42,8 +40,6 @@ internal object BundledLevels {
         Level(
             id = "level-02",
             name = "Level 02",
-            width = 14,
-            height = 10,
             characterMap = characterMap,
             layoutString = """
                 ############__
@@ -61,8 +57,6 @@ internal object BundledLevels {
         Level(
             id = "level-03",
             name = "Level 03",
-            width = 17,
-            height = 10,
             characterMap = characterMap,
             layoutString = """
                 ________########_
@@ -80,8 +74,6 @@ internal object BundledLevels {
         Level(
             id = "level-04",
             name = "Level 04",
-            width = 19,
-            height = 14,
             characterMap = characterMap,
             layoutString = """
                 ___________########
@@ -103,8 +95,6 @@ internal object BundledLevels {
         Level(
             id = "level-05",
             name = "Level 05",
-            width = 17,
-            height = 13,
             characterMap = characterMap,
             layoutString = """
                 ________#####____
@@ -125,8 +115,6 @@ internal object BundledLevels {
         Level(
             id = "level-06",
             name = "Level 06",
-            width = 12,
-            height = 11,
             characterMap = characterMap,
             layoutString = """
                 ######__###_
@@ -145,8 +133,6 @@ internal object BundledLevels {
         Level(
             id = "level-07",
             name = "Level 07",
-            width = 13,
-            height = 12,
             characterMap = characterMap,
             layoutString = """
                 _______#####_
@@ -166,8 +152,6 @@ internal object BundledLevels {
         Level(
             id = "level-08",
             name = "Level 08",
-            width = 16,
-            height = 16,
             characterMap = characterMap,
             layoutString = """
                 __####__________
@@ -191,8 +175,6 @@ internal object BundledLevels {
         Level(
             id = "level-09",
             name = "Level 09",
-            width = 17,
-            height = 14,
             characterMap = characterMap,
             layoutString = """
                 __________#######
@@ -214,8 +196,6 @@ internal object BundledLevels {
         Level(
             id = "level-10",
             name = "Level 10",
-            width = 19,
-            height = 16,
             characterMap = characterMap,
             layoutString = """
                 _###__#############
@@ -239,8 +219,6 @@ internal object BundledLevels {
         Level(
             id = "level-11",
             name = "Level 11",
-            width = 19,
-            height = 15,
             characterMap = characterMap,
             layoutString = """
                 __________####_____
@@ -263,8 +241,6 @@ internal object BundledLevels {
         Level(
             id = "level-12",
             name = "Level 12",
-            width = 17,
-            height = 13,
             characterMap = characterMap,
             layoutString = """
                 ################_
@@ -285,8 +261,6 @@ internal object BundledLevels {
         Level(
             id = "level-13",
             name = "Level 13",
-            width = 19,
-            height = 13,
             characterMap = characterMap,
             layoutString = """
                 ___#########_______
@@ -307,8 +281,6 @@ internal object BundledLevels {
         Level(
             id = "level-14",
             name = "Level 14",
-            width = 18,
-            height = 16,
             characterMap = characterMap,
             layoutString = """
                 _______#######____
@@ -332,8 +304,6 @@ internal object BundledLevels {
         Level(
             id = "level-15",
             name = "Level 15",
-            width = 17,
-            height = 16,
             characterMap = characterMap,
             layoutString = """
                 ___########______
@@ -357,8 +327,6 @@ internal object BundledLevels {
         Level(
             id = "level-16",
             name = "Level 16",
-            width = 14,
-            height = 15,
             characterMap = characterMap,
             layoutString = """
                 #####_________
@@ -381,8 +349,6 @@ internal object BundledLevels {
         Level(
             id = "level-17",
             name = "Level 17",
-            width = 16,
-            height = 14,
             characterMap = characterMap,
             layoutString = """
                 ___##########___
@@ -404,8 +370,6 @@ internal object BundledLevels {
         Level(
             id = "level-18",
             name = "Level 18",
-            width = 19,
-            height = 13,
             characterMap = characterMap,
             layoutString = """
                 _____###########___
@@ -426,8 +390,6 @@ internal object BundledLevels {
         Level(
             id = "level-19",
             name = "Level 19",
-            width = 19,
-            height = 16,
             characterMap = characterMap,
             layoutString = """
                 __######___________
@@ -451,8 +413,6 @@ internal object BundledLevels {
         Level(
             id = "level-20",
             name = "Level 20",
-            width = 19,
-            height = 16,
             characterMap = characterMap,
             layoutString = """
                 ____##########_____
@@ -476,8 +436,6 @@ internal object BundledLevels {
         Level(
             id = "level-21",
             name = "Level 21",
-            width = 15,
-            height = 15,
             characterMap = characterMap,
             layoutString = """
                 #########______
@@ -500,8 +458,6 @@ internal object BundledLevels {
         Level(
             id = "level-22",
             name = "Level 22",
-            width = 19,
-            height = 16,
             characterMap = characterMap,
             layoutString = """
                 ######_____####____
@@ -525,8 +481,6 @@ internal object BundledLevels {
         Level(
             id = "level-23",
             name = "Level 23",
-            width = 19,
-            height = 14,
             characterMap = characterMap,
             layoutString = """
                 ____#######________
@@ -548,8 +502,6 @@ internal object BundledLevels {
         Level(
             id = "level-24",
             name = "Level 24",
-            width = 19,
-            height = 16,
             characterMap = characterMap,
             layoutString = """
                 ###############____
@@ -573,8 +525,6 @@ internal object BundledLevels {
         Level(
             id = "level-25",
             name = "Level 25",
-            width = 19,
-            height = 16,
             characterMap = characterMap,
             layoutString = """
                 ####_______________
@@ -598,8 +548,6 @@ internal object BundledLevels {
         Level(
             id = "level-26",
             name = "Level 26",
-            width = 15,
-            height = 12,
             characterMap = characterMap,
             layoutString = """
                 _#######_______
@@ -619,8 +567,6 @@ internal object BundledLevels {
         Level(
             id = "level-27",
             name = "Level 27",
-            width = 19,
-            height = 13,
             characterMap = characterMap,
             layoutString = """
                 _#################_
@@ -641,8 +587,6 @@ internal object BundledLevels {
         Level(
             id = "level-28",
             name = "Level 28",
-            width = 17,
-            height = 15,
             characterMap = characterMap,
             layoutString = """
                 _________#####___
@@ -665,8 +609,6 @@ internal object BundledLevels {
         Level(
             id = "level-29",
             name = "Level 29",
-            width = 19,
-            height = 13,
             characterMap = characterMap,
             layoutString = """
                 #####______________
@@ -687,8 +629,6 @@ internal object BundledLevels {
         Level(
             id = "level-30",
             name = "Level 30",
-            width = 19,
-            height = 14,
             characterMap = characterMap,
             layoutString = """
                 _______###########_
@@ -710,8 +650,6 @@ internal object BundledLevels {
         Level(
             id = "level-31",
             name = "Level 31",
-            width = 18,
-            height = 16,
             characterMap = characterMap,
             layoutString = """
                 __####____________
@@ -735,8 +673,6 @@ internal object BundledLevels {
         Level(
             id = "level-32",
             name = "Level 32",
-            width = 13,
-            height = 15,
             characterMap = characterMap,
             layoutString = """
                 ______####___
@@ -759,8 +695,6 @@ internal object BundledLevels {
         Level(
             id = "level-33",
             name = "Level 33",
-            width = 12,
-            height = 15,
             characterMap = characterMap,
             layoutString = """
                 ############
@@ -783,8 +717,6 @@ internal object BundledLevels {
         Level(
             id = "level-34",
             name = "Level 34",
-            width = 14,
-            height = 15,
             characterMap = characterMap,
             layoutString = """
                 _#########____
@@ -807,8 +739,6 @@ internal object BundledLevels {
         Level(
             id = "level-35",
             name = "Level 35",
-            width = 19,
-            height = 16,
             characterMap = characterMap,
             layoutString = """
                 ############_######
@@ -832,8 +762,6 @@ internal object BundledLevels {
         Level(
             id = "level-36",
             name = "Level 36",
-            width = 19,
-            height = 16,
             characterMap = characterMap,
             layoutString = """
                 ____________#####__
@@ -857,8 +785,6 @@ internal object BundledLevels {
         Level(
             id = "level-37",
             name = "Level 37",
-            width = 19,
-            height = 15,
             characterMap = characterMap,
             layoutString = """
                 ###########________
@@ -881,8 +807,6 @@ internal object BundledLevels {
         Level(
             id = "level-38",
             name = "Level 38",
-            width = 11,
-            height = 11,
             characterMap = characterMap,
             layoutString = """
                 ______####_
@@ -901,8 +825,6 @@ internal object BundledLevels {
         Level(
             id = "level-39",
             name = "Level 39",
-            width = 19,
-            height = 16,
             characterMap = characterMap,
             layoutString = """
                 _____________######
@@ -926,8 +848,6 @@ internal object BundledLevels {
         Level(
             id = "level-40",
             name = "Level 40",
-            width = 17,
-            height = 16,
             characterMap = characterMap,
             layoutString = """
                 ____############_
@@ -951,8 +871,6 @@ internal object BundledLevels {
         Level(
             id = "level-41",
             name = "Level 41",
-            width = 19,
-            height = 15,
             characterMap = characterMap,
             layoutString = """
                 ___________#####___
@@ -975,8 +893,6 @@ internal object BundledLevels {
         Level(
             id = "level-42",
             name = "Level 42",
-            width = 18,
-            height = 13,
             characterMap = characterMap,
             layoutString = """
                 _____########_____
@@ -997,8 +913,6 @@ internal object BundledLevels {
         Level(
             id = "level-43",
             name = "Level 43",
-            width = 19,
-            height = 11,
             characterMap = characterMap,
             layoutString = """
                 ________#######____
@@ -1017,8 +931,6 @@ internal object BundledLevels {
         Level(
             id = "level-44",
             name = "Level 44",
-            width = 19,
-            height = 15,
             characterMap = characterMap,
             layoutString = """
                 _#####_____________
@@ -1041,8 +953,6 @@ internal object BundledLevels {
         Level(
             id = "level-45",
             name = "Level 45",
-            width = 16,
-            height = 14,
             characterMap = characterMap,
             layoutString = """
                 #####_####______
@@ -1064,8 +974,6 @@ internal object BundledLevels {
         Level(
             id = "level-46",
             name = "Level 46",
-            width = 14,
-            height = 16,
             characterMap = characterMap,
             layoutString = """
                 ##########____
@@ -1089,8 +997,6 @@ internal object BundledLevels {
         Level(
             id = "level-47",
             name = "Level 47",
-            width = 18,
-            height = 11,
             characterMap = characterMap,
             layoutString = """
                 _________####_____
@@ -1109,8 +1015,6 @@ internal object BundledLevels {
         Level(
             id = "level-48",
             name = "Level 48",
-            width = 13,
-            height = 16,
             characterMap = characterMap,
             layoutString = """
                 __#########__
@@ -1134,8 +1038,6 @@ internal object BundledLevels {
         Level(
             id = "level-49",
             name = "Level 49",
-            width = 16,
-            height = 15,
             characterMap = characterMap,
             layoutString = """
                 _______####_____
@@ -1158,8 +1060,6 @@ internal object BundledLevels {
         Level(
             id = "level-50",
             name = "Level 50",
-            width = 19,
-            height = 16,
             characterMap = characterMap,
             layoutString = """
                 ______############_
