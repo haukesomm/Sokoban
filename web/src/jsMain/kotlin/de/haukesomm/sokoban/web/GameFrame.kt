@@ -9,17 +9,18 @@ import de.haukesomm.sokoban.web.components.icons.*
 import de.haukesomm.sokoban.web.theme.ThemePreference
 import de.haukesomm.sokoban.web.theme.ThemePreferences
 import dev.fritz2.core.*
-import kotlinx.browser.document
 import kotlinx.browser.window
 import kotlinx.coroutines.flow.*
 
 class GameFrame(context: RenderContext) : RenderContext by context {
 
-    private val enabledGameConfigurations = storeOf(SokobanGameFactory.configurationOptions)
+    private val availableMoveRuleOptions = MoveRuleOption.values().asList()
+    private val enabledGameConfigurations = storeOf(availableMoveRuleOptions)
+
 
     private var gameFlow = MutableStateFlow(
         SokobanGameFactory.withMinimalConfiguration(
-            additional = SokobanGameFactory.configurationOptions
+            additionalRules = availableMoveRuleOptions.map(MoveRuleOption::moveRule)
         )
     )
 
@@ -68,7 +69,10 @@ class GameFrame(context: RenderContext) : RenderContext by context {
                         +"Sokoban"
                     }
                 }
-                div("w-full lg:max-w-sm lg:justify-self-center grid grid-cols-1 lg:grid-cols-2 gap-4 items-center") {
+                div(
+                    """w-full lg:max-w-sm lg:justify-self-center grid grid-cols-1 lg:grid-cols-2 gap-4 
+                        | items-center""".trimMargin()
+                ) {
                     div("grow") {
                         listBox {
                             entries = levelDescriptions
@@ -136,15 +140,14 @@ class GameFrame(context: RenderContext) : RenderContext by context {
             content {
                 div(
                     """w-full md:w-auto max-w-none md:max-w-4xl p-4 rounded-md
-                        | grid grid-cols-1 sm:grid-cols-2 gap-6
-                    """.trimMargin()
+                        | grid grid-cols-1 sm:grid-cols-2 gap-6""".trimMargin()
                 ) {
                     withTitle("Configuration options") {
                         checkboxGroup {
                             values(enabledGameConfigurations)
-                            options = SokobanGameFactory.configurationOptions
-                            optionsFormat = SokobanGameFactory.ConfigurationOption::name
-                            optionDescriptionFormat = SokobanGameFactory.ConfigurationOption::description
+                            options = availableMoveRuleOptions
+                            optionsFormat = MoveRuleOption::title
+                            optionDescriptionFormat = MoveRuleOption::description
                         }
                         div {
                             plainButton {
@@ -157,7 +160,7 @@ class GameFrame(context: RenderContext) : RenderContext by context {
                                 clicks.flatMapLatest { enabledGameConfigurations.data } handledBy {
                                     gameFlow.tryEmit(
                                         SokobanGameFactory.withMinimalConfiguration(
-                                            additional = it
+                                            additionalRules = it.map(MoveRuleOption::moveRule)
                                         )
                                     )
                                     close(ModalAction.Dismiss)
@@ -238,8 +241,7 @@ class GameFrame(context: RenderContext) : RenderContext by context {
 
     private fun RenderContext.moveButtons(game: SokobanGame) {
         moveButtons {
-            val isTouchDevice =
-                window.asDynamic().ontouchstart != undefined || window.navigator.maxTouchPoints > 0
+            val isTouchDevice = window.asDynamic().ontouchstart != undefined || window.navigator.maxTouchPoints > 0
 
             // Hide move buttons when not on mobile but still initialize button handling regardless:
             className(

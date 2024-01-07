@@ -13,73 +13,6 @@ import kotlin.jvm.JvmStatic
  */
 object SokobanGameFactory {
 
-    internal class ConfigurationContext {
-
-        val moveRules = mutableListOf<MoveRule>()
-    }
-
-    /**
-     * Represents a configuration option for a [SokobanGame].
-     *
-     * Configuration options are used to customize the behavior of a [SokobanGame] instance.
-     * They are used by the [withMinimalConfiguration] method.
-     */
-    sealed class ConfigurationOption {
-
-        /**
-         * The name of the configuration option.
-         */
-        abstract val name: String
-
-        /**
-         * A description of the configuration option.
-         */
-        abstract val description: String
-
-        internal abstract fun applyTo(config: ConfigurationContext): ConfigurationContext
-    }
-
-    /**
-     * Configuration option that prevents the user from moving into walls.
-     */
-    class WallPreventingConfigurationOption : ConfigurationOption() {
-
-        override val name: String = "No walking through walls"
-
-        override val description: String = "Prevents the user from moving into walls."
-
-        override fun applyTo(config: ConfigurationContext): ConfigurationContext =
-            config.apply {
-                moveRules += WallCollisionPreventingMoveRule()
-            }
-    }
-
-    /**
-     * Configuration option that prevents the user from pushing multiple boxes at once.
-     */
-    class MultipleBoxesPreventingConfigurationOption : ConfigurationOption() {
-
-        override val name: String = "Push one box at a time"
-
-        override val description: String = "Prevents the user from pushing multiple boxes at once."
-
-        override fun applyTo(config: ConfigurationContext): ConfigurationContext =
-            config.apply {
-                moveRules += MultipleBoxesPreventingMoveRule()
-            }
-    }
-
-    /**
-     * A list of all available configuration options.
-     *
-     * The options can be passed to the [withMinimalConfiguration] method in order to customize the
-     * behavior of the [SokobanGame] instance.
-     */
-    val configurationOptions: List<ConfigurationOption> = listOf(
-        WallPreventingConfigurationOption(),
-        MultipleBoxesPreventingConfigurationOption()
-    )
-
     /**
      * Creates a new [SokobanGame] with builtin levels and a minimal set of rules.
      *
@@ -87,22 +20,29 @@ object SokobanGameFactory {
      * prevent the user from moving entities after the game has been completed and enables the user to push
      * boxes.
      *
-     * Additional behavior can be added by passing additional [ConfigurationOption]s. A list of available
-     * options can be found in [configurationOptions].
+     * The behavior can be customized via the respective arguments:
+     *
+     * | Argument          | Description                                                             |
+     * |-------------------|-------------------------------------------------------------------------|
+     * | [levelRepository] | Specify a [LevelRepository] to use. Bundled levels are used by default. |
+     * | [additionalRules] | Additional [MoveRule]s to use.                                          |
+     *
+     * Use [basedOnConfiguration] in order to set up the game based on predefined
+     * [ConfigurationOption]s.
      */
     @JvmStatic
     @JvmOverloads
-    fun withMinimalConfiguration(additional: Collection<ConfigurationOption> = emptySet()): SokobanGame {
-        val combinedConfig = additional.fold(ConfigurationContext()) { scope, config ->
-            config.applyTo(scope)
-        }
-        return SokobanGame(
-            PaddingLevelRepositoryDecorator(
-                BundledLevelRepository(),
+    fun withMinimalConfiguration(
+        levelRepository: LevelRepository = BundledLevelRepository(),
+        additionalRules: Collection<MoveRule> = emptySet()
+    ): SokobanGame =
+        SokobanGame(
+            levelRepository = PaddingLevelRepositoryDecorator(
+                levelRepository,
                 minWidth = 20,
                 minHeight = 16
             ),
-            MoveServiceImpl(
+            moveService = MoveServiceImpl(
                 ConditionalMoveRule(
                     condition = AggregatingMoveRule(
                         OutOfBoundsPreventingMoveRule(),
@@ -110,23 +50,28 @@ object SokobanGameFactory {
                     ),
                     moveRules = setOf(
                         BoxDetectingMoveRule(),
-                        *combinedConfig.moveRules.toTypedArray()
+                        *additionalRules.toTypedArray()
                     )
                 )
             )
         )
-    }
 
     /**
-     * Creates a new [SokobanGame] that uses builtin levels and a default set of rules.
-     *
-     * The default configuration includes the configuration options defined in [configurationOptions].
+     * Creates a new [SokobanGame] that uses builtin levels and includes all move rules needed to
+     * mimic the original Sokoban game.
      *
      * @see withMinimalConfiguration
      */
     @JvmStatic
-    fun withDefaultConfiguration(): SokobanGame =
+    @JvmOverloads
+    fun withDefaultConfiguration(
+        levelRepository: LevelRepository = BundledLevelRepository()
+    ): SokobanGame =
         withMinimalConfiguration(
-            additional = configurationOptions
+            levelRepository = levelRepository,
+            additionalRules = setOf(
+                WallCollisionPreventingMoveRule(),
+                MultipleBoxesPreventingMoveRule()
+            )
         )
 }
