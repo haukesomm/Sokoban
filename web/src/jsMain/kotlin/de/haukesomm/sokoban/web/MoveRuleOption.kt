@@ -2,6 +2,7 @@ package de.haukesomm.sokoban.web
 
 import de.haukesomm.sokoban.core.SokobanGame
 import de.haukesomm.sokoban.core.moving.MoveRule
+import de.haukesomm.sokoban.core.moving.rules.MultipleBoxesPreventingMoveRule
 import de.haukesomm.sokoban.core.moving.rules.WallCollisionPreventingMoveRule
 
 /**
@@ -40,6 +41,6 @@ enum class MoveRuleOption(
     PushOneBoxAtATime(
         title = "Push one box at a time",
         description = "Prevents the user from pushing multiple boxes at once.",
-        moveRule = WallCollisionPreventingMoveRule()
+        moveRule = MultipleBoxesPreventingMoveRule()
     )
 }

@@ -16,5 +16,5 @@ class AggregatingMoveRule(
         position: Position,
         direction: Direction
     ): Collection<MoveRuleResult> =
-        rules.toSet().checkAll(state, position, direction)
+        rules.checkAll(state, position, direction)
 }
