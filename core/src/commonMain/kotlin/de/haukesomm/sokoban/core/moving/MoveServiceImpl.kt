@@ -34,8 +34,8 @@ class MoveServiceImpl(private vararg val moveRules: MoveRule) : MoveService {
 
         val status = moveRules
             .checkAll(state, position, direction)
-            .maxBy(MoveRuleResult::status)
-            .status
+            .maxByOrNull(MoveRuleResult::status)
+            .let { it?.status ?: MoveRuleResult.Status.Possible }
 
         val newAccWithMoveAction = listOf(SimpleMoveAction(position, direction).let { action ->
             if (entity.isBox) action.incrementPushes()
