@@ -11,12 +11,18 @@ plugins {
 val fritz2version = rootProject.ext["fritz2version"]
 
 kotlin {
+    jvm() // needed for kspCommonMainMetadata
     js(IR) {
         browser()
         binaries.executable()
     }
 
     sourceSets {
+        all {
+            languageSettings.apply {
+                optIn("kotlinx.coroutines.ExperimentalCoroutinesApi")
+            }
+        }
         val commonMain by getting {
             dependencies {
                 implementation("dev.fritz2:headless:$fritz2version")
