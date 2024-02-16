@@ -29,7 +29,7 @@ class GameFrame(context: RenderContext) : RenderContext by context {
         gameFlow.render { game ->
             levelClearedAlert(game)
 
-            div("h-full pb-8 w-full overflow-auto flex flex-col gap-4 justify-between items-center") {
+            div("pb-4 w-full h-full overflow-auto flex flex-col gap-4 justify-between items-center") {
                 // Disable double-tap to zoom on mobile devices as this interferes with the
                 // virtual gamepad.
                 inlineStyle("touch-action: manipulation;")
@@ -40,9 +40,9 @@ class GameFrame(context: RenderContext) : RenderContext by context {
                     gameField(game.state)
                 }
 
-                div {
-                    moveButtons(game)
-                }
+                moveButtons(game)
+
+                footer()
             }
         }
     }
@@ -204,13 +204,6 @@ class GameFrame(context: RenderContext) : RenderContext by context {
                                 description = VersionInfo.fritz2Version,
                                 href = "https://fritz2.dev"
                             )
-                            p(
-                                """pt-2 text-xs border-t border-dotted border-neutral-dark-secondary 
-                                    | dark:border-neutral-light-secondary
-                                """.trimMargin()
-                            ) {
-                                +"Made with ♡ in Hamburg, Germany"
-                            }
                         }
                     }
                 }
@@ -269,6 +262,27 @@ class GameFrame(context: RenderContext) : RenderContext by context {
                         MoveEvent.Right -> movePlayerIfPossible(Direction.Right)
                     }
                 }
+            }
+        }
+    }
+
+    private fun RenderContext.footer() {
+        div(
+            """flex flex-row flex-wrap justify-center items-center gap-x-4 gap-y-1
+                | text-xs text-neutral-dark-secondary dark:text-neutral-light-secondary""".trimMargin()
+        ) {
+            span {
+                +"© 2024 Hauke Sommerfeld"
+            }
+            a("flex items-center gap-1") {
+                href("https://haukesomm.de")
+                target("_blank")
+
+                icon("w-3 h-3", definition = HeroIcons.link)
+                +"Homepage"
+            }
+            span {
+                +"Made with ♡ in Hamburg, Germany"
             }
         }
     }
