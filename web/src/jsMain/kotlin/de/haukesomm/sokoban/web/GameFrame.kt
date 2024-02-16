@@ -36,7 +36,7 @@ class GameFrame(context: RenderContext) : RenderContext by context {
 
                 titleBar(game)
 
-                div("max-w-min shrink-0 rounded-lg shadow overflow-hidden") {
+                div("w-full max-w-screen-sm px-4 flex justify-center") {
                     gameField(game.state)
                 }
 

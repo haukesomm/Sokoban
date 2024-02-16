@@ -7,42 +7,57 @@ import de.haukesomm.sokoban.core.TileType
 import de.haukesomm.sokoban.web.components.icons.Textures
 import de.haukesomm.sokoban.web.components.icons.icon
 import dev.fritz2.core.RenderContext
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.map
+import dev.fritz2.core.Window
+import kotlinx.coroutines.flow.*
+import kotlin.math.floor
 
 class GameField(private val states: Flow<GameState>) {
 
-    companion object {
-        private const val TILE_SIZE_CLASSES = "w-5 h-5 md:w-8 md:h-8"
-    }
-
     fun RenderContext.render() {
-        div("grid") {
-            inlineStyle(states.map {
-                "grid-template-columns: repeat(${it.width}, 1fr);"
-            })
-            states.map { it.tiles }.renderEach( batch = true) {
+        div("grid rounded-lg overflow-hidden") {
+            val computedSizes = states.flatMapLatest { state ->
+                merge(
+                    flowOf(state),
+                    Window.resizes.map { state }
+                )
+            }.map { state ->
+                val availableSpace = domNode.parentElement?.getBoundingClientRect()?.width ?: 0.0
+                val optimalTileWidth = floor(availableSpace / state.width.toDouble()).toInt()
+
+                state.width to optimalTileWidth
+            }.distinctUntilChanged()
+
+            className(computedSizes.take(1).map { "visible" }, initial = "hidden")
+
+            inlineStyle(
+                computedSizes.map { (gameBoardWidth, tileWidth) ->
+                    """
+                        width: ${gameBoardWidth * tileWidth}px;
+                        grid-template-columns: repeat($gameBoardWidth, ${tileWidth}px);
+                    """.trimIndent()
+                }
+            )
+
+            states.map { it.tiles }.renderEach {
                 renderTile(it)
             }
         }
     }
 
     private fun RenderContext.renderTile(tile: Tile) =
-        div {
-            tile.entity?.let { entity ->
-                icon(TILE_SIZE_CLASSES, definition = when(entity.type) {
+        div("w-full h-auto overflow-visible") {
+            icon("w-full h-auto overflow-visible", definition = tile.entity?.let { entity ->
+                when(entity.type) {
                     EntityType.Box -> Textures.box
                     EntityType.Player -> Textures.player
-                })
+                }
             } ?: run {
-                icon(TILE_SIZE_CLASSES, definition = when(tile.type) {
+                when(tile.type) {
                     TileType.Empty -> Textures.ground
                     TileType.Target -> Textures.target
                     TileType.Wall -> Textures.wall
-                })
-            }
+                }
+            })
         }
 }
 
