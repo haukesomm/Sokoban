@@ -53,6 +53,6 @@ jobs:
         with:
           target_branch: gh-pages
           fqdn: sokoban.haukesomm.de
-          build_dir: ./web/build/distributions
+          build_dir: ./web/build/dist/js/productionExecutable
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
