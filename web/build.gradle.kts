@@ -1,18 +1,15 @@
-import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
 plugins {
-    kotlin("multiplatform")
-    id("com.google.devtools.ksp")
+    alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.ksp)
 }
-
-val fritz2version = rootProject.ext["fritz2version"]
 
 kotlin {
     jvm() // needed for kspCommonMainMetadata
-    js(IR) {
+    js {
         browser()
         binaries.executable()
     }
@@ -23,33 +20,28 @@ kotlin {
                 optIn("kotlinx.coroutines.ExperimentalCoroutinesApi")
             }
         }
-        val commonMain by getting {
+        commonMain {
             dependencies {
-                implementation("dev.fritz2:headless:$fritz2version")
+                implementation(libs.fritz2.headless)
                 implementation(project(":core"))
             }
         }
-        val jsMain by getting {
+        jsMain {
             dependencies {
-                implementation(npm("tailwindcss", "3.3.3"))
-                implementation(npm("@tailwindcss/forms", "0.5.4"))
+                implementation(npm("tailwindcss", libs.versions.npm.tailwindcss.asProvider().get()))
+                implementation(npm("@tailwindcss/forms", libs.versions.npm.tailwindcss.forms.get()))
 
-                implementation(devNpm("webpack", "5.73.0"))
-                implementation(devNpm("socket.io", "4.7.2"))
-                implementation(devNpm("postcss", "8.4.31"))
-                implementation(devNpm("postcss-loader", "7.3.3"))
-                implementation(devNpm("autoprefixer", "10.4.14"))
-                implementation(devNpm("css-loader", "6.8.1"))
-                implementation(devNpm("style-loader", "3.3.3"))
-                implementation(devNpm("cssnano", "6.0.1"))
+                implementation(devNpm("webpack", libs.versions.npm.webpack.get()))
+                implementation(devNpm("socket.io", libs.versions.npm.socketio.get()))
+                implementation(devNpm("postcss", libs.versions.npm.postcss.asProvider().get()))
+                implementation(devNpm("postcss-loader", libs.versions.npm.postcss.loader.get()))
+                implementation(devNpm("autoprefixer", libs.versions.npm.autoprefixer.get()))
+                implementation(devNpm("css-loader", libs.versions.npm.cssloader.get()))
+                implementation(devNpm("style-loader", libs.versions.npm.styleloader.get()))
+                implementation(devNpm("cssnano", libs.versions.npm.cssnano.get()))
             }
         }
     }
-}
-
-// FIXME: Entfernen, sobald nicht mehr explizit benötigt
-tasks.named("jsBrowserDevelopmentRun") {
-    dependsOn("jsDevelopmentExecutableCompileSync")
 }
 
 tasks.named<ProcessResources>("jsProcessResources") {
@@ -62,7 +54,7 @@ tasks.named<ProcessResources>("jsProcessResources") {
             "sokobanBuildTime" to ZonedDateTime
                 .now(ZoneId.of("Europe/Berlin"))
                 .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss z")),
-            "fritz2Version" to fritz2version
+            "fritz2Version" to libs.versions.fritz2.get()
         )
     }
 }
@@ -71,7 +63,7 @@ tasks.named<ProcessResources>("jsProcessResources") {
  * KSP support - start
  */
 dependencies {
-    add("kspCommonMainMetadata", "dev.fritz2:lenses-annotation-processor:$fritz2version")
+    add("kspCommonMainMetadata", libs.fritz2.lensesprocessor)
 }
 kotlin.sourceSets.commonMain { kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin") }
 

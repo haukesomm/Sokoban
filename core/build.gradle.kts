@@ -1,11 +1,11 @@
 plugins {
-    kotlin("multiplatform")
-    id("com.google.devtools.ksp")
+    alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.ksp)
 }
 
 kotlin {
     jvm()
-    js(IR) {
+    js {
         browser()
     }
 
@@ -16,14 +16,14 @@ kotlin {
                 optIn("kotlinx.coroutines.FlowPreview")
             }
         }
-        val commonMain by getting {
+        commonMain {
             dependencies {
-                api("org.jetbrains.kotlinx:kotlinx-coroutines-core:${rootProject.extra["coroutinesVersion"]}")
+                api(libs.kotlinx.coroutines.core)
             }
         }
-        val jvmTest by getting {
+        jvmTest {
             dependencies {
-                implementation(kotlin("test"))
+                implementation(libs.kotlin.test)
             }
         }
     }

@@ -1,8 +1,8 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("multiplatform") version "1.9.22" apply false
-    id("com.google.devtools.ksp") version "1.9.22-1.0.16" apply false
+    alias(libs.plugins.kotlin.multiplatform) apply false
+    alias(libs.plugins.ksp) apply false
 }
 
 allprojects {
@@ -21,10 +21,4 @@ subprojects {
             jvmTarget = "17"
         }
     }
-}
-
-ext {
-    set("fritz2version", "1.0-RC16")
-    set("coroutinesVersion", "1.7.3")
-    set("serializationVersion", "1.6.2")
 }
