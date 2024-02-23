@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.*
 
 class GameFrame(context: RenderContext) : RenderContext by context {
 
-    private val availableMoveRuleOptions = MoveRuleOption.values().asList()
+    private val availableMoveRuleOptions = MoveRuleOption.entries.toList()
     private val enabledGameConfigurations = storeOf(availableMoveRuleOptions)
 
 
@@ -57,77 +57,69 @@ class GameFrame(context: RenderContext) : RenderContext by context {
         game.levelDescription handledBy selectedLevelStore.update
 
 
-        div("w-full") {
-            div(
-                """py-2 px-4 grid grid-cols-1 lg:grid-cols-3 items-center gap-4 text-sm
-                    | bg-background-lightest dark:bg-background-dark shadow-sm dark:shadow-md
-                """.trimMargin()
-            ) {
-                div("w-full lg:w-auto flex flex-row items-center gap-2"){
-                    icon("w-7 h-7", definition = CustomIcons.sokoban)
-                    span("text-xl font-semibold text-primary-500 dark:text-primary-600") {
-                        +"Sokoban"
-                    }
+        div(
+            classes(
+                "w-full py-2 px-4 grid grid-cols-1 lg:grid-cols-[2fr_1fr_2fr] gap-4 items-center",
+                "text-sm bg-background-lightest dark:bg-background-dark shadow-sm dark:shadow-md"
+            )
+        ) {
+            div("flex items-center gap-2"){
+                icon("w-7 h-7", definition = CustomIcons.sokoban)
+                span("text-xl font-semibold text-primary-500 dark:text-primary-600") {
+                    +"Sokoban"
                 }
-                div(
-                    """w-full lg:max-w-sm lg:justify-self-center grid grid-cols-1 lg:grid-cols-2 gap-4 
-                        | items-center""".trimMargin()
-                ) {
-                    div("grow") {
-                        listBox {
-                            entries = levelDescriptions
-                            format = LevelDescription::name
-                            value(selectedLevelStore)
-                        }
-                    }
-                    div("flex lg:justify-end items-center gap-4") {
-                        span("whitespace-nowrap") {
-                            +"Moves: "
-                            code {
-                                game.state.map { it.moves }.render(into = this) {
-                                    +it.toString()
-                                }
-                            }
-                        }
-                        span("whitespace-nowrap") {
-                            +"Pushes: "
-                            code {
-                                game.state.map { it.pushes }.render(into = this) {
-                                    +it.toString()
-                                }
-                            }
+            }
+            div("justify-self-stretch") {
+                listBox {
+                    entries = levelDescriptions
+                    format = LevelDescription::name
+                    value(selectedLevelStore)
+                }
+            }
+            div("flex flex-wrap lg:justify-self-end items-center gap-x-4 gap-y-1") {
+                span("whitespace-nowrap") {
+                    +"Moves: "
+                    code {
+                        game.state.map { it.moves }.render(into = this) {
+                            +it.toString()
                         }
                     }
                 }
-                div("w-full -mx-1 flex flex-row lg:justify-end gap-4") {
-                    plainButton {
-                        // TODO: Import new tailwind icons and use arrow-uturn-left
-                        iconDefinition(HeroIcons.reply)
-                        iconSize = PlainButton.IconSize.Small
-                        text("Undo")
-                    }.run {
-                        title("Undo last move")
-                        disabled(game.previousStateExists.map { !it })
-                        clicks handledBy {
-                            game.undoLastMoveIfPossible()
+                span("whitespace-nowrap") {
+                    +"Pushes: "
+                    code {
+                        game.state.map { it.pushes }.render(into = this) {
+                            +it.toString()
                         }
                     }
-                    plainButton {
-                        iconDefinition(HeroIcons.refresh)
-                        iconSize = PlainButton.IconSize.Small
-                        text("Reset")
-                    }.run {
-                        title("Reset level")
-                        clicks handledBy {
-                            game.reloadLevel()
-                        }
+                }
+                plainButton {
+                    // TODO: Import new tailwind icons and use arrow-uturn-left
+                    iconDefinition(HeroIcons.reply)
+                    iconSize = PlainButton.IconSize.Small
+                    text("Undo")
+                }.run {
+                    title("Undo last move")
+                    disabled(game.previousStateExists.map { !it })
+                    clicks handledBy {
+                        game.undoLastMoveIfPossible()
                     }
-                    plainButton {
-                        text("Settings")
-                        iconDefinition(HeroIcons.cog)
-                    }.run {
-                        settingsModal(clicks.map {}) handledBy {}
+                }
+                plainButton {
+                    iconDefinition(HeroIcons.refresh)
+                    iconSize = PlainButton.IconSize.Small
+                    text("Reset")
+                }.run {
+                    title("Reset level")
+                    clicks handledBy {
+                        game.reloadLevel()
                     }
+                }
+                plainButton {
+                    text("Settings")
+                    iconDefinition(HeroIcons.cog)
+                }.run {
+                    settingsModal(clicks.map {}) handledBy {}
                 }
             }
         }
@@ -139,8 +131,10 @@ class GameFrame(context: RenderContext) : RenderContext by context {
             title("Settings")
             content {
                 div(
-                    """w-full md:w-auto max-w-none md:max-w-4xl p-4 rounded-md
-                        | grid grid-cols-1 sm:grid-cols-2 gap-6""".trimMargin()
+                    classes(
+                        "w-full md:w-auto max-w-none md:max-w-4xl p-4 rounded-md",
+                        "grid grid-cols-1 sm:grid-cols-2 gap-6"
+                    )
                 ) {
                     withTitle("Configuration options") {
                         checkboxGroup {
@@ -174,7 +168,7 @@ class GameFrame(context: RenderContext) : RenderContext by context {
 
                         radioGroup<ThemePreference> {
                             value(preference)
-                            options = ThemePreference.values().toList()
+                            options = ThemePreference.entries.toList()
                             optionsFormat = {
                                 when (it) {
                                     ThemePreference.AlwaysLight -> "Light"
@@ -190,21 +184,19 @@ class GameFrame(context: RenderContext) : RenderContext by context {
                             }
                         }
                     }
-                    div("md:col-span-2") {
-                        withTitle("About") {
-                            iconLink(
-                                CustomIcons.github,
-                                text = "Sokoban",
-                                description = VersionInfo.run { "$sokobanVersion ($sokobanBuildTime)" },
-                                href = "https://github.com/haukesomm/sokoban"
-                            )
-                            iconLink(
-                                CustomIcons.fritz2,
-                                text = "Built with fritz2",
-                                description = VersionInfo.fritz2Version,
-                                href = "https://fritz2.dev"
-                            )
-                        }
+                    withTitle("About") {
+                        iconLink(
+                            CustomIcons.github,
+                            text = "Sokoban",
+                            description = VersionInfo.run { "$sokobanVersion ($sokobanBuildTime)" },
+                            href = "https://github.com/haukesomm/sokoban"
+                        )
+                        iconLink(
+                            CustomIcons.fritz2,
+                            text = "Built with fritz2",
+                            description = VersionInfo.fritz2Version,
+                            href = "https://fritz2.dev"
+                        )
                     }
                 }
             }
