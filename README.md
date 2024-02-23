@@ -36,5 +36,8 @@ Brief overview of the modules:
 | `web`    | Web app written in Kotlin using the [fritz2](https://fritz2.dev) framework. It is based on the `core` library. This is the actual game that can be played online.                               |
 | `legacy` | Legacy Java app using Swing. Back in school, the original version was one of my first coding projects. Has been rewritten to use the new `core` library as well. Will not get any new features. |
 
-> Please note: Even though the core module is used by the legacy Java code, it is intended to be used in Kotlin
+> **Please note:** Even though the core module is used by the legacy Java code, it is intended to be used in Kotlin
 > projects only and is not fully compatible with Java!
+> 
+> The `jvmMain` target of the `core` module provides a limited set of compatibility classes that can be used to 
+> initialize and run the game on the JVM, though.

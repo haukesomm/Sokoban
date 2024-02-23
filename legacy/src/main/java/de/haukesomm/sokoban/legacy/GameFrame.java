@@ -1,14 +1,13 @@
 package de.haukesomm.sokoban.legacy;
 
 import de.haukesomm.sokoban.core.Direction;
-import de.haukesomm.sokoban.core.GameStateChangeHandler;
+import de.haukesomm.sokoban.core.JvmGameStateChangeHandler;
 import de.haukesomm.sokoban.core.SokobanGame;
-import de.haukesomm.sokoban.core.SokobanGameFactory;
+import de.haukesomm.sokoban.core.SokobanGameFactoryCompat;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.util.Set;
 
 public class GameFrame extends JFrame {
 
@@ -27,7 +26,7 @@ public class GameFrame extends JFrame {
     }
 
 
-    private final SokobanGame game = SokobanGameFactory.withDefaultConfiguration();
+    private final SokobanGame game = SokobanGameFactoryCompat.withDefaultConfiguration();
 
     private final GameField gameField = new GameField();
 
@@ -86,7 +85,7 @@ public class GameFrame extends JFrame {
     }
 
     private void initListeners() {
-        GameStateChangeHandler.handle(game, state -> {
+        JvmGameStateChangeHandler.handle(game, state -> {
             var moves = state.getMoves();
             var pushes = state.getPushes();
 

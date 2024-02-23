@@ -30,8 +30,6 @@ object SokobanGameFactory {
      * Use [basedOnConfiguration] in order to set up the game based on predefined
      * [ConfigurationOption]s.
      */
-    @JvmStatic
-    @JvmOverloads
     fun withMinimalConfiguration(
         levelRepository: LevelRepository = BundledLevelRepository(),
         additionalRules: Collection<MoveRule> = emptySet()
@@ -62,11 +60,7 @@ object SokobanGameFactory {
      *
      * @see withMinimalConfiguration
      */
-    @JvmStatic
-    @JvmOverloads
-    fun withDefaultConfiguration(
-        levelRepository: LevelRepository = BundledLevelRepository()
-    ): SokobanGame =
+    fun withDefaultConfiguration(levelRepository: LevelRepository = BundledLevelRepository()): SokobanGame =
         withMinimalConfiguration(
             levelRepository = levelRepository,
             additionalRules = setOf(

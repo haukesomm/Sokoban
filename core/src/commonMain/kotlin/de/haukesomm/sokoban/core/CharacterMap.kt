@@ -13,15 +13,13 @@ import kotlin.jvm.JvmStatic
  * All [CharacterMap]s should orient themselves on the default character map, which is defined in the companion object's
  * [default] property.
  */
-@JvmInline
-value class CharacterMap(val map: BiMap<Char, TileProperties>) : BiMap<Char, TileProperties> by map {
+class CharacterMap(map: BiMap<Char, TileProperties>) : BiMap<Char, TileProperties> by map {
 
     companion object {
 
         /**
          * Default character map based on the original Sokoban game.
          */
-        @JvmStatic
         val default: CharacterMap = characterMapOf(
             '_' to TileProperties(TileType.Empty),
             '.' to TileProperties(TileType.Target),
