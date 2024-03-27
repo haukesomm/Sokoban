@@ -75,8 +75,8 @@ class ListBox<T> {
                             else ""
                         })
 
-                        selected.render {
-                            if (it) icon("w-4 h-4", definition = HeroIcons.check)
+                        selected.renderTrue {
+                            icon("w-4 h-4", definition = HeroIcons.check)
                         }
 
                         span("absolute left-8") {
