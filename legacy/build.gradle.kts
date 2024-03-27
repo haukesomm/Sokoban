@@ -1,6 +1,7 @@
 plugins {
-    application
+    alias(libs.plugins.kotlin.jvm)
     java
+    application
 }
 
 repositories {

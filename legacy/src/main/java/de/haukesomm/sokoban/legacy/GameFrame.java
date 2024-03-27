@@ -1,9 +1,7 @@
 package de.haukesomm.sokoban.legacy;
 
 import de.haukesomm.sokoban.core.Direction;
-import de.haukesomm.sokoban.core.JvmGameStateChangeHandler;
 import de.haukesomm.sokoban.core.SokobanGame;
-import de.haukesomm.sokoban.core.SokobanGameFactoryCompat;
 
 import javax.swing.*;
 import java.awt.*;
@@ -26,7 +24,7 @@ public class GameFrame extends JFrame {
     }
 
 
-    private final SokobanGame game = SokobanGameFactoryCompat.withDefaultConfiguration();
+    private final SokobanGame game = JvmSokobanGameFactory.withDefaultConfiguration();
 
     private final GameField gameField = new GameField();
 
