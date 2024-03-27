@@ -1,5 +1,7 @@
-package de.haukesomm.sokoban.core
+package de.haukesomm.sokoban.legacy
 
+import de.haukesomm.sokoban.core.GameState
+import de.haukesomm.sokoban.core.SokobanGame
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.flow.launchIn
