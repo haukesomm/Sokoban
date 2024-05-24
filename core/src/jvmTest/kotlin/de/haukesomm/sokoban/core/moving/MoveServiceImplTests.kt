@@ -12,24 +12,26 @@ import kotlin.test.assertTrue
 class MoveServiceImplTests {
 
     private fun newTestGameState() =
-        Level(
-            id = "test-level",
-            name = "Test Level",
-            characterMap = characterMapOf(
-                '_' to TileProperties(TileType.Empty),
-                '#' to TileProperties(TileType.Wall),
-                '.' to TileProperties(TileType.Target),
-                '@' to TileProperties(TileType.Empty, EntityType.Player),
-                'X' to TileProperties(TileType.Empty, EntityType.Box)
-            ),
-            layoutString = """
+        ImmutableGameState.fromLevel(
+            Level(
+                id = "test-level",
+                name = "Test Level",
+                characterMap = characterMapOf(
+                    '_' to TileProperties(TileType.Empty),
+                    '#' to TileProperties(TileType.Wall),
+                    '.' to TileProperties(TileType.Target),
+                    '@' to TileProperties(TileType.Empty, EntityType.Player),
+                    'X' to TileProperties(TileType.Empty, EntityType.Box)
+                ),
+                layoutString = """
                 ######
                 #_...#
                 #@X__#
                 #_XX_#
                 ######
             """.trimIndent()
-        ).toGameState()
+            )
+        )
 
     @Test
     fun `Without rules, when moving the player, position is updated`() {

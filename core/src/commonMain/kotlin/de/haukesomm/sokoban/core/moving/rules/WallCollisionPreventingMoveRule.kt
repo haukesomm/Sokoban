@@ -5,6 +5,7 @@ import de.haukesomm.sokoban.core.GameState
 import de.haukesomm.sokoban.core.Position
 import de.haukesomm.sokoban.core.moving.MoveRule
 import de.haukesomm.sokoban.core.moving.MoveRuleResult
+import de.haukesomm.sokoban.core.tileInDirection
 
 class WallCollisionPreventingMoveRule : MoveRule {
 

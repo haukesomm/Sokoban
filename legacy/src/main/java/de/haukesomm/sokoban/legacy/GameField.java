@@ -1,6 +1,7 @@
 package de.haukesomm.sokoban.legacy;
 
 import de.haukesomm.sokoban.core.GameState;
+import de.haukesomm.sokoban.core.GameStateKt;
 import de.haukesomm.sokoban.core.Position;
 import de.haukesomm.sokoban.legacy.textures.JarResourceTextureRepository;
 import de.haukesomm.sokoban.legacy.textures.TextureRepository;
@@ -24,11 +25,11 @@ public class GameField extends JPanel {
                 var position = new Position(column, row);
                 ImageIcon texture;
 
-                var entity = state.entityAt(position);
+                var entity = GameStateKt.entityAt(state, position);
                 if (entity != null) {
                     texture = textureRepository.getForEntityType(entity.getType());
                 } else {
-                    var tile = state.tileAt(position);
+                    var tile = GameStateKt.tileAt(state, position);
                     texture = textureRepository.getForTileType(tile.getType());
                 }
 

@@ -20,8 +20,8 @@ class SokobanGame(
     private val levelRepository: LevelRepository,
     private val moveService: MoveService,
 ) {
-    private val internalState = MutableStateFlow(
-        levelRepository.firstOrThrow().toGameState()
+    private val internalState = MutableStateFlow<GameState>(
+        ImmutableGameState.fromLevel(levelRepository.firstOrThrow())
     )
 
     /**
@@ -59,7 +59,7 @@ class SokobanGame(
         val level = levelRepository.getLevelOrNull(levelId)
             ?: throw IllegalStateException("Level with id '$levelId' does not exist!")
 
-        internalState.tryEmit(level.toGameState())
+        internalState.tryEmit(ImmutableGameState.fromLevel(level))
     }
 
     /**

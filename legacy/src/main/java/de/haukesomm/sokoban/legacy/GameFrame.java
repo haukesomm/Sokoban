@@ -1,6 +1,7 @@
 package de.haukesomm.sokoban.legacy;
 
 import de.haukesomm.sokoban.core.Direction;
+import de.haukesomm.sokoban.core.GameStateKt;
 import de.haukesomm.sokoban.core.SokobanGame;
 
 import javax.swing.*;
@@ -97,7 +98,7 @@ public class GameFrame extends JFrame {
             repaint();
             getRootPane().requestFocus();
 
-            if (state.getLevelCleared()) {
+            if (GameStateKt.getLevelCleared(state)) {
                 showLevelClearedDialog(moves, pushes);
             }
         });

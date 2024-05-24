@@ -53,50 +53,50 @@ interface GameState {
      * representation of the game state history.
      */
     val previous: GameState?
-
-
-    /**
-     * `true` if the level has been cleared, `false` otherwise.
-     */
-    val levelCleared: Boolean
-        get() = tiles.none { tile ->
-            tile.isTarget && tile.entity?.takeIf { it.isBox } == null
-        }
-
-
-    /**
-     * Returns the [Tile] at the given [position] or `null` if the position is out of bounds.
-     */
-    fun tileAt(position: Position): Tile? =
-        tiles.getOrNull(position.toIndex(width))
-
-    /**
-     * Returns the next [Tile] in the given [direction] or `null` if the next position is out of bounds.
-     */
-    fun tileInDirection(position: Position, direction: Direction): Tile? =
-        tileAt(position.nextInDirection(direction))
-
-    /**
-     * Returns the [Entity] at the given [position] or `null` if the position is out of bounds.
-     */
-    fun entityAt(position: Position): Entity? =
-        tileAt(position)?.entity
-
-    /**
-     * Returns the next [Entity] in the given [direction] or `null` if the next position is out of bounds.
-     */
-    fun entityInDirection(position: Position, direction: Direction): Entity? =
-        entityAt(position.nextInDirection(direction))
-
-    /**
-     * Returns the player's [Position] or `null` if the player is not on the game board.
-     */
-    fun getPlayerPosition(): Position? =
-        when (val index = tiles.indexOfFirst { it.entity?.type == EntityType.Player }) {
-            -1 -> null
-            else -> Position.fromIndex(index, width)
-        }
 }
+
+
+/**
+ * `true` if the level has been cleared, `false` otherwise.
+ */
+val GameState.levelCleared: Boolean
+    get() = tiles.none { tile ->
+        tile.isTarget && tile.entity?.takeIf { it.isBox } == null
+    }
+
+
+/**
+ * Returns the [Tile] at the given [position] or `null` if the position is out of bounds.
+ */
+fun GameState.tileAt(position: Position): Tile? =
+    tiles.getOrNull(position.toIndex(width))
+
+/**
+ * Returns the next [Tile] in the given [direction] or `null` if the next position is out of bounds.
+ */
+fun GameState.tileInDirection(position: Position, direction: Direction): Tile? =
+    tileAt(position.nextInDirection(direction))
+
+/**
+ * Returns the [Entity] at the given [position] or `null` if the position is out of bounds.
+ */
+fun GameState.entityAt(position: Position): Entity? =
+    tileAt(position)?.entity
+
+/**
+ * Returns the next [Entity] in the given [direction] or `null` if the next position is out of bounds.
+ */
+fun GameState.entityInDirection(position: Position, direction: Direction): Entity? =
+    entityAt(position.nextInDirection(direction))
+
+/**
+ * Returns the player's [Position] or `null` if the player is not on the game board.
+ */
+fun GameState.getPlayerPosition(): Position? =
+    when (val index = tiles.indexOfFirst { it.entity?.type == EntityType.Player }) {
+        -1 -> null
+        else -> Position.fromIndex(index, width)
+    }
 
 
 /**
@@ -113,7 +113,22 @@ data class ImmutableGameState(
     override val moves: Int = 0,
     override val pushes: Int = 0,
     override val previous: GameState? = null
-) : GameState
+) : GameState {
+    companion object {
+        /**
+         * Returns an [ImmutableGameState] converted from the given [level].
+         */
+        fun fromLevel(level: Level): ImmutableGameState =
+            with(level) {
+                val tiles = normalizedLayoutString.map { character ->
+                    characterMap
+                        .getOrElse(character) { TileProperties(TileType.Empty) }
+                        .run(Tile::fromTileProperties)
+                }
+                ImmutableGameState(id, width, height, tiles)
+            }
+    }
+}
 
 /**
  * Creates a mutable copy of this [GameState].
