@@ -9,8 +9,6 @@ interface BiMap<K, V> : Map<K, V> {
 
     /**
      * The inverse of the [map].
-     *
-     * @throws IllegalStateException if the [map] is not bijective.
      */
     val inverse: BiMap<V, K>
 }
@@ -18,16 +16,24 @@ interface BiMap<K, V> : Map<K, V> {
 /**
  * This class implements a [BiMap].
  *
- * The provided [map] _must be bijective_, meaning that every key must be mapped to exactly one value and vice versa.
- * Otherwise, an [IllegalStateException] will be thrown when trying to access the [inverse] map.
+ * The provided [map] _should not_ contain duplicate keys as they will get lost when the map's inverse is computed.
+ * In case a key is provided multiple times, the last one will be kept.
  */
-class BiMapImpl<K, V>(val map: Map<K, V>) : Map<K, V> by map, BiMap<K, V> {
+internal class BiMapImpl<K, V>(val map: Map<K, V>) : Map<K, V> by map, BiMap<K, V> {
 
     override val inverse: BiMap<V, K>
         get() = map.entries
             .associate { (k, v) -> v to k }
-            .let { inverse ->
-                if (inverse.size == map.size) BiMapImpl(inverse)
-                else throw IllegalStateException("Map is not bijective!")
-            }
+            .let(::BiMapImpl)
 }
+
+/**
+ * Creates an _immutable_ [BiMap] from the given [entries].
+ *
+ * The provided [map] _should not_ contain duplicate keys as they will get lost when the map's inverse is computed.
+ * In case a key is provided multiple times, the last one will be kept.
+ */
+fun biMapOf(vararg entries: Pair<Char, TileProperties>): BiMap<Char, TileProperties> =
+    BiMapImpl(
+        mapOf(*entries)
+    )

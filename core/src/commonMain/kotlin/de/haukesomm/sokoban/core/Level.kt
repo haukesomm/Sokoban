@@ -34,7 +34,7 @@ data class Level(
     val id: String,
     val name: String,
     val layoutString: String,
-    val characterMap: CharacterMap = CharacterMap.default
+    val characterMap: CharacterMap = DefaultCharacterMap
 ) {
     private val lines by lazy {
         layoutString.lines()
