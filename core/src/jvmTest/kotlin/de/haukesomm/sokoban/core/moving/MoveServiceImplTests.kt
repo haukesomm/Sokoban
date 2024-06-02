@@ -16,7 +16,7 @@ class MoveServiceImplTests {
             Level(
                 id = "test-level",
                 name = "Test Level",
-                characterMap = characterMapOf(
+                characterMap = biMapOf(
                     '_' to TileProperties(TileType.Empty),
                     '#' to TileProperties(TileType.Wall),
                     '.' to TileProperties(TileType.Target),
