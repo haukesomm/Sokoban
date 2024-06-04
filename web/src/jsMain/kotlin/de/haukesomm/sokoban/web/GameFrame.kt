@@ -58,7 +58,7 @@ class GameFrame(context: RenderContext) : RenderContext by context {
 
 
         div(
-            classes(
+            joinClasses(
                 "w-full py-2 px-4 grid grid-cols-1 lg:grid-cols-[2fr_1fr_2fr] gap-4 items-center",
                 "text-sm bg-background-lightest dark:bg-background-dark shadow-sm dark:shadow-md"
             )
@@ -131,7 +131,7 @@ class GameFrame(context: RenderContext) : RenderContext by context {
             title("Settings")
             content {
                 div(
-                    classes(
+                    joinClasses(
                         "w-full md:w-auto max-w-none md:max-w-4xl p-4 rounded-md",
                         "grid grid-cols-1 sm:grid-cols-2 gap-6"
                     )

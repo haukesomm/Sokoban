@@ -78,11 +78,13 @@ class Modal<T, R>(context: RenderContext, payloads: Flow<T>) : RenderContext by 
 
     private fun RenderContext.actionButton(text: String, primary: Boolean = false) =
         button(
-            classes(
+            joinClasses(
                 "p-1 flex flex-row items-center gap-2 rounded-md text-base font-semibold focus-visible:outline-none",
+
                 """text-primary-500 dark:text-primary-600
                     | focus-visible:bg-primary-100 focus-visible:dark:bg-primary-900
                 """.trimMargin().takeIf { primary },
+
                 """text-neutral-dark-secondary dark:text-neutral-light-secondary
                     | focus-visible:bg-background-light focus-visible:dark:bg-background-darkest
                 """.trimMargin().takeIf { !primary }
