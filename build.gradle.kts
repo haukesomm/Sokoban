@@ -15,7 +15,7 @@ allprojects {
 
 subprojects {
     group = "de.haukesomm.sokoban"
-    version = "0.2-SNAPSHOT"
+    version = "0.2.0"
 
     tasks.withType<KotlinCompile> {
         kotlinOptions {
