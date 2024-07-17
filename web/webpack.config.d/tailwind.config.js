@@ -1,39 +1,13 @@
-const defaultTheme = require('tailwindcss/defaultTheme')
-const twColors = require('tailwindcss/colors')
-
-// must be in the jsMain/resource folder
-const mainCssFile = 'styles.css';
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 const tailwind = {
-    darkMode: 'class',
     plugins: [
         require('@tailwindcss/forms')
     ],
     variants: {},
     theme: {
-        fontFamily: {
-            sans: ['Inter var', ...defaultTheme.fontFamily.sans],
-        },
         extend: {
             colors: {
-                'neutral': {
-                    'light': {
-                        'DEFAULT': twColors.gray['200'],
-                        'secondary': twColors.gray['400'],
-                        'disabled': twColors.gray['500'],
-                    },
-                    'dark': {
-                        'DEFAULT': twColors.gray['800'],
-                        'secondary': twColors.gray['500'],
-                        'disabled': twColors.gray['400'],
-                    }
-                },
-                'background': {
-                    'light': '#f9f9fb',
-                    'lightest': twColors.white,
-                    'dark': '#32313b',
-                    'darkest': '#2b2a32',
-                },
                 'primary': {
                     '50': '#FFF7FF',
                     '100': '#FFEFFF',
@@ -45,6 +19,7 @@ const tailwind = {
                     '700': '#973897',
                     '800': '#712A71',
                     '900': '#4B1C4B',
+                    '950': '#321232',
                 },
                 'secondary': {
                     '50': '#F6FFFF',
@@ -58,7 +33,17 @@ const tailwind = {
                     '800': '#267171',
                     '900': '#194C4C',
                 },
-            }
+                'background': {
+                    DEFAULT: 'var(--background)',
+                    'accent': 'var(--background-accent)',
+                    'contrast': 'var(--background-contrast)',
+                },
+                'foreground': 'var(--foreground)',
+            },
+            backgroundImage: {
+                'marker-light': "linear-gradient(transparent, transparent 42%, theme('colors.primary.200') 0, theme('colors.primary.200') 85%, transparent 0)",
+                'marker-dark': "linear-gradient(transparent, transparent 42%, theme('colors.primary.700') 0, theme('colors.primary.700') 85%, transparent 0)",
+            },
         },
     },
     content: {
@@ -68,7 +53,7 @@ const tailwind = {
         ],
         transform: {
             js: (content) => {
-                return content.replaceAll(/(\\r)|(\\n)|(\\r\\n)/g,' ')
+                return content.replaceAll(/(\\r)|(\\n)|(\\r\\n)/g, ' ')
             }
         }
     },
@@ -77,27 +62,29 @@ const tailwind = {
 
 // webpack tailwind css settings
 ((config) => {
-    ((config) => {
-        let entry = '/kotlin/' + mainCssFile;
-        config.entry.main.push(entry);
-        config.module.rules.push({
-            test: /\.css$/,
-            use: [
-                {loader: 'style-loader'},
-                {loader: 'css-loader'},
-                {
-                    loader: 'postcss-loader',
-                    options: {
-                        postcssOptions: {
-                            plugins: [
-                                require('tailwindcss')({config: tailwind}),
-                                require('autoprefixer'),
-                                require('cssnano')
-                            ]
-                        }
+    config.entry.main.push('/kotlin/styles.css');
+    config.module.rules.push({
+        test: /.css$/,
+        use: [
+            {loader: MiniCssExtractPlugin.loader},
+            {loader: 'css-loader'},
+            {
+                loader: 'postcss-loader',
+                options: {
+                    postcssOptions: {
+                        plugins: [
+                            require('tailwindcss')({config: tailwind}),
+                            require('autoprefixer'),
+                            require('cssnano')
+                        ]
                     }
                 }
-            ]
-        });
-    })(config);
+            }
+        ]
+    });
+    config.plugins.push(
+        new MiniCssExtractPlugin({
+            filename: 'styles.css'
+        })
+    );
 })(config);

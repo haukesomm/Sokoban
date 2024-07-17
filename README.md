@@ -9,15 +9,13 @@ This project is a web-based clone of the popular puzzle game [Sokoban](https://d
 in Kotlin and based on the [fritz2](https://fritz2.dev) framework. The game features all 50 levels of the original
 game published in 1984 by Spectrum Holobyte.
 
-The latest snapshot version can be played [here](https://sokoban.haukesomm.de) or installed as a progressive web app (PWA).  
-On Apple devices, the latter can be done by tapping `Share -> Add to homescreen / Add to Dock` in Safari's menu bar.
-On Android, the process is similar, but the exact steps depend on your browser.
+The latest snapshot version can be played [here](https://sokoban.haukesomm.de) or installed as a progressive web app (PWA).
 
-## Screenshots
+## Screenshots (PWA)
 
-| Mobile                                                  | Desktop                                                   |
-|---------------------------------------------------------|-----------------------------------------------------------|
-| <img src="./assets/screenshot-mobile.png" width="75%"/> | <img src="./assets/screenshot-desktop.png"/> |
+| Mobile                                                  | Tablet                                      |
+|---------------------------------------------------------|---------------------------------------------|
+| <img src="./assets/screenshot-mobile.png" width="75%"/> | <img src="./assets/screenshot-tablet.png"/> |
 
 ## Modules
 

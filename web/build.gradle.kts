@@ -31,14 +31,12 @@ kotlin {
                 implementation(npm("tailwindcss", libs.versions.npm.tailwindcss.asProvider().get()))
                 implementation(npm("@tailwindcss/forms", libs.versions.npm.tailwindcss.forms.get()))
 
-                implementation(devNpm("webpack", libs.versions.npm.webpack.get()))
-                implementation(devNpm("socket.io", libs.versions.npm.socketio.get()))
-                implementation(devNpm("postcss", libs.versions.npm.postcss.asProvider().get()))
-                implementation(devNpm("postcss-loader", libs.versions.npm.postcss.loader.get()))
-                implementation(devNpm("autoprefixer", libs.versions.npm.autoprefixer.get()))
-                implementation(devNpm("css-loader", libs.versions.npm.cssloader.get()))
-                implementation(devNpm("style-loader", libs.versions.npm.styleloader.get()))
-                implementation(devNpm("cssnano", libs.versions.npm.cssnano.get()))
+                implementation(npm("postcss", libs.versions.npm.postcss.asProvider().get()))
+                implementation(npm("postcss-loader", libs.versions.npm.postcss.loader.get()))
+                implementation(npm("autoprefixer", libs.versions.npm.autoprefixer.get()))
+                implementation(npm("css-loader", libs.versions.npm.cssloader.get()))
+                implementation(npm("cssnano", libs.versions.npm.cssnano.get()))
+                implementation(npm("mini-css-extract-plugin", libs.versions.npm.minicssextractplugin.get()))
             }
         }
     }

@@ -1,3 +1,49 @@
 @tailwind base;
 @tailwind utilities;
 @tailwind components;
+
+
+:root {
+    --foreground: #000000;
+    --page-background: theme('colors.primary.50');
+    --background: #ffffff;
+    --background-accent: theme('colors.gray.100');
+    --background-contrast: theme('colors.gray.200');
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --foreground: #ffffff;
+        --page-background: theme('colors.primary.950');
+        --background: #1f1e25;
+        --background-accent: theme('colors.gray.700');
+        --background-contrast: theme('colors.gray.600');
+    }
+}
+
+body {
+    color: var(--foreground);
+    background: var(--page-background);
+
+    @apply font-mono antialiased text-sm
+}
+
+
+.touch-only-subgrid {
+    display: contents;
+}
+
+@media screen(sm) {
+    @media (hover: none) {
+        .touch-only-subgrid {
+            display: grid;
+        }
+    }
+}
+
+
+@media (hover: hover) {
+    .touch-only {
+        display: none !important;
+    }
+}

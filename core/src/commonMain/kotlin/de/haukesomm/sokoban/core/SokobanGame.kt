@@ -32,12 +32,6 @@ class SokobanGame(
     val state: Flow<GameState> = internalState.asSharedFlow()
 
     /**
-     * Flow emitting `true` if the current state has a previous state, `false` otherwise.
-     * This can be used to determine if the user can undo the last move.
-     */
-    val previousStateExists: Flow<Boolean> = internalState.map { it.previous != null }
-
-    /**
      * Flow emitting the [LevelDescription] of the current level.
      */
     val levelDescription: Flow<LevelDescription> =
