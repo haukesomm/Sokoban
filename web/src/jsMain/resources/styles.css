@@ -15,9 +15,9 @@
     :root {
         --foreground: #ffffff;
         --page-background: theme('colors.primary.950');
-        --background: #1f1e25;
-        --background-accent: theme('colors.gray.700');
-        --background-contrast: theme('colors.gray.600');
+        --background: #1c1b22;
+        --background-accent: #2b2a33;
+        --background-contrast: #36333e;
     }
 }
 
