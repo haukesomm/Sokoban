@@ -3,8 +3,10 @@ package de.haukesomm.sokoban.web.components
 import de.haukesomm.sokoban.web.components.icons.HeroIcons
 import de.haukesomm.sokoban.web.components.icons.IconDefinition
 import de.haukesomm.sokoban.web.components.icons.icon
-import dev.fritz2.core.*
-import org.w3c.dom.HTMLAnchorElement
+import dev.fritz2.core.RenderContext
+import dev.fritz2.core.href
+import dev.fritz2.core.target
+import dev.fritz2.core.title
 
 // FIXME: Anchor not focusable
 fun RenderContext.iconLink(

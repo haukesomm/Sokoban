@@ -4,8 +4,8 @@ import de.haukesomm.sokoban.web.components.icons.HeroIcons
 import de.haukesomm.sokoban.web.components.icons.icon
 import dev.fritz2.core.RenderContext
 import dev.fritz2.core.joinClasses
-import dev.fritz2.headless.foundation.Hook
 import dev.fritz2.headless.components.popOver
+import dev.fritz2.headless.foundation.Hook
 import dev.fritz2.headless.foundation.hook
 import dev.fritz2.headless.foundation.utils.floatingui.utils.PlacementValues
 

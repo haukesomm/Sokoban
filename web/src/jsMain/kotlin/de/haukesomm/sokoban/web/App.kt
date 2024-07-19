@@ -1,20 +1,15 @@
 package de.haukesomm.sokoban.web
 
-import de.haukesomm.sokoban.core.Direction
-import de.haukesomm.sokoban.core.LevelDescription
-import de.haukesomm.sokoban.core.SokobanGame
-import de.haukesomm.sokoban.core.SokobanGameFactory
+import de.haukesomm.sokoban.core.*
+import de.haukesomm.sokoban.web.components.*
 import de.haukesomm.sokoban.web.components.game.gameField
 import de.haukesomm.sokoban.web.components.game.moveButtons
-import de.haukesomm.sokoban.web.components.iconLink
 import de.haukesomm.sokoban.web.components.icons.CustomIcons
 import de.haukesomm.sokoban.web.components.icons.HeroIcons
 import de.haukesomm.sokoban.web.components.icons.icon
-import de.haukesomm.sokoban.web.components.listBox
-import de.haukesomm.sokoban.web.components.popOver
-import de.haukesomm.sokoban.web.components.textButton
 import dev.fritz2.core.*
 import dev.fritz2.headless.foundation.portalRoot
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 
@@ -62,6 +57,7 @@ private fun RenderContext.app() {
         }
 
         handKeyboardInput(sokobanGame)
+        showDialogOnLevelCompletion(sokobanGame)
     }
 }
 
@@ -79,9 +75,18 @@ private fun RenderContext.headerBar(game: SokobanGame) {
             val levels = game.getAvailableLevels()
             val selectedLevel = storeOf(levels.first())
 
+            // Load level when a new level is selected
             selectedLevel.data handledBy {
-                game.loadLevel(it.id)
+                if (it.id != game.currentState.levelId) {
+                    game.loadLevel(it.id)
+                }
             }
+
+            // Select the correct level when the loaded level changes
+            game.state.map { it.levelId }.mapNotNull { id ->
+                if (id != selectedLevel.current.id) levels.find { it.id == id }
+                else null
+            } handledBy selectedLevel.update
 
             div("w-full md:w-auto md:min-w-48") {
                 listBox<LevelDescription> {
@@ -118,7 +123,7 @@ private fun RenderContext.headerBar(game: SokobanGame) {
 }
 
 private fun RenderContext.sokobanTitleAndIcon() {
-    div("flex items-center gap-2"){
+    div("flex items-center gap-2") {
         icon("w-6 h-6", definition = CustomIcons.sokoban)
         span("font-semibold bg-marker-light dark:bg-marker-dark") {
             +"Sokoban"
@@ -155,7 +160,7 @@ private fun RenderContext.about() {
 
 private fun Tag<*>.handKeyboardInput(game: SokobanGame) {
     Window.keydowns.mapNotNull {
-        when(shortcutOf(it.key)) {
+        when (shortcutOf(it.key)) {
             Keys.ArrowUp -> Direction.Top
             Keys.ArrowDown -> Direction.Bottom
             Keys.ArrowLeft -> Direction.Left
@@ -164,5 +169,31 @@ private fun Tag<*>.handKeyboardInput(game: SokobanGame) {
         }
     } handledBy {
         game.movePlayerIfPossible(it)
+    }
+}
+
+private fun RenderContext.showDialogOnLevelCompletion(game: SokobanGame) {
+    dialog(game.state.filter { it.levelCleared }) {
+        content {
+            div("flex flex-col gap-4 max-w-lg") {
+                p("font-semibold") {
+                    +"Level cleared!"
+                }
+                p {
+                    +"""Congratulations! You have completed the level in ${payload.moves} moves and
+                        | ${payload.pushes} pushes.""".trimMargin()
+                }
+                div("flex gap-4 justify-end items-center") {
+                    textButton("Restart", HeroIcons.refresh) handledBy {
+                        game.reloadLevel()
+                        close(Unit)
+                    }
+                    textButton("Next level", HeroIcons.arrow_right) handledBy {
+                        game.loadNextLevelIfAvailable()
+                        close(Unit)
+                    }
+                }
+            }
+        }
     }
 }

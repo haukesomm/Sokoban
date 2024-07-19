@@ -32,12 +32,13 @@ class SokobanGame(
     val state: Flow<GameState> = internalState.asSharedFlow()
 
     /**
-     * Flow emitting the [LevelDescription] of the current level.
+     * Returns the current [GameState].
+     *
+     * Do _not_ use this property to observe the state of the game!
+     * Instead, use the [state]-Flow to observe changes.
      */
-    val levelDescription: Flow<LevelDescription> =
-        internalState.map { it.levelId }.distinctUntilChanged().map { id ->
-            levelRepository.getLevelOrNull(id)!!.let { LevelDescription(it.id, it.name) }
-        }
+    val currentState: GameState
+        get() = internalState.value
 
 
     /**

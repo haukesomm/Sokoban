@@ -17,7 +17,7 @@ fun RenderContext.textButton(
     disabled: Flow<Boolean> = flowOf(false)
 ): Listener<MouseEvent, HTMLButtonElement> = button(
     joinClasses(
-        "p-1.5 flex items-center gap-1",
+        "p-1.5 flex items-center gap-2",
         "bg-background-accent hover:bg-background-contrast rounded-md shadow-sm",
         "disabled:opacity-50 disabled:pointer-events-none"
     )

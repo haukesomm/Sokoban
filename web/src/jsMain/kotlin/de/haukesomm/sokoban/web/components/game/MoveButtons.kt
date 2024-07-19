@@ -4,13 +4,11 @@ import de.haukesomm.sokoban.core.Direction
 import de.haukesomm.sokoban.web.components.icons.HeroIcons
 import de.haukesomm.sokoban.web.components.icons.icon
 import dev.fritz2.core.RenderContext
-import dev.fritz2.core.Tag
 import dev.fritz2.core.joinClasses
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.map
-import org.w3c.dom.HTMLElement
 
 class MoveButtons {
 
