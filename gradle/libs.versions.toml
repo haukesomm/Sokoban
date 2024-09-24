@@ -2,7 +2,7 @@
 kotlin = "1.9.22"
 kotlinx-coroutines = "1.7.3"
 # kotlinx-serialization = "1.6.2"
-fritz2 = "1.0-RC18"
+fritz2 = "1.0-RC19"
 ksp = "1.9.22-1.0.16"
 
 npm-tailwindcss = "3.4.4"
