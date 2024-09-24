@@ -1,9 +1,8 @@
 [versions]
-kotlin = "1.9.22"
-kotlinx-coroutines = "1.7.3"
-# kotlinx-serialization = "1.6.2"
-fritz2 = "1.0-RC18"
-ksp = "1.9.22-1.0.16"
+kotlin = "2.0.20"
+kotlinx-coroutines = "1.9.0"
+fritz2 = "1.0-RC20"
+ksp = "2.0.20-1.0.25"
 
 npm-tailwindcss = "3.4.4"
 npm-tailwindcss-forms = "0.5.4"
