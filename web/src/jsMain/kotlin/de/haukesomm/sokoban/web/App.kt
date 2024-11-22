@@ -89,7 +89,7 @@ private fun RenderContext.headerBar(game: SokobanGame) {
             } handledBy selectedLevel.update
 
             div("w-full md:w-auto md:min-w-48") {
-                listBox<LevelDescription> {
+                comboBox<LevelDescription> {
                     options = levels
                     optionsFormat = LevelDescription::name
                     value(selectedLevel)
