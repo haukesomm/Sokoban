@@ -74,6 +74,9 @@ private fun RenderContext.headerBar(game: SokobanGame) {
         div("contents md:flex flex-wrap items-center gap-4") {
             val levels = game.getAvailableLevels()
             val selectedLevel = storeOf(levels.first())
+            selectedLevel.data handledBy { 
+                console.log("selectedLevel: $it")
+            }
 
             // Load level when a new level is selected
             selectedLevel.data handledBy {
@@ -88,11 +91,14 @@ private fun RenderContext.headerBar(game: SokobanGame) {
                 else null
             } handledBy selectedLevel.update
 
-            div("w-full md:w-auto md:min-w-48") {
-                listBox<LevelDescription> {
-                    options = levels
-                    optionsFormat = LevelDescription::name
-                    value(selectedLevel)
+            div("w-full md:w-auto flex items-center gap-2") {
+                +"Level:"
+                div("w-24") {
+                    comboBox<LevelDescription> {
+                        options = levels
+                        optionsFormat = { it.name.replaceFirst("Level ", "") }
+                        value(selectedLevel.mapNullable(placeholder = LevelDescription("", "")))
+                    }
                 }
             }
 
@@ -159,7 +165,7 @@ private fun RenderContext.about() {
 }
 
 private fun Tag<*>.handKeyboardInput(game: SokobanGame) {
-    Window.keydowns.mapNotNull {
+    keydowns.mapNotNull {
         when (shortcutOf(it.key)) {
             Keys.ArrowUp -> Direction.Top
             Keys.ArrowDown -> Direction.Bottom
