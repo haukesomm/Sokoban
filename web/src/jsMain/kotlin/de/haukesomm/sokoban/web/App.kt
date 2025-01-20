@@ -74,6 +74,9 @@ private fun RenderContext.headerBar(game: SokobanGame) {
         div("contents md:flex flex-wrap items-center gap-4") {
             val levels = game.getAvailableLevels()
             val selectedLevel = storeOf(levels.first())
+            selectedLevel.data handledBy { 
+                console.log("selectedLevel: $it")
+            }
 
             // Load level when a new level is selected
             selectedLevel.data handledBy {
@@ -92,7 +95,8 @@ private fun RenderContext.headerBar(game: SokobanGame) {
                 comboBox<LevelDescription> {
                     options = levels
                     optionsFormat = LevelDescription::name
-                    value(selectedLevel)
+                    // TODO Replace with native fritz2 function when 1.0-RC20 is released
+                    value(selectedLevel.mapNullableHelper(placeholder = LevelDescription("", "")))
                 }
             }
 
@@ -159,7 +163,7 @@ private fun RenderContext.about() {
 }
 
 private fun Tag<*>.handKeyboardInput(game: SokobanGame) {
-    Window.keydowns.mapNotNull {
+    keydowns.mapNotNull {
         when (shortcutOf(it.key)) {
             Keys.ArrowUp -> Direction.Top
             Keys.ArrowDown -> Direction.Bottom

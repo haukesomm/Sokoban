@@ -4,10 +4,12 @@ import de.haukesomm.sokoban.web.components.icons.HeroIcons
 import de.haukesomm.sokoban.web.components.icons.icon
 import dev.fritz2.core.RenderContext
 import dev.fritz2.core.joinClasses
+import dev.fritz2.headless.components.Combobox
 import dev.fritz2.headless.components.combobox
 import dev.fritz2.headless.foundation.DatabindingProperty
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onStart
 import kotlin.math.truncate
 
 class ComboBox<T> {
@@ -15,18 +17,22 @@ class ComboBox<T> {
     var options: List<T> = emptyList()
 
     var optionsFormat: (T) -> String = { it.toString() }
+    
+    var filterBy: T.() -> String = { optionsFormat(this) }
 
-    val value: DatabindingProperty<T> = DatabindingProperty()
+    val value: DatabindingProperty<T?> = DatabindingProperty()
 
 
     fun RenderContext.render() {
-        combobox<T> {
-            this@combobox.value.value?.let {
-                value.use(it)
+        combobox<T> headlessCombobox@{
+            this@ComboBox.value.value?.let {
+                this@headlessCombobox.value.use(it)
             }
 
             items(options)
             itemFormat = optionsFormat
+
+            filterBy(this@ComboBox.filterBy)
 
             maximumDisplayedItems = 100
 
@@ -34,7 +40,8 @@ class ComboBox<T> {
                 joinClasses(
                     "w-full px-1.5 flex flex-row items-center gap-1",
                     "rounded-md bg-background-accent hover:bg-background-contrast",
-                    "border-invisible focus-within:ring-1 focus-within:ring-primary-500"
+                    "border-invisible focus-within:ring-1 focus-within:ring-primary-400",
+                    "dark:focus-within:ring-primary-800"
                 )
             ) {
                 comboboxInput(
@@ -61,18 +68,13 @@ class ComboBox<T> {
                 results.render(into = this) { (_, items, _) ->
                     items.forEach { item ->
                         comboboxItem(item, "px-3 py-1.5 flex flex-row items-center gap-2 cursor-pointer") {
-                            /*className(selected.map {
-                                if (it) "bg-primary-200 hover:bg-primary-300 dark:bg-primary-800 dark:hover:bg-primary-700"
-                                else "hover:bg-secondary-200 dark:hover:bg-secondary-800"
-                            })*/
-
                             className(
                                 combine(active, selected) { active, selected ->
                                     if (selected) {
-                                        if (active) ""
-                                        else ""
+                                        if (active) "bg-primary-300 dark:bg-primary-700"
+                                        else "bg-primary-200 dark:bg-primary-800"
                                     } else {
-                                        if (active) ""
+                                        if (active) "bg-secondary-200 dark:bg-secondary-800"
                                         else ""
                                     }
                                 }
