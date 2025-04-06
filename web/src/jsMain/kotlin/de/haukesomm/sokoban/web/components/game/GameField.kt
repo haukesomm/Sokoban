@@ -1,20 +1,24 @@
 package de.haukesomm.sokoban.web.components.game
 
-import de.haukesomm.sokoban.core.EntityType
-import de.haukesomm.sokoban.core.GameState
-import de.haukesomm.sokoban.core.Tile
-import de.haukesomm.sokoban.core.TileType
+import de.haukesomm.sokoban.core.*
 import de.haukesomm.sokoban.web.components.icons.Textures
 import de.haukesomm.sokoban.web.components.icons.icon
-import dev.fritz2.core.RenderContext
-import dev.fritz2.core.Window
+import dev.fritz2.core.*
 import kotlinx.coroutines.flow.*
+import org.w3c.dom.HTMLElement
 import kotlin.math.floor
 
 class GameField(private val states: Flow<GameState>) {
 
-    fun RenderContext.render() {
-        div("grid rounded-lg overflow-hidden") {
+    fun RenderContext.render(): Tag<HTMLElement> =
+        div(
+            joinClasses(
+                "grid rounded-lg overflow-hidden",
+                "focus:outline-none focus:ring-2 focus:ring-primary-400 dark:focus:ring-primary-600"
+            )
+        ) {
+            tabIndex(1)
+            
             val computedSizes = states.flatMapLatest { state ->
                 merge(
                     flowOf(state),
@@ -42,7 +46,6 @@ class GameField(private val states: Flow<GameState>) {
                 renderTile(it)
             }
         }
-    }
 
     private fun RenderContext.renderTile(tile: Tile) =
         div("w-full h-auto overflow-visible") {
@@ -61,8 +64,7 @@ class GameField(private val states: Flow<GameState>) {
         }
 }
 
-fun RenderContext.gameField(states: Flow<GameState>, ) {
+fun RenderContext.gameField(states: Flow<GameState>): Tag<HTMLElement> =
     GameField(states).run {
         render()
     }
-}

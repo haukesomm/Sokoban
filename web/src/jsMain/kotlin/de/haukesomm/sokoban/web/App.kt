@@ -9,6 +9,7 @@ import de.haukesomm.sokoban.web.components.icons.HeroIcons
 import de.haukesomm.sokoban.web.components.icons.icon
 import dev.fritz2.core.*
 import dev.fritz2.headless.foundation.portalRoot
+import kotlinx.browser.window
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
@@ -45,8 +46,14 @@ private fun RenderContext.app() {
                 }
             }
 
-            div("w-full max-w-2xl flex justify-center") {
-                gameField(sokobanGame.state)
+            div("w-full max-w-2xl flex flex-col items-center gap-1") {
+                val gameField = gameField(sokobanGame.state)
+                gameField.run { 
+                    handKeyboardInput(sokobanGame)
+                }
+                p("opacity-50") { 
+                    +"Focus the game field to take control"
+                }
             }
 
             div("touch-only") {
@@ -56,7 +63,6 @@ private fun RenderContext.app() {
             }
         }
 
-        handKeyboardInput(sokobanGame)
         showDialogOnLevelCompletion(sokobanGame)
     }
 }
