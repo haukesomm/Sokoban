@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalDistributionDsl
+import org.jetbrains.kotlin.gradle.targets.js.dsl.KotlinJsBrowserDsl
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -55,6 +57,10 @@ tasks.named<ProcessResources>("jsProcessResources") {
             "fritz2Version" to libs.versions.fritz2.get()
         )
     }
+}
+
+tasks.withType(Copy::class.java) {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
 }
 
 /**
