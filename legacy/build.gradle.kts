@@ -1,5 +1,5 @@
 plugins {
-    alias(libs.plugins.kotlin.jvm)
+    id(libs.plugins.kotlin.jvm.get().pluginId)
     java
     application
 }
@@ -10,6 +10,12 @@ repositories {
 
 dependencies {
     implementation(project(":core"))
+}
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(21))
+    }
 }
 
 application {

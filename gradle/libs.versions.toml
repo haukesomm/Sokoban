@@ -1,26 +1,30 @@
 [versions]
-kotlin = "2.0.20"
-kotlinx-coroutines = "1.9.0"
-fritz2 = "1.0-RC20"
-ksp = "2.0.20-1.0.25"
+kotlin = "2.2.20"
+ksp = "2.2.20-2.0.4"
+fritz2 = "1.0-RC21"
+minicssextractplugin = "2.9.4"
 
-npm-tailwindcss = "3.4.4"
-npm-tailwindcss-forms = "0.5.4"
-
-npm-postcss = "8.4.39"
-npm-postcss-loader = "8.1.1"
-npm-autoprefixer = "10.4.19"
-npm-cssloader = "7.1.2"
-npm-cssnano = "7.0.4"
-npm-minicssextractplugin = "1.3.9"
 
 [libraries]
-kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlin" }
-kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
 fritz2-headless = { group = "dev.fritz2", name = "headless", version.ref = "fritz2" }
 fritz2-lensesprocessor = { group = "dev.fritz2", name = "lenses-annotation-processor", version.ref = "fritz2" }
+
+kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version = "1.10.2" }
+kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
+
+# Tailwind
+tailwindcss-core = { group = "npm", name = "tailwindcss", version = "3.4.18" }
+tailwindcss-forms = { group = "tailwindcss", name = "forms", version = "0.5.10" }
+postcss-core = { group = "npm", name = "postcss", version = "8.5.6" }
+postcss-loader = { group = "npm", name = "postcss-loader", version = "8.2.0" }
+autoprefixer = { group = "npm", name = "autoprefixer", version = "10.4.21" }
+css-loader = { group = "npm", name = "css-loader", version = "7.1.2" }
+style-loader = { group = "npm", name = "style-loader", version = "4.0.0" }
+cssnano = { group = "npm", name = "cssnano", version = "7.1.1" }
+
 
 [plugins]
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+google-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }

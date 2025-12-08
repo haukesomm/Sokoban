@@ -1,15 +1,16 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    alias(libs.plugins.kotlin.multiplatform) apply false
-    alias(libs.plugins.kotlin.jvm) apply false
-    alias(libs.plugins.ksp) apply false
+    id(libs.plugins.kotlin.multiplatform.get().pluginId) apply false
+    id(libs.plugins.kotlin.jvm.get().pluginId) apply false
+    alias(libs.plugins.google.ksp) apply false
 }
 
 allprojects {
     repositories {
         mavenCentral()
-        maven("https://s01.oss.sonatype.org/content/repositories/snapshots/")
+        maven("https://central.sonatype.com/repository/maven-snapshots/")
     }
 }
 
@@ -18,8 +19,8 @@ subprojects {
     version = "0.3.0-SNAPSHOT"
 
     tasks.withType<KotlinCompile> {
-        kotlinOptions {
-            jvmTarget = "17"
+        compilerOptions {
+            jvmTarget = JvmTarget.JVM_21
         }
     }
 }

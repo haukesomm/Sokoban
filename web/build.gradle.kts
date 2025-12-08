@@ -1,12 +1,12 @@
-import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalDistributionDsl
-import org.jetbrains.kotlin.gradle.targets.js.dsl.KotlinJsBrowserDsl
+import de.haukesomm.sokoban.gradle.npm
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
 plugins {
-    alias(libs.plugins.kotlin.multiplatform)
-    alias(libs.plugins.ksp)
+    id(libs.plugins.kotlin.multiplatform.get().pluginId)
+    alias(libs.plugins.google.ksp)
 }
 
 kotlin {
@@ -27,18 +27,23 @@ kotlin {
                 implementation(libs.fritz2.headless)
                 implementation(project(":core"))
             }
+            kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
         }
         jsMain {
             dependencies {
-                implementation(npm("tailwindcss", libs.versions.npm.tailwindcss.asProvider().get()))
-                implementation(npm("@tailwindcss/forms", libs.versions.npm.tailwindcss.forms.get()))
+                // tailwind
+                implementation(npm(libs.tailwindcss.core))
+                implementation(npm(libs.tailwindcss.forms))
 
-                implementation(npm("postcss", libs.versions.npm.postcss.asProvider().get()))
-                implementation(npm("postcss-loader", libs.versions.npm.postcss.loader.get()))
-                implementation(npm("autoprefixer", libs.versions.npm.autoprefixer.get()))
-                implementation(npm("css-loader", libs.versions.npm.cssloader.get()))
-                implementation(npm("cssnano", libs.versions.npm.cssnano.get()))
-                implementation(npm("mini-css-extract-plugin", libs.versions.npm.minicssextractplugin.get()))
+                // webpack
+                implementation(npm(libs.postcss.core))
+                implementation(npm(libs.postcss.loader))
+                implementation(npm(libs.autoprefixer))
+                implementation(npm(libs.css.loader))
+                implementation(npm(libs.style.loader))
+                implementation(npm(libs.cssnano))
+                
+                implementation(npm("mini-css-extract-plugin", libs.versions.minicssextractplugin.get()))
             }
         }
     }
@@ -59,27 +64,17 @@ tasks.named<ProcessResources>("jsProcessResources") {
     }
 }
 
-tasks.withType(Copy::class.java) {
+tasks.named<Sync>("jsBrowserDistribution") {
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
 }
 
-/**
- * KSP support - start
- */
+// KSP support for Lens generation
 dependencies {
-    add("kspCommonMainMetadata", libs.fritz2.lensesprocessor)
-}
-kotlin.sourceSets.commonMain { kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin") }
-
-// Fixes webpack-cli incompatibility by pinning the newest version.
-// https://youtrack.jetbrains.com/issue/KTIJ-22030
-rootProject.extensions.configure<org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension> {
-    versions.webpackCli.version = "4.10.0"
+    kspCommonMainMetadata(libs.fritz2.lensesprocessor)
 }
 
-tasks.withType<org.jetbrains.kotlin.gradle.dsl.KotlinCompile<*>>().all {
-    if (name != "kspCommonMainKotlinMetadata") dependsOn("kspCommonMainKotlinMetadata")
+project.tasks.withType(KotlinCompilationTask::class.java).configureEach {
+    if(name != "kspCommonMainKotlinMetadata") {
+        dependsOn("kspCommonMainKotlinMetadata")
+    }
 }
-/**
- * KSP support - end
- */

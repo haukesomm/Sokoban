@@ -1,6 +1,6 @@
 plugins {
-    alias(libs.plugins.kotlin.multiplatform)
-    alias(libs.plugins.ksp)
+    id(libs.plugins.kotlin.multiplatform.get().pluginId)
+    alias(libs.plugins.google.ksp)
 }
 
 kotlin {
