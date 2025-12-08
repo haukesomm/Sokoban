@@ -8,6 +8,9 @@ import dev.fritz2.headless.components.Combobox
 import dev.fritz2.headless.components.combobox
 import dev.fritz2.headless.foundation.DatabindingProperty
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.filterNot
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlin.math.truncate
@@ -53,10 +56,12 @@ class ComboBox<T> {
                 ) {
                 }
                 opened.render { isOpened ->
-                    icon(
-                        "w-4 h-4 pointer-events-none",
-                        definition = if (isOpened) HeroIcons.chevron_up else HeroIcons.chevron_down
-                    )
+                    button {
+                        icon(
+                            "w-4 h-4 pointer-events-none",
+                            definition = if (isOpened) HeroIcons.chevron_up else HeroIcons.chevron_down
+                        )
+                    }.clicks { stopPropagation() } handledBy toggle
                 }
             }
 
