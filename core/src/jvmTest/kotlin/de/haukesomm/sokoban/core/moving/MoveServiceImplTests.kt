@@ -65,7 +65,7 @@ class MoveServiceImplTests {
         val result = sut.moveEntityIfPossible(state, state.getPlayerPosition()!!, Direction.Right)
 
         assertTrue(result?.entityAt(Position(2, 2))?.isPlayer ?: false)
-        assertTrue(result?.entityAt(Position(3, 2))?.isBox ?: false)
+        assertTrue(result.entityAt(Position(3, 2))?.isBox ?: false)
     }
 
     @Test

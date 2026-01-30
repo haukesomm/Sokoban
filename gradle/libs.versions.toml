@@ -1,27 +1,39 @@
 [versions]
-kotlin = "2.2.20"
-ksp = "2.2.20-2.0.4"
+kotlin = "2.3.0"
+ksp = "2.3.4"
+kotlinx-coroutines = "1.10.2"
+tailwindcss-core = "3.4.18"
+tailwindcss-forms = "0.5.10"
+postcss-core = "8.5.6"
+postcss-loader = "8.2.0"
+autoprefixer = "10.4.21"
+css-loader = "7.1.2"
+style-loader = "4.0.0"
+cssnano = "7.1.1"
+
+# Project-specific
 fritz2 = "1.0-RC21"
 minicssextractplugin = "2.9.4"
 
 
 [libraries]
+kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
+kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
+
+# Project specific
 fritz2-headless = { group = "dev.fritz2", name = "headless", version.ref = "fritz2" }
 fritz2-lensesprocessor = { group = "dev.fritz2", name = "lenses-annotation-processor", version.ref = "fritz2" }
 
-kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
-kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version = "1.10.2" }
-kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
-
 # Tailwind
-tailwindcss-core = { group = "npm", name = "tailwindcss", version = "3.4.18" }
-tailwindcss-forms = { group = "tailwindcss", name = "forms", version = "0.5.10" }
-postcss-core = { group = "npm", name = "postcss", version = "8.5.6" }
-postcss-loader = { group = "npm", name = "postcss-loader", version = "8.2.0" }
-autoprefixer = { group = "npm", name = "autoprefixer", version = "10.4.21" }
-css-loader = { group = "npm", name = "css-loader", version = "7.1.2" }
-style-loader = { group = "npm", name = "style-loader", version = "4.0.0" }
-cssnano = { group = "npm", name = "cssnano", version = "7.1.1" }
+tailwindcss-core = { group = "npm", name = "tailwindcss", version.ref = "tailwindcss-core" }
+tailwindcss-forms = { group = "tailwindcss", name = "forms", version.ref = "tailwindcss-forms" }
+postcss-core = { group = "npm", name = "postcss", version.ref = "postcss-core" }
+postcss-loader = { group = "npm", name = "postcss-loader", version.ref = "postcss-loader" }
+autoprefixer = { group = "npm", name = "autoprefixer", version.ref = "autoprefixer" }
+css-loader = { group = "npm", name = "css-loader", version.ref = "css-loader" }
+style-loader = { group = "npm", name = "style-loader", version.ref = "style-loader" }
+cssnano = { group = "npm", name = "cssnano", version.ref = "cssnano" }
 
 
 [plugins]
