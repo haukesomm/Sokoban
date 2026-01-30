@@ -11,6 +11,8 @@ plugins {
 
 kotlin {
     jvm() // needed for kspCommonMainMetadata
+    jvmToolchain(21)
+
     js {
         browser()
         binaries.executable()
