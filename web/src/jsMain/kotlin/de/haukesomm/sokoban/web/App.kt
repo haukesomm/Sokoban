@@ -15,6 +15,8 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 
 fun main() {
+    js("require('./styles.css')")
+
     render {
         app()
         portalRoot()
@@ -36,7 +38,7 @@ private fun RenderContext.app() {
                 // move buttons on the sides of the game field. For this purpose, the following special grid sub-layout
                 // kicks in. Otherwise, the normal layout is followed. See 'touch-only-subgrid' in the main CSS file.
                 "mx-4 touch-only-subgrid sm:self-stretch",
-                "sm:grid-cols-[minmax(max-content,_auto)_minmax(0,_1fr)_minmax(max-content,_auto)]",
+                "sm:grid-cols-[minmax(max-content,auto)_minmax(0,1fr)_minmax(max-content,auto)]",
                 "sm:justify-items-center sm:items-center sm:gap-4"
             )
         ) {
@@ -70,7 +72,7 @@ private fun RenderContext.app() {
 private fun RenderContext.headerBar(game: SokobanGame) {
     div(
         joinClasses(
-            "p-3 shadow bg-background",
+            "p-3 shadow-sm bg-background",
             "flex flex-row flex-wrap items-center gap-4 md:justify-between"
         )
     ) {

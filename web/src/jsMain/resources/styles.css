@@ -1,20 +1,83 @@
-@tailwind base;
-@tailwind utilities;
-@tailwind components;
+@import "tailwindcss";
 
+@source "../../../src/jsMain/kotlin/**/*.kt";
+
+@theme {
+    --color-primary-50: #fff7ff;
+    --color-primary-100: #ffefff;
+    --color-primary-200: #fed7fe;
+    --color-primary-300: #fdbffd;
+    --color-primary-400: #fc8efc;
+    --color-primary-500: #fb5efb;
+    --color-primary-600: #e255e2;
+    --color-primary-700: #973897;
+    --color-primary-800: #712a71;
+    --color-primary-900: #4b1c4b;
+    --color-primary-950: #200c20;
+
+    --color-secondary-50: #f6ffff;
+    --color-secondary-100: #eeffff;
+    --color-secondary-200: #d4fefe;
+    --color-secondary-300: #bbfefe;
+    --color-secondary-400: #87fdfd;
+    --color-secondary-500: #54fcfc;
+    --color-secondary-600: #4ce3e3;
+    --color-secondary-700: #329797;
+    --color-secondary-800: #267171;
+    --color-secondary-900: #194c4c;
+
+    --color-background: var(--background);
+    --color-background-accent: var(--background-accent);
+    --color-background-contrast: var(--background-contrast);
+
+    --color-foreground: var(--foreground);
+
+    --background-image-marker-light: linear-gradient(
+            transparent,
+            transparent 42%,
+            var(--color-primary-200) 0,
+            var(--color-primary-200) 85%,
+            transparent 0
+    );
+    --background-image-marker-dark: linear-gradient(
+            transparent,
+            transparent 42%,
+            var(--color-primary-700) 0,
+            var(--color-primary-700) 85%,
+            transparent 0
+    );
+}
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+    *,
+    ::after,
+    ::before,
+    ::backdrop,
+    ::file-selector-button {
+        border-color: var(--color-gray-200, currentcolor);
+    }
+}
 
 :root {
     --foreground: #000000;
-    --page-background: theme('colors.primary.50');
+    --page-background: var(--color-primary-50);
     --background: #ffffff;
-    --background-accent: theme('colors.gray.100');
-    --background-contrast: theme('colors.gray.200');
+    --background-accent: var(--color-gray-100);
+    --background-contrast: var(--color-gray-200);
 }
 
 @media (prefers-color-scheme: dark) {
     :root {
         --foreground: #ffffff;
-        --page-background: theme('colors.primary.950');
+        --page-background: var(--color-primary-950);
         --background: #1c1b22;
         --background-accent: #2b2a33;
         --background-contrast: #36333e;
@@ -33,7 +96,7 @@ body {
     display: contents;
 }
 
-@media screen(sm) {
+@media (width >= theme(--breakpoint-sm)) {
     @media (hover: none) {
         .touch-only-subgrid {
             display: grid;

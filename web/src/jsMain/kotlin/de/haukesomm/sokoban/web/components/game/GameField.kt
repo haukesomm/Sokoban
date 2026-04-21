@@ -14,7 +14,7 @@ class GameField(private val states: Flow<GameState>) {
         div(
             joinClasses(
                 "grid rounded-lg overflow-hidden",
-                "focus:outline-none focus:ring-2 focus:ring-primary-400 dark:focus:ring-primary-600"
+                "focus:outline-hidden focus:ring-2 focus:ring-primary-400 dark:focus:ring-primary-600"
             )
         ) {
             tabIndex(1)

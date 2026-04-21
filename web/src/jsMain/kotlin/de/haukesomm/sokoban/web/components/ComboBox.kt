@@ -68,7 +68,7 @@ class ComboBox<T> {
             comboboxItems(
                 joinClasses(
                     "mt-2 py-1.5 flex flex-col max-h-80 overflow-y-auto",
-                    "bg-background rounded shadow-sm border border-background-accent"
+                    "bg-background rounded-sm shadow-xs border border-background-accent"
                 )
             ) {
                 results.render(into = this) { (_, items, _) ->

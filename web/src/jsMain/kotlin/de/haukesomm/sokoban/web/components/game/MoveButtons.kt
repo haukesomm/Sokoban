@@ -28,7 +28,7 @@ class MoveButtons {
         button(
             joinClasses(
                 "w-12 h-12 flex justify-center items-center",
-                "bg-background border border-background-accent rounded-md shadow-sm",
+                "bg-background border border-background-accent rounded-md shadow-xs",
                 "touch-manipulation"
             )
         ) {

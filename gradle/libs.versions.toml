@@ -2,18 +2,10 @@
 kotlin = "2.3.0"
 ksp = "2.3.4"
 kotlinx-coroutines = "1.10.2"
-tailwindcss-core = "3.4.18"
-tailwindcss-forms = "0.5.10"
+fritz2 = "1.0-SNAPSHOT"
+tailwind = "4.2.0"
 postcss-core = "8.5.6"
 postcss-loader = "8.2.0"
-autoprefixer = "10.4.21"
-css-loader = "7.1.2"
-style-loader = "4.0.0"
-cssnano = "7.1.1"
-
-# Project-specific
-fritz2 = "1.0-SNAPSHOT"
-minicssextractplugin = "2.9.4"
 
 
 [libraries]
@@ -21,19 +13,15 @@ kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", v
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 
-# Project specific
+# fritz2
 fritz2-headless = { group = "dev.fritz2", name = "headless", version.ref = "fritz2" }
 fritz2-lensesprocessor = { group = "dev.fritz2", name = "lenses-annotation-processor", version.ref = "fritz2" }
 
 # Tailwind
-tailwindcss-core = { group = "npm", name = "tailwindcss", version.ref = "tailwindcss-core" }
-tailwindcss-forms = { group = "tailwindcss", name = "forms", version.ref = "tailwindcss-forms" }
+tailwindcss-core = { group = "npm", name = "tailwindcss", version.ref = "tailwind" }
+tailwindcss-postcss = { group = "npm", name = "@tailwindcss/postcss", version.ref = "tailwind" }
 postcss-core = { group = "npm", name = "postcss", version.ref = "postcss-core" }
 postcss-loader = { group = "npm", name = "postcss-loader", version.ref = "postcss-loader" }
-autoprefixer = { group = "npm", name = "autoprefixer", version.ref = "autoprefixer" }
-css-loader = { group = "npm", name = "css-loader", version.ref = "css-loader" }
-style-loader = { group = "npm", name = "style-loader", version.ref = "style-loader" }
-cssnano = { group = "npm", name = "cssnano", version.ref = "cssnano" }
 
 
 [plugins]

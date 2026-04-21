@@ -30,7 +30,7 @@ class PopOver {
             popOverButton(
                 joinClasses(
                     "p-1.5 w-full flex flex-row items-center gap-1",
-                    "shadow-sm rounded-md bg-background-accent hover:bg-background-contrast"
+                    "shadow-xs rounded-md bg-background-accent hover:bg-background-contrast"
                 )
             ) {
                 label.value?.renderText()
@@ -41,7 +41,7 @@ class PopOver {
                     )
                 }
             }
-            popOverPanel("mt-2 p-3 bg-background rounded shadow-sm border border-background-accent") {
+            popOverPanel("mt-2 p-3 bg-background rounded-sm shadow-xs border border-background-accent") {
                 placement = PlacementValues.bottomStart
                 div("max-w-80") {
                     hook(content)

@@ -26,7 +26,7 @@ class ListBox<T> {
             listboxButton(
                 joinClasses(
                     "p-1.5 w-full flex flex-row items-center gap-1",
-                    "shadow-sm rounded-md bg-background-accent hover:bg-background-contrast"
+                    "shadow-xs rounded-md bg-background-accent hover:bg-background-contrast"
                 )
             ) {
                 span("grow text-left") {
@@ -43,7 +43,7 @@ class ListBox<T> {
             listboxItems(
                 joinClasses(
                     "mt-2 py-1.5 flex flex-col max-h-80 overflow-y-auto",
-                    "bg-background rounded shadow-sm border border-background-accent"
+                    "bg-background rounded-sm shadow-xs border border-background-accent"
                 )
             ) {
                 options.forEach { option ->
