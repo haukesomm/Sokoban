@@ -20,7 +20,7 @@ data class LevelDescription(
  * The layout string has to have [width] * [height] characters and must only use the characters defined in the
  * [characterMap]. Lines must have an equal length and be delimited by line breaks.
  *
- * Here is an example of a layout string using the [CharacterMap.default] character map. It defines a level with a
+ * Here is an example of a layout string using the [DefaultCharacterMap] character map. It defines a level with a
  * width of 8 and a height of 5. It contains a player (`@`), a box (`$`), and a target (`.`).
  * ```
  * ########

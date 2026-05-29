@@ -50,7 +50,7 @@ class PaddingLevelRepositoryDecorator(
         val paddingBottom = ceil(verticalPadding).toInt()
 
         val paddedLayout = buildString {
-            val paddingCharacter = level.characterMap.inverse[TileProperties(TileType.Empty)]
+            val paddingCharacter = level.characterMap.inverse[Tile.Ground]
                 ?: throw IllegalStateException("No empty tile in character map")
 
             val paddedWidth = paddingLeft + level.width + paddingRight

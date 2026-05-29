@@ -25,7 +25,7 @@ public class GameFrame extends JFrame {
     }
 
 
-    private final SokobanGame game = JvmSokobanGameFactory.withDefaultConfiguration();
+    private final SokobanGame game = JvmSokobanGameFactory.withMinimalConfiguration();
 
     private final GameField gameField = new GameField();
 

@@ -10,13 +10,13 @@ internal object BundledLevels {
      * All characters except `$` are the same as in the [DefaultCharacterMap]. Boxes are marked with `X` instead.
      */
     private val bundledCharacterMap = biMapOf(
-        '_' to TileProperties(TileType.Empty),
-        '.' to TileProperties(TileType.Target),
-        '#' to TileProperties(TileType.Wall),
-        'X' to TileProperties(TileType.Empty, EntityType.Box),
-        '@' to TileProperties(TileType.Empty, EntityType.Player),
-        '*' to TileProperties(TileType.Target, EntityType.Box),
-        '+' to TileProperties(TileType.Target, EntityType.Player)
+        '_' to Tile.Ground,
+        '.' to Tile.Target,
+        '#' to Tile.Wall,
+        'X' to Tile.BoxOnGround,
+        '*' to Tile.BoxOnTarget,
+        '@' to Tile.PlayerOnGround,
+        '+' to Tile.PlayerOnTarget
     )
 
     val levelById by lazy {

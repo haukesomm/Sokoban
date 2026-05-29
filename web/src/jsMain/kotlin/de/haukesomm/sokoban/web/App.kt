@@ -25,7 +25,7 @@ fun main() {
 
 
 private fun RenderContext.app() {
-    val sokobanGame = SokobanGameFactory.withDefaultConfiguration()
+    val sokobanGame = SokobanGameFactory.create()
 
     main("mb-4 flex flex-col justify-between items-center gap-2 sm:gap-8") {
         div("self-stretch") {

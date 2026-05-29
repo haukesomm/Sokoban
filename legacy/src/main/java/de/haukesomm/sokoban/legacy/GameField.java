@@ -25,13 +25,8 @@ public class GameField extends JPanel {
                 var position = new Position(column, row);
                 ImageIcon texture;
 
-                var entity = GameStateKt.entityAt(state, position);
-                if (entity != null) {
-                    texture = textureRepository.getForEntityType(entity.getType());
-                } else {
-                    var tile = GameStateKt.tileAt(state, position);
-                    texture = textureRepository.getForTileType(tile.getType());
-                }
+                var tile = GameStateKt.tileAt(state, position);
+                texture = textureRepository.getForTileType(tile);
 
                 var jLabel = new JLabel();
                 jLabel.setIcon(texture);

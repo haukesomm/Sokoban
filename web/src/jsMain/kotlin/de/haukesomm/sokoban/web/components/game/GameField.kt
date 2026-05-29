@@ -49,17 +49,12 @@ class GameField(private val states: Flow<GameState>) {
 
     private fun RenderContext.renderTile(tile: Tile) =
         div("w-full h-auto overflow-visible") {
-            icon("w-full h-auto overflow-visible", definition = tile.entity?.let { entity ->
-                when(entity.type) {
-                    EntityType.Box -> Textures.box
-                    EntityType.Player -> Textures.player
-                }
-            } ?: run {
-                when(tile.type) {
-                    TileType.Empty -> Textures.ground
-                    TileType.Target -> Textures.target
-                    TileType.Wall -> Textures.wall
-                }
+            icon("w-full h-auto overflow-visible", definition = when (tile) {
+                Tile.Ground -> Textures.ground
+                Tile.PlayerOnGround, Tile.PlayerOnTarget -> Textures.player
+                Tile.BoxOnGround, Tile.BoxOnTarget -> Textures.box
+                Tile.Target -> Textures.target
+                Tile.Wall -> Textures.wall
             })
         }
 }

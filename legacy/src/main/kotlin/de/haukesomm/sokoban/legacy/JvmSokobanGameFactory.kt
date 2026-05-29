@@ -11,10 +11,9 @@ import de.haukesomm.sokoban.core.levels.BundledLevelRepository
 object JvmSokobanGameFactory {
 
     /**
-     * JDK-accessible version of [SokobanGameFactory.withDefaultConfiguration].
+     * JDK-accessible version of [SokobanGameFactory.create].
      */
     @JvmStatic
-    @JvmOverloads
-    fun withDefaultConfiguration(levelRepository: LevelRepository = BundledLevelRepository()): SokobanGame =
-        SokobanGameFactory.withMinimalConfiguration(levelRepository)
+    fun withMinimalConfiguration(): SokobanGame =
+        SokobanGameFactory.create()
 }

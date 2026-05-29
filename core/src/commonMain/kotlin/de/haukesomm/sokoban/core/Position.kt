@@ -5,7 +5,7 @@ import kotlin.math.floor
 /**
  * Represents a position on the game board denoted by an [x] and [y] coordinate.
  *
- * The position can be converted to an index in the two-dimensional [tiles] list of a [GameState] via the [toIndex]
+ * The position can be converted to an index in the two-dimensional tile list of a [GameState] via the [toIndex]
  * method.
  */
 data class Position(val x: Int, val y: Int) {

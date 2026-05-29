@@ -1,5 +1,8 @@
 package de.haukesomm.sokoban.core
 
+import de.haukesomm.sokoban.core.Tile.PlayerOnGround
+import de.haukesomm.sokoban.core.Tile.PlayerOnTarget
+
 /**
  * Represents the state of a game.
  *
@@ -60,9 +63,7 @@ interface GameState {
  * `true` if the level has been cleared, `false` otherwise.
  */
 val GameState.levelCleared: Boolean
-    get() = tiles.none { tile ->
-        tile.isTarget && tile.entity?.takeIf { it.isBox } == null
-    }
+    get() = tiles.none { it == Tile.BoxOnGround }
 
 
 /**
@@ -78,22 +79,10 @@ fun GameState.tileInDirection(position: Position, direction: Direction): Tile? =
     tileAt(position.nextInDirection(direction))
 
 /**
- * Returns the [Entity] at the given [position] or `null` if the position is out of bounds.
- */
-fun GameState.entityAt(position: Position): Entity? =
-    tileAt(position)?.entity
-
-/**
- * Returns the next [Entity] in the given [direction] or `null` if the next position is out of bounds.
- */
-fun GameState.entityInDirection(position: Position, direction: Direction): Entity? =
-    entityAt(position.nextInDirection(direction))
-
-/**
  * Returns the player's [Position] or `null` if the player is not on the game board.
  */
 fun GameState.getPlayerPosition(): Position? =
-    when (val index = tiles.indexOfFirst { it.entity?.type == EntityType.Player }) {
+    when (val index = tiles.indexOfFirst { it in setOf(PlayerOnGround, PlayerOnTarget) }) {
         -1 -> null
         else -> Position.fromIndex(index, width)
     }
@@ -121,9 +110,7 @@ data class ImmutableGameState(
         fun fromLevel(level: Level): ImmutableGameState =
             with(level) {
                 val tiles = normalizedLayoutString.map { character ->
-                    characterMap
-                        .getOrElse(character) { TileProperties(TileType.Empty) }
-                        .run(Tile::fromTileProperties)
+                    characterMap.getOrElse(character) { Tile.Ground }
                 }
                 ImmutableGameState(id, width, height, tiles)
             }

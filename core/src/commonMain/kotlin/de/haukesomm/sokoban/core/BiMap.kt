@@ -33,7 +33,7 @@ internal class BiMapImpl<K, V>(val map: Map<K, V>) : Map<K, V> by map, BiMap<K, 
  * The provided [map] _should not_ contain duplicate keys as they will get lost when the map's inverse is computed.
  * In case a key is provided multiple times, the last one will be kept.
  */
-fun biMapOf(vararg entries: Pair<Char, TileProperties>): BiMap<Char, TileProperties> =
+fun <K, V> biMapOf(vararg entries: Pair<K, V>): BiMap<K, V> =
     BiMapImpl(
         mapOf(*entries)
     )

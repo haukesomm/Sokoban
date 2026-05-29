@@ -3,23 +3,22 @@ package de.haukesomm.sokoban.core
 /**
  * Convenience Type alias for Character maps
  *
- * A character map is a map that maps [Char]s to [TileProperties], which in turn contain the [TileType] and the
- * [EntityType] of the resulting [TileType] on the game board.
+ * A character map is a map that maps [Char]s to [Tile]s.
  *
  * All [CharacterMap]s should orient themselves on the default character map, which is defined in the globally
  * available [DefaultCharacterMap].
  */
-typealias CharacterMap = BiMap<Char, TileProperties>
+typealias CharacterMap = BiMap<Char, Tile>
 
 /**
  * Default [CharacterMap] as used in the original Sokoban game.
  */
 val DefaultCharacterMap: CharacterMap = biMapOf(
-    '_' to TileProperties(TileType.Empty),
-    '.' to TileProperties(TileType.Target),
-    '#' to TileProperties(TileType.Wall),
-    '$' to TileProperties(TileType.Empty, EntityType.Box),
-    '@' to TileProperties(TileType.Empty, EntityType.Player),
-    '*' to TileProperties(TileType.Target, EntityType.Box),
-    '+' to TileProperties(TileType.Target, EntityType.Player)
+    '_' to Tile.Ground,
+    '.' to Tile.Target,
+    '#' to Tile.Wall,
+    '$' to Tile.BoxOnGround,
+    '*' to Tile.BoxOnTarget,
+    '@' to Tile.PlayerOnGround,
+    '+' to Tile.PlayerOnTarget
 )
