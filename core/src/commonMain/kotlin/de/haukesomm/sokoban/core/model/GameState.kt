@@ -1,7 +1,9 @@
-package de.haukesomm.sokoban.core
+package de.haukesomm.sokoban.core.model
 
-import de.haukesomm.sokoban.core.Tile.PlayerOnGround
-import de.haukesomm.sokoban.core.Tile.PlayerOnTarget
+import de.haukesomm.sokoban.core.model.Tile.PlayerOnGround
+import de.haukesomm.sokoban.core.model.Tile.PlayerOnTarget
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
 /**
  * Represents the state of a game.
@@ -10,12 +12,6 @@ import de.haukesomm.sokoban.core.Tile.PlayerOnTarget
  * the number of moves and pushes the player has made and whether the level has been cleared or not.
  *
  * A number of convenience methods are provided to access the tiles and entities on the game board.
- *
- * There may be several implementations of this interface. The two fundamental implementations provided by this
- * library are [ImmutableGameState] and [MutableGameState].
- *
- * Other implementations may be provided in order to support different use cases. For example, a [GameState] may
- * be implemented to work with other frameworks mechanics such as fritz2's `@Lenses` annotation.
  */
 interface GameState {
 
@@ -87,49 +83,10 @@ fun GameState.getPlayerPosition(): Position? =
         else -> Position.fromIndex(index, width)
     }
 
-
-/**
- * Immutable implementation of [GameState].
- *
- * This implementation does not allow modifications to the game state.
- * A mutable copy of the game state can be created via the [toMutableGameState] method.
- */
-data class ImmutableGameState(
-    override val levelId: String,
-    override val width: Int,
-    override val height: Int,
-    override val tiles: List<Tile>,
-    override val moves: Int = 0,
-    override val pushes: Int = 0,
-    override val previous: GameState? = null
-) : GameState {
-    companion object {
-        /**
-         * Returns an [ImmutableGameState] converted from the given [level].
-         */
-        fun fromLevel(level: Level): ImmutableGameState =
-            with(level) {
-                val tiles = normalizedLayoutString.map { character ->
-                    characterMap.getOrElse(character) { Tile.Ground }
-                }
-                ImmutableGameState(id, width, height, tiles)
-            }
-    }
-}
-
-/**
- * Creates a mutable copy of this [GameState].
- */
-fun GameState.toImmutableGameState(): ImmutableGameState =
-    if (this is ImmutableGameState) this
-    else ImmutableGameState(levelId, width, height, tiles, moves, pushes, previous)
-
-
 /**
  * Mutable implementation of [GameState].
  *
  * This implementation allows modifications to the game state.
- * An immutable copy of the game state can be created via the [toImmutableGameState] method.
  */
 data class MutableGameState(
     override var levelId: String,
@@ -144,12 +101,11 @@ data class MutableGameState(
 /**
  * Creates a mutable copy of this [GameState].
  */
-fun GameState.toMutableGameState(): MutableGameState =
+fun GameState.createMutableCopy(): MutableGameState =
     MutableGameState(levelId, width, height, tiles.toMutableList(), moves, pushes, previous)
 
 /**
- * Returns a copy of the `GameState` and applies the given [action] to it.
- * The returned state is immutable.
+ * Returns a copy of the `GameState` and transforms if by applying the given [action] to it.
  */
 fun GameState.transform(action: MutableGameState.() -> Unit): GameState =
-    this.toMutableGameState().apply(action).toImmutableGameState()
+    this.createMutableCopy().apply(action)

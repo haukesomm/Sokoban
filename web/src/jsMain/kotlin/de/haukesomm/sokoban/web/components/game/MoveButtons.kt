@@ -1,6 +1,6 @@
 package de.haukesomm.sokoban.web.components.game
 
-import de.haukesomm.sokoban.core.Direction
+import de.haukesomm.sokoban.core.model.Direction
 import de.haukesomm.sokoban.web.components.icons.HeroIcons
 import de.haukesomm.sokoban.web.components.icons.icon
 import dev.fritz2.core.RenderContext

@@ -1,6 +1,7 @@
 package de.haukesomm.sokoban.web.components.game
 
-import de.haukesomm.sokoban.core.*
+import de.haukesomm.sokoban.core.model.GameState
+import de.haukesomm.sokoban.core.model.Tile
 import de.haukesomm.sokoban.web.components.icons.Textures
 import de.haukesomm.sokoban.web.components.icons.icon
 import dev.fritz2.core.*

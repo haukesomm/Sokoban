@@ -1,7 +1,7 @@
-package de.haukesomm.sokoban.core
+package de.haukesomm.sokoban.core.model
 
 /**
- * Represents a [Level] that can be loaded from a [LevelRepository].
+ * Represents a [Level] that can be loaded from a [de.haukesomm.sokoban.core.levels.LevelRepository].
  *
  * It consists of a unique [id] that is used to load the level from the repository and a [name] that can be displayed
  * to the user.

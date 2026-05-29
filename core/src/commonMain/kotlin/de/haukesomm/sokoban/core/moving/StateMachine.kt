@@ -1,6 +1,6 @@
 package de.haukesomm.sokoban.core.moving
 
-import de.haukesomm.sokoban.core.Tile
+import de.haukesomm.sokoban.core.model.Tile
 
 /**
  * State machine for computing the result of trying to move from one [Tile] to another, e.g. moving a box.

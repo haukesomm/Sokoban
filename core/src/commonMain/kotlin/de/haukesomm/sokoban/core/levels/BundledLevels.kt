@@ -1,13 +1,15 @@
 package de.haukesomm.sokoban.core.levels
 
-import de.haukesomm.sokoban.core.*
+import de.haukesomm.sokoban.core.model.Level
+import de.haukesomm.sokoban.core.model.Tile
+import de.haukesomm.sokoban.core.model.biMapOf
 
 internal object BundledLevels {
 
     /**
      * Slightly adjusted character map for bundled levels since they cannot use $ to mark a box.
      * 
-     * All characters except `$` are the same as in the [DefaultCharacterMap]. Boxes are marked with `X` instead.
+     * All characters except `$` are the same as in the [de.haukesomm.sokoban.core.model.DefaultCharacterMap]. Boxes are marked with `X` instead.
      */
     private val bundledCharacterMap = biMapOf(
         '_' to Tile.Ground,

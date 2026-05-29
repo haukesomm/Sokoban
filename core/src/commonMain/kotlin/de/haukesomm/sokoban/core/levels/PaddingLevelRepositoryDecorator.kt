@@ -1,6 +1,7 @@
 package de.haukesomm.sokoban.core.levels
 
-import de.haukesomm.sokoban.core.*
+import de.haukesomm.sokoban.core.model.Level
+import de.haukesomm.sokoban.core.model.Tile
 import kotlin.math.ceil
 import kotlin.math.floor
 import kotlin.math.max

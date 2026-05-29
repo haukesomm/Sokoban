@@ -1,8 +1,7 @@
 package de.haukesomm.sokoban.core.levels
 
-import de.haukesomm.sokoban.core.Level
-import de.haukesomm.sokoban.core.LevelDescription
-import de.haukesomm.sokoban.core.LevelRepository
+import de.haukesomm.sokoban.core.model.Level
+import de.haukesomm.sokoban.core.model.LevelDescription
 
 /**
  * [LevelRepository] implementation that contains the levels bundled with the game.

@@ -1,4 +1,4 @@
-package de.haukesomm.sokoban.core
+package de.haukesomm.sokoban.core.model
 
 /**
  * This interface represents a bijective map.

@@ -1,10 +1,17 @@
 package de.haukesomm.sokoban.core.moving
 
-import de.haukesomm.sokoban.core.*
+import de.haukesomm.sokoban.core.model.Direction
+import de.haukesomm.sokoban.core.model.GameState
+import de.haukesomm.sokoban.core.model.Position
+import de.haukesomm.sokoban.core.model.tileAt
+import de.haukesomm.sokoban.core.model.transform
 
+/**
+ * `MoveService` implementation that uses a [StateMachine] to compute the result of a move.
+ */
 class StateMachineBasedBasedMoveService : MoveService {
 
-    override fun moveEntityIfPossible(
+    override fun tryMoveInDirection(
         state: GameState,
         position: Position,
         direction: Direction
@@ -23,7 +30,7 @@ class StateMachineBasedBasedMoveService : MoveService {
         return when (val result = StateMachine.computeTransition(current, next)) {
             StateMachine.TransitionResult.Abort -> null
 
-            StateMachine.TransitionResult.LookAhead -> moveEntityIfPossible(
+            StateMachine.TransitionResult.LookAhead -> tryMoveInDirection(
                 state,
                 position.nextInDirection(direction),
                 direction,
@@ -46,28 +53,28 @@ class StateMachineBasedBasedMoveService : MoveService {
                 .incrementMoves()
         }
     }
-}
 
-private fun GameState.applyTransformation(
-    position: Position,
-    direction: Direction,
-    transformation: StateMachine.TransitionResult.Transform
-): GameState = transform {
-    previous = this@applyTransformation
+    private fun GameState.applyTransformation(
+        position: Position,
+        direction: Direction,
+        transformation: StateMachine.TransitionResult.Transform
+    ): GameState = transform {
+        previous = this@applyTransformation
 
-    val currentIndex = position.toIndex(width)
-    val nextIndex = position.nextInDirection(direction).toIndex(width)
+        val currentIndex = position.toIndex(width)
+        val nextIndex = position.nextInDirection(direction).toIndex(width)
 
-    val (newCurrent, newNext) = transformation
+        val (newCurrent, newNext) = transformation
 
-    tiles[currentIndex] = newCurrent
-    tiles[nextIndex] = newNext
-}
+        tiles[currentIndex] = newCurrent
+        tiles[nextIndex] = newNext
+    }
 
-private fun GameState.incrementMoves(): GameState = transform {
-    moves++
-}
+    private fun GameState.incrementMoves(): GameState = transform {
+        moves++
+    }
 
-private fun GameState.incrementPushes(): GameState = transform {
-    pushes++
+    private fun GameState.incrementPushes(): GameState = transform {
+        pushes++
+    }
 }

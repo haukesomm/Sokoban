@@ -1,8 +1,8 @@
 package de.haukesomm.sokoban.legacy;
 
-import de.haukesomm.sokoban.core.Direction;
-import de.haukesomm.sokoban.core.GameStateKt;
+import de.haukesomm.sokoban.core.model.Direction;
 import de.haukesomm.sokoban.core.SokobanGame;
+import de.haukesomm.sokoban.core.model.GameStateKt;
 
 import javax.swing.*;
 import java.awt.*;

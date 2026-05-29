@@ -1,4 +1,4 @@
-package de.haukesomm.sokoban.core
+package de.haukesomm.sokoban.core.model
 
 /**
  * Convenience Type alias for Character maps

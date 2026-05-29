@@ -1,7 +1,6 @@
 package de.haukesomm.sokoban.legacy.textures;
 
-import de.haukesomm.sokoban.core.EntityType;
-import de.haukesomm.sokoban.core.Tile;
+import de.haukesomm.sokoban.core.model.Tile;
 
 import javax.swing.*;
 

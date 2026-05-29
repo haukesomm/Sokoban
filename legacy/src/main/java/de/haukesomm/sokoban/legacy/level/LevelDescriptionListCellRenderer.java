@@ -1,6 +1,6 @@
 package de.haukesomm.sokoban.legacy.level;
 
-import de.haukesomm.sokoban.core.LevelDescription;
+import de.haukesomm.sokoban.core.model.LevelDescription;
 
 import javax.swing.*;
 

@@ -1,6 +1,6 @@
 package de.haukesomm.sokoban.legacy;
 
-import de.haukesomm.sokoban.core.LevelDescription;
+import de.haukesomm.sokoban.core.model.LevelDescription;
 import de.haukesomm.sokoban.legacy.level.LevelDescriptionListCellRenderer;
 
 import javax.swing.*;

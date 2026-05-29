@@ -1,6 +1,9 @@
 package de.haukesomm.sokoban.web
 
 import de.haukesomm.sokoban.core.*
+import de.haukesomm.sokoban.core.model.Direction
+import de.haukesomm.sokoban.core.model.LevelDescription
+import de.haukesomm.sokoban.core.model.levelCleared
 import de.haukesomm.sokoban.web.components.*
 import de.haukesomm.sokoban.web.components.game.gameField
 import de.haukesomm.sokoban.web.components.game.moveButtons
@@ -9,7 +12,6 @@ import de.haukesomm.sokoban.web.components.icons.HeroIcons
 import de.haukesomm.sokoban.web.components.icons.icon
 import dev.fritz2.core.*
 import dev.fritz2.headless.foundation.portalRoot
-import kotlinx.browser.window
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull

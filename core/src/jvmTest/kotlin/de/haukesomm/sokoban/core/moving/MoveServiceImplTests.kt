@@ -1,6 +1,13 @@
 package de.haukesomm.sokoban.core.moving
 
-import de.haukesomm.sokoban.core.*
+import de.haukesomm.sokoban.core.levels.GameStateFromLevelFactory
+import de.haukesomm.sokoban.core.model.Direction
+import de.haukesomm.sokoban.core.model.Level
+import de.haukesomm.sokoban.core.model.Position
+import de.haukesomm.sokoban.core.model.Tile
+import de.haukesomm.sokoban.core.model.biMapOf
+import de.haukesomm.sokoban.core.model.getPlayerPosition
+import de.haukesomm.sokoban.core.model.tileAt
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
@@ -8,7 +15,7 @@ import kotlin.test.assertNull
 class MoveServiceImplTests {
 
     private fun newTestGameState() =
-        ImmutableGameState.fromLevel(
+        GameStateFromLevelFactory.create(
             Level(
                 id = "test-level",
                 name = "Test Level",
@@ -34,7 +41,7 @@ class MoveServiceImplTests {
         val state = newTestGameState()
         val sut = StateMachineBasedBasedMoveService()
 
-        val result = sut.moveEntityIfPossible(state, state.getPlayerPosition()!!, Direction.Bottom)
+        val result = sut.tryMoveInDirection(state, state.getPlayerPosition()!!, Direction.Bottom)
         val updatedPosition = result!!.getPlayerPosition()!!
 
         assertEquals(
@@ -48,7 +55,7 @@ class MoveServiceImplTests {
         val state = newTestGameState()
         val sut = StateMachineBasedBasedMoveService()
 
-        val result = sut.moveEntityIfPossible(state, state.getPlayerPosition()!!, Direction.Left)
+        val result = sut.tryMoveInDirection(state, state.getPlayerPosition()!!, Direction.Left)
 
         assertNull(result)
     }
@@ -58,7 +65,7 @@ class MoveServiceImplTests {
         val state = newTestGameState()
         val sut = StateMachineBasedBasedMoveService()
 
-        val result = sut.moveEntityIfPossible(state, state.getPlayerPosition()!!, Direction.Right)
+        val result = sut.tryMoveInDirection(state, state.getPlayerPosition()!!, Direction.Right)
 
         assertEquals(expected = Tile.PlayerOnGround, actual = result?.tileAt(Position(2, 2)))
         assertEquals(expected = Tile.BoxOnGround, actual = result?.tileAt(Position(3, 2)))
@@ -70,8 +77,8 @@ class MoveServiceImplTests {
         val sut = StateMachineBasedBasedMoveService()
 
         // Move player down, then right:
-        val result = sut.moveEntityIfPossible(state, state.getPlayerPosition()!!, Direction.Bottom)?.let { result1 ->
-            sut.moveEntityIfPossible(result1, result1.getPlayerPosition()!!, Direction.Right)
+        val result = sut.tryMoveInDirection(state, state.getPlayerPosition()!!, Direction.Bottom)?.let { result1 ->
+            sut.tryMoveInDirection(result1, result1.getPlayerPosition()!!, Direction.Right)
         }
 
         assertNull(result)

@@ -1,12 +1,15 @@
-package de.haukesomm.sokoban.core
+package de.haukesomm.sokoban.core.levels
+
+import de.haukesomm.sokoban.core.model.Level
+import de.haukesomm.sokoban.core.model.LevelDescription
 
 /**
  * A level repository is a collection of [Level]s that can be played.
  *
- * It provides the [CharacterMap] that is used to parse the [Level.layoutString]s, a list of available [Level]s
+ * It provides the [de.haukesomm.sokoban.core.model.CharacterMap] that is used to parse the [Level.layoutString]s, a list of available [Level]s
  * and a method to get a level by its ID.
  *
- * By default, the [CharacterMap.default] map is used.
+ * By default, the [de.haukesomm.sokoban.core.model.DefaultCharacterMap] map is used.
  */
 interface LevelRepository {
 
